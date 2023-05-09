@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Place     Place[]
+}
+
+model Place {
+  id                Int      @id @default(autoincrement())
+  name              String
+  description       String
+  image             String
+  numberOfRooms     Int      @default(0)
+  numberOfBathrooms Int      @default(0)
+  maxGuests         Int      @default(0)
+  priceByNight      Int      @default(0)
+  hostId            Int
+  host              User     @relation(fields: [hostId], references: [id])
+  cityId            Int
+  city              City     @relation(fields: [cityId], references: [id])
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model City {
+  id        Int      @id @default(autoincrement())
+  name      String
+  Place     Place[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
