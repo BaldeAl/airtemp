@@ -1,8 +1,7 @@
-import { data } from "autoprefixer";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
-import { UserContext } from "../context/UserContext";
+
 
 const Login = () => {
 
@@ -10,7 +9,6 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
     const router =useRouter();
-    const {setUser} =useContext(UserContext);
 
     const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,7 +23,7 @@ const Login = () => {
 
     const data = await response.json();
     if (response.ok) {
-      setUser(data.user)
+      localStorage.setItem('token', data.token);
       router.push("/")
     } else {  
       setMessage("Erreur de connexion. Veuillez réessayer.")
@@ -40,7 +38,7 @@ const Login = () => {
         <div className="flex-1 flex-grow">
             <h2 className="text-2xl font-bold mb-4">Login</h2>
 
-            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+            <form className="flex flex-col gap-4" data-bitwarden-watching="1" onSubmit={handleSubmit}>
 
                 <label className="flex flex-col gap-1">
                     Email

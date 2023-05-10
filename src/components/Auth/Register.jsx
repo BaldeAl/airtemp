@@ -7,6 +7,7 @@ const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const router = useRouter();
+    const [message, steMessage] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -18,22 +19,25 @@ const Register = () => {
             },
             body: JSON.stringify({ name, email, password }),
         });
-
+            const data = await response.json()
         if (response.ok) {
+            localStorage.setItem('token', data.token);
             router.push("/");
         } else {
             // handle error
+            steMessage("ce n'est pas bon du tout")
         }
     };
 
     return ( 
         <div className="flex min-h-[calc(100vh-100px)] flex-col max-w-7xl mx-auto px-4">
+            {message && <div>{message}</div>}
         <div className="flex-1 flex-grow">
             <h2 className="text-2xl font-bold mb-4">
                 Register
             </h2>
 
-            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+            <form className="flex flex-col gap-4" data-bitwarden-watching="1" onSubmit={handleSubmit}>
                 <label className="flex flex-col gap-1">
                     Name
                     <input className="border border-gray-300 rounded-md p-2 
@@ -53,7 +57,7 @@ const Register = () => {
                      onChange={(e) => setEmail(e.target.value)} />
 
                 </label>
-                
+
                 <label className="flex flex-col gap-1">
                     Password
                     <input className="border border-gray-300 rounded-md p-2 
