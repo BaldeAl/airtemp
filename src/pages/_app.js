@@ -1,5 +1,15 @@
 import '@/styles/globals.css'
+import { ThemeProvider } from '../components/ThemeProvider'
+import { UserProvider } from '../components/context/UserContext'
 
-export default function App({ Component, pageProps }) {
-  return <Component {...pageProps} />
+function App({ Component, pageProps }) {
+  return (
+    <ThemeProvider>
+      <UserProvider>
+        <Component {...pageProps} />
+      </UserProvider>
+    </ThemeProvider>
+  )
 }
+
+export default App;

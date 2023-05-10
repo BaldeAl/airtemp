@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Navbar from '../navbar/Navbar';
+
 const PlaceDetails = () => {
     const router = useRouter();
     const { id } = router.query;
@@ -22,20 +22,19 @@ const PlaceDetails = () => {
     // Affichez les détails de la place ici ...
 
     return (
-
-        <div className='flex min-h-[calc(100vh-100px)] flex-col max-w-7xl mx-auto px-4'>
+        <div >
+           <div className='flex min-h-[calc(100vh-100px)] flex-col max-w-7xl mx-auto px-4'>
         
-                        <div className="relative pb-48 overflow-hidden">
                             <Image 
                                 className="h-96 w-full object-cover mb-4"
                                 src={place.image}
                                 alt={place.name}
-                                width={500}
+                                width={300}
                                 height={500}
                             />
-                        </div>
-                        <div className="p-flex flex-col md:flex-row">
-                            <div className='flex flex-col md:flex-row'>
+                       
+                        <div className="flex flex-col md:flex-row">
+                            <div className='flex-1 flex-grow'>
                             <h2 className='text-2xl font-bold'>{place.name}</h2>
                             <p className='text-sm font-medium text-gray-500'>{place.city.name}</p>
                             <p className='text-sm font-medium text-gray-500'>{place.priceByNight}€/night</p>
@@ -45,7 +44,7 @@ const PlaceDetails = () => {
                             <div className='w-80'>
                                 <div className='bg-white rounded-lg shadow-lg overflow-hidden'>
                                     <div className='flex items-center p-4'>
-                                        <Image
+                                        <Image className='h-10 w-10 rounded-full'
                                         src={place.host.avatar}
                                         alt={place.host.name}
                                         width={60}
@@ -64,6 +63,8 @@ const PlaceDetails = () => {
                         </div>
                 
         </div>
+        </div>
+ 
     );
 };
 

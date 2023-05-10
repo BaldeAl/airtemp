@@ -1,8 +1,7 @@
 import Head from 'next/head'
-import Navbar from '../components/navbar/Navbar'
-import Search from '../components/Search'
-import Place from '../components/place/Places'
-import Container from '../components/Container'
+import Places from '../components/place/Places'
+import Layout from '../components/Layout'
+import Login from '../components/Auth/Login'
 export default function Home() {
   return (
     <>
@@ -12,12 +11,10 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Navbar/>
-      <Container/>
-       <main className='flex min-h-[calc(100vh-100px)] flex-col items-center'>
-
-
-      </main>
+      <Layout >
+      <Places/>
+      <Login/>
+      </Layout>
     </>
   )
 }

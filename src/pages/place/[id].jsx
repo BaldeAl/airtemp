@@ -1,12 +1,13 @@
-import Navbar from "../../components/navbar/Navbar";
+import Layout from "../../components/Layout";
 import PlaceDetails from "../../components/place/Place";
 
 const place = () => {
     return ( 
         <>
-        <Navbar/>
+       <Layout>
 
         <PlaceDetails/>
+        </Layout>
         </>
      );
 }
