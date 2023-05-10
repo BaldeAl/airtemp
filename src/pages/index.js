@@ -13,7 +13,6 @@ export default function Home() {
       </Head>
       <Layout >
         <Places/>
-      <Login/>
       </Layout>
     </>
   )

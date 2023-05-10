@@ -1,13 +1,18 @@
 import Layout from "../../components/Layout";
-import PlaceDetails from "../../components/place/Place";
+import Place from "../../components/place/Place";
+import PlaceDetails from "../../components/place/PlaceDetails";
+import Places from "../../components/place/Places";
+
 
 const place = () => {
     return ( 
         <>
-       <Layout>
+     <Layout>
 
-        <PlaceDetails/>
-        </Layout>
+
+            <PlaceDetails/>
+        
+    </Layout>
         </>
      );
 }
