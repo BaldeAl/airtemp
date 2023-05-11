@@ -1,5 +1,4 @@
 import Navbar from './navbar/Navbar';
-import { ThemeProvider } from './ThemeProvider';
 
 const Layout = ({ children }) => {
     return (

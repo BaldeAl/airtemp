@@ -1,10 +1,10 @@
-// Places.js
 import { useState, useEffect } from 'react';
 import Place from './Place';
+import Loading from '../loading/Loading';
 
 
 const Places = () => {
-  const [places, setPlaces] = useState([]);
+  const [places, setPlaces] = useState(null);
   const [searchValue, setSearchValue] = useState('');
 
   useEffect(() => {
@@ -12,7 +12,9 @@ const Places = () => {
       .then(res => res.json())
       .then(data => setPlaces(data));
   }, []);
-
+   if (!places) {
+    return <Loading/>;
+  }
   const handleSearchChange = (event) => {
     setSearchValue(event.target.value);
   };
@@ -21,11 +23,9 @@ const Places = () => {
     place.name.toLowerCase().includes(searchValue.toLowerCase()) ||
     place.city.name.toLowerCase().includes(searchValue.toLowerCase())
   );
-console.log(places, filteredPlaces);
-  if (!places) {
-    return <div>Loading...</div>;
-  }
+  
 
+ 
   return (
     <div className='flex min-h-[calc(100vh-100px)] flex-col items-center'>
       <input 
@@ -36,9 +36,9 @@ console.log(places, filteredPlaces);
         value={searchValue}
         onChange={handleSearchChange} 
       />
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredPlaces.map(place => <Place key={place.id} place={place} />)}
-        {console.log(Place.id)}
+        {filteredPlaces.map(place => <Place key={place.id} place={place}/>)}
       </div>
     </div>
   );

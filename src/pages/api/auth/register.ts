@@ -10,6 +10,17 @@ export default async function handle(
 ) {
   const { email, password, name } = req.body;
 
+  //la gestion des erreurs au niveau de l'email unique
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+  });
+
+  if (existingUser) {
+    return res.status(409).json({ message: "Email already in use" });
+  }
+
   const user = await prisma.user.create({
     data: {
       email,

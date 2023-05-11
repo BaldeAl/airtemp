@@ -1,4 +1,5 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect} from "react";
+import {HiCheckCircle} from 'react-icons/hi'
 
 const Update = () => {
     const [name, setName] = useState("");
@@ -40,6 +41,7 @@ const Update = () => {
         if (response.ok) {
             setName(updatedUser.name);
             setEmail(updatedUser.email);
+            localStorage.setItem('UserName', updatedUser.name);
             setFlash('Information updated successfully');
             
         } else {
@@ -78,7 +80,15 @@ const Update = () => {
                     Update
                 </button>
             </form>
-            {flash && <div className="alert alert-success text-green-500">{flash}</div>}
+            {flash &&  <div className="alert  alert-success rounded-lg  p-4 text-green-400">
+                <HiCheckCircle className="w-5 h-5 inline mr-3"/>
+                <span className="font-medium">
+
+                    {flash}     
+                </span>
+                
+                </div>}
+            
         </div>
     );
 }

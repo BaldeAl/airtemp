@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import {useState } from "react";
+import {RiErrorWarningFill} from "react-icons/ri"
 
 
 const Login = () => {
@@ -24,6 +25,7 @@ const Login = () => {
     const data = await response.json();
     if (response.ok) {
       localStorage.setItem('token', data.token);
+      localStorage.setItem('UserName',data.user.name )
       router.push("/")
     } else {  
       setMessage("Erreur de connexion. Veuillez réessayer.")
@@ -45,7 +47,7 @@ const Login = () => {
                     <input className="border border-gray-300 rounded-md
                      p-2 disabled:cursor-not-allowed"
                       type="email" name="email" 
-                      required="" value={email}
+                      required="This field is required" value={email}
                       onChange={(e)=> setEmail(e.target.value)}/>
                 </label>
 
@@ -54,7 +56,7 @@ const Login = () => {
                     <input className="border border-gray-300 rounded-md
                      p-2 disabled:cursor-not-allowed" type="password"
                       name="password" 
-                      required=""
+                      required="This field is required" 
                       value={password}
                       onChange={(e)=> setPassword(e.target.value)}/>
                 </label>
@@ -70,7 +72,15 @@ const Login = () => {
                 <Link className="text-sm font-medium text-gray-500" href={`/Auth/register/`}>
                   Dont have an account yet?
                   </Link>
-              {message && <p>{message}</p>}
+              {message && 
+                <div className="alert text-red-500">
+                    <RiErrorWarningFill className="w-5 h-5 inline mr-3"/>
+                <span className="font-medium">
+                        {message}
+                </span>
+                </div>
+                }
+
             </div>
 
                

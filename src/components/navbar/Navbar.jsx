@@ -3,18 +3,26 @@ import { useContext, useState, useEffect } from "react";
 import { ThemeContext } from "../context/theme";
 import { BsFillSunFill, BsMoon } from "react-icons/bs";
 import { FaRegUserCircle } from "react-icons/fa";
+import { useRouter } from "next/router";
 
 const Navbar = () => {
   const [token, setToken] = useState("");
+  const [user, setUser] = useState(null);
+  const router = useRouter();
   const { theme, toggleTheme } = useContext(ThemeContext);
 
   useEffect(() => {
     setToken(localStorage.getItem("token"));
+    setUser(localStorage.getItem("UserName"));
   }, []);
+
+
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("UserName");
     setToken(null);
+    router.push("/")
   };
 
   return (
@@ -23,7 +31,7 @@ const Navbar = () => {
         <div className="antialiased text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900">
           <header className="flex items-center justify-between w-full max-w-4xl px-4 py-8 mx-auto">
             <Link className="text-3xl font-bold text-slate-900 dark:text-slate-200" href={"/"}>
-              Airwo
+              AirAl
             </Link>
             <div className="flex items-center gap-4">
               <button
@@ -40,8 +48,10 @@ const Navbar = () => {
                   <Link href={`/Auth/me`}>
                     
                       <FaRegUserCircle />
+                      
                     
                   </Link>
+                  <div className="text-gray-500 dark:text-gray-400">{user}</div>
                   <button onClick={handleLogout} className="px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700">Logout</button>
                 </>
               ) : (
