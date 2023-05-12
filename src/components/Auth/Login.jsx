@@ -2,6 +2,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import {useState } from "react";
 import {RiErrorWarningFill} from "react-icons/ri"
+import InputField from "../form/InputField";
+import SubmitButton from "../form/ButtonSubmit";
 
 
 const Login = () => {
@@ -17,7 +19,7 @@ const Login = () => {
     const response = await fetch(`/api/auth/login`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ email, password }),
     });
@@ -42,30 +44,25 @@ const Login = () => {
 
             <form className="flex flex-col gap-4" data-bitwarden-watching="1" onSubmit={handleSubmit}>
 
-                <label className="flex flex-col gap-1">
-                    Email
-                    <input className="border border-gray-300 rounded-md
-                     p-2 disabled:cursor-not-allowed"
-                      type="email" name="email" 
-                      required="This field is required" value={email}
-                      onChange={(e)=> setEmail(e.target.value)}/>
-                </label>
 
-                <label className="flex flex-col gap-1">
-                    Password
-                    <input className="border border-gray-300 rounded-md
-                     p-2 disabled:cursor-not-allowed" type="password"
-                      name="password" 
-                      required="This field is required" 
-                      value={password}
-                      onChange={(e)=> setPassword(e.target.value)}/>
-                </label>
+                <InputField
+                    label="Email"
+                    type="email"
+                    value={email}
+                    required
+                    name="email"
+                    onChange={(e) => setEmail(e.target.value)}
+                />
 
-                <button className="bg-blue-500 text-white rounded-md p-2
-                 disabled:opacity-50 disabled:cursor-not-allowed" 
-                 type="submit">
-                    Login
-                </button>
+                <InputField 
+                    label="Password"
+                    type="password"
+                    value={password}
+                    required
+                    name="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                <SubmitButton text="Login" />
 
             </form>
 
