@@ -28,7 +28,7 @@ const Update = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const token = localStorage.getItem("token");
-        const response = await fetch("/api/auth/me", {
+        const response = await fetch(`/api/auth/me`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

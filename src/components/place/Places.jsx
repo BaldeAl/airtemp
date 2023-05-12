@@ -8,7 +8,7 @@ const Places = () => {
   const [searchValue, setSearchValue] = useState('');
 
   useEffect(() => {
-    fetch('/api/places/')
+    fetch(`/api/places/`)
       .then(res => res.json())
       .then(data => setPlaces(data));
   }, []);
