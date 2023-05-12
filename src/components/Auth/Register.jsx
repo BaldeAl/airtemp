@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useRouter } from 'next/router';
 import Link from "next/link"
 import {RiErrorWarningFill} from "react-icons/ri"
+import InputField from "../form/InputField";
+import SubmitButton from "../form/ButtonSubmit";
 
 const Register = () => {
     const [name, setName] = useState("");
@@ -34,6 +36,8 @@ const Register = () => {
         }
     };
 
+
+
     return ( 
         <div className="flex min-h-[calc(100vh-100px)] flex-col max-w-7xl mx-auto px-4">
         <div className="flex-1 flex-grow">
@@ -42,39 +46,31 @@ const Register = () => {
             </h2>
 
             <form className="flex flex-col gap-4" data-bitwarden-watching="1" onSubmit={handleSubmit}>
-                <label className="flex flex-col gap-1">
-                    Name
-                    <input className="border border-gray-300 rounded-md p-2 
-                    disabled:cursor-not-allowed" type="text"
-                     name="name" required=""
-                     value={name}
-                     onChange={(e) => setName(e.target.value)} />
+              <InputField
+                    label="Name"
+                    type="text"
+                    value={name}
+                    name="name"
+                    onChange={(e) => setName(e.target.value)}
+                />
 
-                </label>
+                <InputField 
+                    label="Email"
+                    type="email"
+                    value={email}
+                    name="email"
+                    onChange={(e) => setEmail(e.target.value)}
+                />
 
-                <label className="flex flex-col gap-1">
-                    Email
-                    <input className="border border-gray-300 rounded-md p-2
-                     disabled:cursor-not-allowed" type="email" name="email" 
-                     required=""
-                     value={email}
-                     onChange={(e) => setEmail(e.target.value)} />
+                <InputField 
+                    label="Password"
+                    type="password"
+                    value={password}
+                    name="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                />
 
-                </label>
-
-                <label className="flex flex-col gap-1">
-                    Password
-                    <input className="border border-gray-300 rounded-md p-2 
-                    disabled:cursor-not-allowed" type="password" name="password" 
-                     required=""
-                     value={password}
-                     onChange={(e) => setPassword(e.target.value)} />
-
-                </label>
-                <button className="bg-blue-500 text-white rounded-md p-2 disabled:opacity-50 
-                disabled:cursor-not-allowed" type="submit">
-                    Register
-                </button>
+              <SubmitButton text="Register" />
             </form>
             <Link className="text-sm font-medium text-gray-500"
              href={`/Auth/login/`}>Already have an account? Login
