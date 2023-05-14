@@ -71,7 +71,7 @@ const Update = () => {
 
                 <InputField
                         label="Password"
-                        type={passwordVisible ? "text" : "password"}
+                        type="password"
                         name="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
