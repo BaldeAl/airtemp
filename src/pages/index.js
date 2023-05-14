@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import Places from '../components/place/Places'
 import Layout from '../components/Layout'
-import Login from '../components/Auth/Login'
 import WelcomeMessage from '../components/Welcome'
 export default function Home() {
   return (
