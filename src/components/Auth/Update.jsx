@@ -67,7 +67,7 @@ const Update = () => {
                     type="name"
                     name="name"
                     value={name}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => setName(e.target.value)}
                 />
                 <InputField
                     label="Email"
