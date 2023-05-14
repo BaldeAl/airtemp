@@ -1,7 +1,7 @@
 import Update from "../../../components/Auth/Update";
 import Layout from "../../../components/Layout";
 
-const Me = () => {
+const me = () => {
     return ( 
         <>
             <Layout>
@@ -12,4 +12,4 @@ const Me = () => {
      );
 }
 
-export default Me;
+export default me;
