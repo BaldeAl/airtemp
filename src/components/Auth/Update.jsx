@@ -61,6 +61,14 @@ const Update = () => {
             
 
             <form className="flex flex-col gap-4" data-bitwarden-watching="1" onSubmit={handleSubmit}>
+                
+                <InputField
+                    label="Name"
+                    type="name"
+                    name="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                />
                 <InputField
                     label="Email"
                     type="email"
