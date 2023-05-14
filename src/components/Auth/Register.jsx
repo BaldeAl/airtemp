@@ -51,6 +51,7 @@ const Register = () => {
                     type="text"
                     value={name}
                     name="name"
+                    required
                     onChange={(e) => setName(e.target.value)}
                 />
 
@@ -59,6 +60,7 @@ const Register = () => {
                     type="email"
                     value={email}
                     name="email"
+                    required
                     onChange={(e) => setEmail(e.target.value)}
                 />
 
@@ -67,6 +69,7 @@ const Register = () => {
                     type="password"
                     value={password}
                     name="password"
+                    required
                     onChange={(e) => setPassword(e.target.value)}
                 />
 
