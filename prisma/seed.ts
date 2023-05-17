@@ -4,7 +4,8 @@ import { faker } from "@faker-js/faker";
 const prisma = new PrismaClient();
 
 const userData: Prisma.UserCreateInput[] = Array.from({ length: 100 }).map(
-  (_) => ({
+  (_,id) => ({
+    user_id:id,
     name: faker.internet.userName(),
     email: faker.internet.email(),
     password: faker.internet.password(),
@@ -13,13 +14,15 @@ const userData: Prisma.UserCreateInput[] = Array.from({ length: 100 }).map(
 );
 
 const cityData: Prisma.CityCreateInput[] = Array.from({ length: 100 }).map(
-  (_) => ({
+  (_,id) => ({
+    city_id:id,
     name: faker.address.city(),
   })
 );
 
-const placeData: Prisma.PlaceCreateInput[] = Array.from({ length: 100 }).map(
-  (_) => ({
+const placeData: Prisma.PlaceCreateInput[] = Array.from({ length: 100 })
+.map(  (_,ide) => ({
+    place_id: ide,
     name: `${faker.company.catchPhraseAdjective()} ${faker.company.catchPhraseNoun()}`,
     description: faker.lorem.paragraph(),
     image: faker.image.city(500, 500, true),
@@ -41,7 +44,7 @@ const placeData: Prisma.PlaceCreateInput[] = Array.from({ length: 100 }).map(
     }),
     host: {
       connect: {
-        id: faker.datatype.number({
+        user_id: faker.datatype.number({
           min: 1,
           max: 100,
         }),
@@ -49,7 +52,7 @@ const placeData: Prisma.PlaceCreateInput[] = Array.from({ length: 100 }).map(
     },
     city: {
       connect: {
-        id: faker.datatype.number({
+        city_id: faker.datatype.number({
           min: 1,
           max: 100,
         }),
@@ -64,22 +67,28 @@ async function main() {
     const user = await prisma.user.create({
       data: u,
     });
-    console.log(`Created user with id: ${user.id}`);
+    console.log(`Created user with id: ${user.user_id}`);
   }
   for (const c of cityData) {
     const city = await prisma.city.create({
       data: c,
     });
-    console.log(`Created city with id: ${city.id}`);
+    console.log(`Created city with id: ${city.city_id}`);
   }
   for (const p of placeData) {
-    const place = await prisma.place.create({
-      data: p,
-    });
-    console.log(`Created place with id: ${place.id}`);
+    try {
+      const place = await prisma.place.create({
+        data: p,
+      });
+      console.log(`Created place with id: ${place.place_id}`);
+    }
+    catch {
+      console.error('Fail to create place');
+    }
   }
   await prisma.user.create({
     data: {
+      user_id: 1000,
       name: "Admin",
       email: "admin@example.com",
       password: "admin",

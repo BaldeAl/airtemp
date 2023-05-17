@@ -1,12 +1,13 @@
 {
-  "homepage": "https://BaldeAl.github.io/airtemp",
-  "name": "airwo",
+  "homepage": "https://BaldeAl.github.io/airbnb",
+  "name": "airbnb",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "db:init": "npx prisma migrate dev --name init",
     "db:up": "npx prisma migrate dev",
     "db:studio": "npx prisma studio",
+    "db:seed":"npx prisma db seed",
     "db:reset": "npx prisma migrate reset --force",
     "prisma:format": "npx prisma format",
     "dev": "next dev",
@@ -14,9 +15,9 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "vercel-build": "prisma generate && prisma migrate deploy && next build",
+    "vercel-build": "prisma generate && prisma db push && next build",
     "prisma:generate": "prisma generate",
-    "deploy":"gh-pages -d build"
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "@faker-js/faker": "^7.6.0",
@@ -30,6 +31,7 @@
     "eslint-config-next": "13.4.1",
     "icons": "^1.0.0",
     "jsonwebtoken": "^9.0.0",
+    "mongodb": "^5.5.0",
     "next": "13.4.1",
     "nookies": "^2.5.2",
     "postcss": "8.4.23",

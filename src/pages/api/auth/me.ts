@@ -16,11 +16,11 @@ export default async function handle(
   }
 
   try {
-    const { id: userId } = verify(
+    const { user_id: userId } = verify(
       token as string,
       process.env.JWT_SECRET as string
     ) as {
-      id: number;
+      user_id: number;
     };
 
     if (!userId) {
@@ -31,7 +31,7 @@ export default async function handle(
     if (req.method === "GET") {
       const user = await prisma.user.findUnique({
         where: {
-          id: userId,
+          user_id: userId,
         },
       });
 
@@ -41,7 +41,7 @@ export default async function handle(
       const { name, email, password } = req.body;
       const user = await prisma.user.update({
         where: {
-          id: userId,
+          user_id: userId,
         },
         data: {
           name,

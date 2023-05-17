@@ -20,9 +20,10 @@ export default async function handle(
   if (existingUser) {
     return res.status(409).json({ message: "Email already in use" });
   }
-
+  const users = await prisma.user.findMany();
   const user = await prisma.user.create({
     data: {
+      user_id: users.length + 1,
       email,
       password,
       name,

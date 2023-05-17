@@ -3,12 +3,13 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user_id   Int       @unique
   name      String
   email     String   @unique
   password  String
@@ -19,7 +20,8 @@ model User {
 }
 
 model Place {
-  id                Int      @id @default(autoincrement())
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  place_id           Int      @unique
   name              String
   description       String
   image             String
@@ -28,15 +30,17 @@ model Place {
   maxGuests         Int      @default(0)
   priceByNight      Int      @default(0)
   hostId            Int
-  host              User     @relation(fields: [hostId], references: [id])
   cityId            Int
-  city              City     @relation(fields: [cityId], references: [id])
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+
+  city              City     @relation(fields: [cityId], references: [city_id], onDelete: Cascade)
+  host              User     @relation(fields: [hostId], references: [user_id], onDelete: Cascade)
 }
 
 model City {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  city_id   Int      @unique
   name      String
   Place     Place[]
   createdAt DateTime @default(now())
