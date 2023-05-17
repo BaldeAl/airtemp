@@ -35,7 +35,6 @@ const Login = () => {
   };
 
 
-
     return ( 
         <div className="flex min-h-[calc(100vh-100px)] flex-col max-w-7xl mx-auto px-4">
           
