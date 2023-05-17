@@ -13,7 +13,7 @@ const Place = ({ place }) => {
   }
 
   return (
-    <Link key={place.id} href={`/place/${place.id}`}>
+    <Link key={place.place_id} href={`/place/${place.place_id}`}>
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="relative pb-48 overflow-hidden">
           <Image 
