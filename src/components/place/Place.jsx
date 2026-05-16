@@ -3,13 +3,8 @@ import Link from "next/link";
 import Loading from "../loading/Loading";
 
 const Place = ({ place }) => {
-    
   if (!place) {
-    return( <><Loading />;
-    
-    </>
-    
-    )
+    return <Loading />;
   }
 
   return (

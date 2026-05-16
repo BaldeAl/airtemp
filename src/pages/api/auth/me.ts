@@ -3,7 +3,6 @@ import { sign, verify } from "jsonwebtoken";
 import prisma from "../../../lib/prisma";
 import { User } from "@prisma/client";
 
-// PUT /api/auth/me
 export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse

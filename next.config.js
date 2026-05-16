@@ -1,11 +1,34 @@
-/** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode:false,
+  reactStrictMode: false,
   images: {
-   domains: ["loremflickr.com","cloudflare-ipfs.com"]
-}
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "loremflickr.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cloudflare-ipfs.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.ibb.co",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+        pathname: "/**",
+      },
+    ],
+  },
 };
 
-
-module.exports = nextConfig
-;
+module.exports = nextConfig;

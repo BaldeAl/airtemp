@@ -4,9 +4,9 @@ import { faker } from "@faker-js/faker";
 const prisma = new PrismaClient();
 
 const userData: Prisma.UserCreateInput[] = Array.from({ length: 100 }).map(
-  (_,id) => ({
-    user_id:id,
-    name: faker.internet.userName(),
+  (_, id) => ({
+    user_id: id,
+    name: faker.internet.username(),
     email: faker.internet.email(),
     password: faker.internet.password(),
     avatar: faker.image.avatar(),
@@ -14,48 +14,30 @@ const userData: Prisma.UserCreateInput[] = Array.from({ length: 100 }).map(
 );
 
 const cityData: Prisma.CityCreateInput[] = Array.from({ length: 100 }).map(
-  (_,id) => ({
-    city_id:id,
-    name: faker.address.city(),
+  (_, id) => ({
+    city_id: id,
+    name: faker.location.city(),
   })
 );
 
-const placeData: Prisma.PlaceCreateInput[] = Array.from({ length: 100 })
-.map(  (_,ide) => ({
+const placeData: Prisma.PlaceCreateInput[] = Array.from({ length: 100 }).map(
+  (_, ide) => ({
     place_id: ide,
     name: `${faker.company.catchPhraseAdjective()} ${faker.company.catchPhraseNoun()}`,
     description: faker.lorem.paragraph(),
-    image: faker.image.city(500, 500, true),
-    numberOfRooms: faker.datatype.number({
-      min: 1,
-      max: 10,
-    }),
-    numberOfBathrooms: faker.datatype.number({
-      min: 1,
-      max: 3,
-    }),
-    maxGuests: faker.datatype.number({
-      min: 1,
-      max: 10,
-    }),
-    priceByNight: faker.datatype.number({
-      min: 100,
-      max: 1000,
-    }),
+    image: faker.image.url({ width: 500, height: 500 }),
+    numberOfRooms: faker.number.int({ min: 1, max: 10 }),
+    numberOfBathrooms: faker.number.int({ min: 1, max: 3 }),
+    maxGuests: faker.number.int({ min: 1, max: 10 }),
+    priceByNight: faker.number.int({ min: 100, max: 1000 }),
     host: {
       connect: {
-        user_id: faker.datatype.number({
-          min: 1,
-          max: 100,
-        }),
+        user_id: faker.number.int({ min: 1, max: 99 }),
       },
     },
     city: {
       connect: {
-        city_id: faker.datatype.number({
-          min: 1,
-          max: 100,
-        }),
+        city_id: faker.number.int({ min: 1, max: 99 }),
       },
     },
   })
@@ -81,19 +63,10 @@ async function main() {
         data: p,
       });
       console.log(`Created place with id: ${place.place_id}`);
-    }
-    catch {
-      console.error('Fail to create place');
+    } catch {
+      console.error("Fail to create place");
     }
   }
-  await prisma.user.create({
-    data: {
-      user_id: 1000,
-      name: "Admin",
-      email: "admin@example.com",
-      password: "admin",
-    },
-  });
   console.log(`Seeding finished.`);
 }
 

@@ -3,14 +3,12 @@ import prisma from "../../../lib/prisma";
 import { sign } from "jsonwebtoken";
 import { User } from "@prisma/client";
 
-// POST /api/auth/register
 export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   const { email, password, name } = req.body;
 
-  //la gestion des erreurs au niveau de l'email unique
   const existingUser = await prisma.user.findUnique({
     where: {
       email: email,

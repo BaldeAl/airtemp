@@ -29,9 +29,9 @@ const Register = () => {
             router.push("/");
         } else {
             if (response.status === 409) {
-            setMessage("Email already in use");  // Display a specific error message for duplicate email
+            setMessage("Email already in use");
         } else {
-            setMessage("An error occurred");  // Generic error message for all other errors
+            setMessage("An error occurred");
         }
         }
     };

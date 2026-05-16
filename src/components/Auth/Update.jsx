@@ -1,5 +1,5 @@
 import { useState, useEffect} from "react";
-import {HiCheckCircle, HiEye, HiEyeOff} from 'react-icons/hi'
+import {HiCheckCircle} from 'react-icons/hi'
 import InputField from "../form/InputField";
 import SubmitButton from "../form/ButtonSubmit";
 
@@ -8,8 +8,6 @@ const Update = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [flash, setFlash] = useState(null);
-
-
 
      useEffect(() => {
         const fetchUser = async () => {
