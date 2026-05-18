@@ -4,6 +4,19 @@ import Loading from "../loading/Loading";
 import Categories from "../home/Categories";
 import FilterPanel from "../filters/FilterPanel";
 
+const FALLBACK_PLACES = [
+  { place_id: "fb1", name: "Sunny Beachfront Villa", category: "Beach", image: "https://picsum.photos/seed/beach1/800/600", city: { name: "Malibu" }, priceByNight: 250, numberOfRooms: 3, maxGuests: 6, Review: [{ rating: 5 }, { rating: 4 }] },
+  { place_id: "fb2", name: "Cozy Mountain Cabin", category: "Mountain", image: "https://picsum.photos/seed/mountain1/800/600", city: { name: "Aspen" }, priceByNight: 150, numberOfRooms: 2, maxGuests: 4, Review: [{ rating: 4 }, { rating: 4 }] },
+  { place_id: "fb3", name: "Downtown Penthouse", category: "City", image: "https://picsum.photos/seed/city1/800/600", city: { name: "New York" }, priceByNight: 400, numberOfRooms: 2, maxGuests: 4, Review: [{ rating: 5 }] },
+  { place_id: "fb4", name: "Rustic Farmhouse", category: "Countryside", image: "https://picsum.photos/seed/country1/800/600", city: { name: "Tuscany" }, priceByNight: 120, numberOfRooms: 4, maxGuests: 8, Review: [{ rating: 5 }, { rating: 5 }] },
+  { place_id: "fb5", name: "Luxury Villa", category: "Luxury", image: "https://picsum.photos/seed/luxury1/800/600", city: { name: "Ibiza" }, priceByNight: 800, numberOfRooms: 5, maxGuests: 10, Review: [{ rating: 5 }, { rating: 5 }] },
+  { place_id: "fb6", name: "Tropical Treehouse", category: "Tropical", image: "https://picsum.photos/seed/tropical1/800/600", city: { name: "Bali" }, priceByNight: 90, numberOfRooms: 1, maxGuests: 2, Review: [{ rating: 4 }, { rating: 5 }] },
+  { place_id: "fb7", name: "Lakefront Lodge", category: "Lakefront", image: "https://picsum.photos/seed/lake1/800/600", city: { name: "Lake Tahoe" }, priceByNight: 200, numberOfRooms: 3, maxGuests: 6, Review: [{ rating: 4 }] },
+  { place_id: "fb8", name: "Ski-in/Ski-out Chalet", category: "Ski", image: "https://picsum.photos/seed/ski1/800/600", city: { name: "Chamonix" }, priceByNight: 300, numberOfRooms: 4, maxGuests: 8, Review: [{ rating: 5 }] },
+  { place_id: "fb9", name: "Desert Oasis Resort", category: "Desert", image: "https://picsum.photos/seed/desert1/800/600", city: { name: "Dubai" }, priceByNight: 500, numberOfRooms: 2, maxGuests: 4, Review: [{ rating: 4 }, { rating: 3 }] },
+  { place_id: "fb10", name: "Historic Castle", category: "Historic", image: "https://picsum.photos/seed/historic1/800/600", city: { name: "Edinburgh" }, priceByNight: 350, numberOfRooms: 5, maxGuests: 10, Review: [{ rating: 5 }, { rating: 5 }] }
+];
+
 const Places = ({ searchValue = "" }) => {
   const [places, setPlaces] = useState(null);
   const [activeCategory, setActiveCategory] = useState("All");
@@ -16,8 +29,21 @@ const Places = ({ searchValue = "" }) => {
 
   useEffect(() => {
     fetch(`/api/places/`)
-      .then((res) => res.json())
-      .then((data) => setPlaces(data));
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.length > 0) {
+          setPlaces(data);
+        } else {
+          setPlaces(FALLBACK_PLACES);
+        }
+      })
+      .catch((err) => {
+        console.error("Database fetch failed, using fallback places:", err);
+        setPlaces(FALLBACK_PLACES);
+      });
   }, []);
 
   if (!places) {
