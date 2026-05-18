@@ -2,12 +2,15 @@ import Link from "next/link";
 import { useContext, useState, useEffect } from "react";
 import { ThemeContext } from "../context/theme";
 import { BsFillSunFill, BsMoon } from "react-icons/bs";
+import { HiHeart, HiCalendar, HiMenu, HiX } from "react-icons/hi";
 import { FaRegUserCircle } from "react-icons/fa";
 import { useRouter } from "next/router";
 
 const Navbar = () => {
   const [token, setToken] = useState("");
   const [user, setUser] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
   const { theme, toggleTheme } = useContext(ThemeContext);
 
@@ -16,53 +19,157 @@ const Navbar = () => {
     setUser(localStorage.getItem("UserName"));
   }, []);
 
-
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("UserName");
+    localStorage.removeItem("favorites");
     setToken(null);
-    router.push("/")
+    router.push("/");
   };
 
   return (
-    <nav>
-      <div>
-        <div className="antialiased text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900">
-          <header className="flex items-center justify-between w-full max-w-4xl px-4 py-8 mx-auto">
-            <Link className="text-3xl font-bold text-slate-900 dark:text-slate-200" href={"/"}>
-              AirAl
-            </Link>
-            <div className="flex items-center gap-4">
-              <button
-                id="theme-toggle"
-                type="button"
-                className="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5"
-                onClick={toggleTheme}
-              >
-                {theme === "dark" ? <BsFillSunFill /> : <BsMoon />}
-              </button>
+    <nav
+      className={`w-full sticky top-0 z-30 transition-all duration-300 ${
+        isScrolled
+          ? "bg-white/95 dark:bg-[#1A1A2E]/95 backdrop-blur-md shadow-cartoon"
+          : "bg-white dark:bg-[#1A1A2E]"
+      }`}
+    >
+      <div className="w-full mx-auto px-6 lg:px-12">
+        <div className="flex items-center justify-between h-16">
+          <Link
+            className="text-2xl font-extrabold text-[#2D3436] dark:text-white hover:opacity-80 transition-opacity"
+            href="/"
+          >
+            Air<span className="text-[#FF6B6B]">Al</span>
+          </Link>
 
-              {token ? (
-                <>
-                  <Link href={`/Auth/me`}>
-                    
-                      <FaRegUserCircle />
-                      
-                    
-                  </Link>
-                  <div className="text-gray-500 dark:text-gray-400">{user}</div>
-                  <button onClick={handleLogout} className="px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700">Logout</button>
-                </>
+          <div className="hidden md:flex items-center gap-1">
+            <button
+              id="theme-toggle"
+              type="button"
+              className="p-2.5 rounded-full text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
+              onClick={toggleTheme}
+            >
+              {theme === "dark" ? (
+                <BsFillSunFill className="text-lg text-[#FFE66D]" />
               ) : (
-                <Link href={`/Auth/login/`} className="px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700">
-                   Login
-                  
-                </Link>
+                <BsMoon className="text-lg" />
               )}
-            </div>
-          </header>
+            </button>
+
+            {token ? (
+              <>
+                <Link
+                  href="/favorites"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
+                >
+                  <HiHeart className="text-[#FF6B6B]" />
+                  <span className="hidden lg:inline">Favorites</span>
+                </Link>
+
+                <Link
+                  href="/bookings"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
+                >
+                  <HiCalendar className="text-[#4ECDC4]" />
+                  <span className="hidden lg:inline">Bookings</span>
+                </Link>
+
+                <Link
+                  href="/Auth/me"
+                  className="flex items-center gap-2 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
+                >
+                  <FaRegUserCircle className="text-lg" />
+                  <span className="hidden lg:inline">{user}</span>
+                </Link>
+
+                <button
+                  onClick={handleLogout}
+                  className="ml-1 px-5 py-2 text-sm font-bold text-[#636E72] dark:text-[#B2BEC3] border-2 border-[#E8E8E4] dark:border-[#3D3D5C] rounded-full hover:border-[#FF6B6B] hover:text-[#FF6B6B] transition-all"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/Auth/login/"
+                className="btn-pill px-6 py-2.5 text-sm"
+              >
+                Login
+              </Link>
+            )}
+          </div>
+
+          <button
+            className="md:hidden p-2.5 rounded-full text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <HiX className="text-xl" /> : <HiMenu className="text-xl" />}
+          </button>
         </div>
+
+        {isMenuOpen && (
+          <div className="md:hidden py-4 border-t border-[#E8E8E4] dark:border-[#2D2D4A] animate-fade-in-up space-y-1">
+            <button
+              onClick={toggleTheme}
+              className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
+            >
+              {theme === "dark" ? <BsFillSunFill className="text-[#FFE66D]" /> : <BsMoon />}
+              <span>{theme === "dark" ? "Light mode" : "Dark mode"}</span>
+            </button>
+
+            {token ? (
+              <>
+                <Link
+                  href="/favorites"
+                  className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
+                >
+                  <HiHeart className="text-[#FF6B6B]" />
+                  <span>Favorites</span>
+                </Link>
+
+                <Link
+                  href="/bookings"
+                  className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
+                >
+                  <HiCalendar className="text-[#4ECDC4]" />
+                  <span>Bookings</span>
+                </Link>
+
+                <Link
+                  href="/Auth/me"
+                  className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
+                >
+                  <FaRegUserCircle />
+                  <span>Profile ({user})</span>
+                </Link>
+
+                <button
+                  onClick={handleLogout}
+                  className="w-full mt-2 px-4 py-3 text-sm font-bold text-[#FF6B6B] border-2 border-[#E8E8E4] dark:border-[#3D3D5C] rounded-2xl hover:bg-[#FFF0F0] dark:hover:bg-[#2D1A1A] transition-all text-center"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/Auth/login/"
+                className="block w-full text-center btn-pill py-3 mt-2"
+              >
+                Login
+              </Link>
+            )}
+          </div>
+        )}
       </div>
     </nav>
   );

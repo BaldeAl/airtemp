@@ -1,6 +1,6 @@
 const SubmitButton = ({ text }) => {
     return (
-        <button className="bg-blue-500 text-white rounded-md p-2" type="submit">
+        <button className="btn-pill w-full py-3 mt-2" type="submit">
             {text}
         </button>
     );

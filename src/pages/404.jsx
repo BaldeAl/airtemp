@@ -1,27 +1,24 @@
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import Layout from '../components/Layout'
 
 export default function FourOhFour() {
-    const router = useRouter()
-  return <>
+  return (
     <Layout>
-    <div className="lg:px-24 lg:py-24 md:py-20 md:px-44 px-4 py-24 items-center flex justify-center flex-col-reverse lg:flex-row md:gap-28 gap-16">
-            <div className="xl:pt-24 w-full xl:w-1/2 relative pb-12 lg:pb-0">
-                <div className="relative">
-                    <div className="text-6xl text-center bg-clip-text ">
-                       <h1>Page not found </h1>
-                    </div>
-                    <div>
-                        <img src="https://i.ibb.co/G9DC8S0/404-2.png" />
-                    </div>
-                </div>
-            </div>
-            <div>
-                <img src="https://i.ibb.co/ck1SGFJ/Group.png" />
-            </div>
+      <div className="flex min-h-[calc(100vh-200px)] items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <div className="text-8xl mb-6">🏠</div>
+          <h1 className="text-6xl font-extrabold text-[#2D3436] dark:text-white mb-4">404</h1>
+          <h2 className="text-xl font-bold text-[#636E72] dark:text-[#B2BEC3] mb-3">
+            Oops! Page not found
+          </h2>
+          <p className="text-[#B2BEC3] mb-8">
+            The page you're looking for doesn't exist or has been moved.
+          </p>
+          <Link href="/" className="btn-pill px-8 py-3 text-base">
+            Go Home
+          </Link>
         </div>
-        </Layout>
-
-  </>
+      </div>
+    </Layout>
+  )
 }

@@ -11,7 +11,29 @@ export default async function handle(
     },
     include: {
       city: true,
-      host: true,
+      host: {
+        select: {
+          user_id: true,
+          name: true,
+          avatar: true,
+          bio: true,
+          createdAt: true,
+          Place: { select: { place_id: true } },
+        },
+      },
+      Review: {
+        include: {
+          user: {
+            select: {
+              name: true,
+              avatar: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
     },
   });
   res.json(place);

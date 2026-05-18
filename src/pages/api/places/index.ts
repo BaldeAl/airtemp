@@ -9,6 +9,7 @@ export default async function handle(
     include: {
       city: true,
       host: true,
+      Review: true,
     },
   });
   res.json(places);
