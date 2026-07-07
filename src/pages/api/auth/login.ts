@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { sign } from "jsonwebtoken";
 import prisma from "../../../lib/prisma";
 import { User } from "@prisma/client";
+import { compareSync } from "bcryptjs";
 
 export default async function handle(
   req: NextApiRequest,
@@ -15,7 +16,18 @@ export default async function handle(
     },
   });
 
-  if (!user || user.password !== password) {
+  if (!user) {
+    res.status(401).json({ message: "Invalid credentials" });
+    return;
+  }
+
+  // Support both hashed (bcrypt) and legacy plain-text passwords
+  const isValidPassword =
+    user.password.startsWith("$2") // bcrypt hash prefix
+      ? compareSync(password, user.password)
+      : user.password === password;
+
+  if (!isValidPassword) {
     res.status(401).json({ message: "Invalid credentials" });
     return;
   }
@@ -24,7 +36,7 @@ export default async function handle(
   delete userCopied.password;
 
   res.status(200).json({
-    user,
+    user: userCopied,
     token: sign(userCopied, process.env.JWT_SECRET as string, {
       expiresIn: "1d",
     }),

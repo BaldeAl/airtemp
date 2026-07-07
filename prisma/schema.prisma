@@ -8,19 +8,23 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  user_id   Int        @unique
-  name      String
-  email     String     @unique
-  password  String
-  avatar    String?
-  bio       String?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  Place     Place[]
-  Review    Review[]
-  Favorite  Favorite[]
-  Booking   Booking[]
+  id               String     @id @default(auto()) @map("_id") @db.ObjectId
+  user_id          Int        @unique
+  name             String
+  email            String     @unique
+  password         String
+  avatar           String?
+  bio              String?
+  role             String     @default("USER")
+  address          String?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  Place            Place[]
+  Review           Review[]
+  Favorite         Favorite[]
+  Booking          Booking[]
+  SentMessages     Message[]  @relation("SentMessages")
+  ReceivedMessages Message[]  @relation("ReceivedMessages")
 }
 
 model Place {
@@ -48,6 +52,7 @@ model Place {
   Review   Review[]
   Favorite Favorite[]
   Booking  Booking[]
+  Message  Message[]
 }
 
 model City {
@@ -60,13 +65,15 @@ model City {
 }
 
 model Review {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  review_id Int      @unique
-  rating    Int
-  comment   String
-  userId    Int
-  placeId   Int
-  createdAt DateTime @default(now())
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  review_id   Int       @unique
+  rating      Int
+  comment     String
+  userId      Int
+  placeId     Int
+  hostReply   String?
+  hostReplyAt DateTime?
+  createdAt   DateTime  @default(now())
 
   user  User  @relation(fields: [userId], references: [user_id], onDelete: Cascade)
   place Place @relation(fields: [placeId], references: [place_id], onDelete: Cascade)
@@ -99,4 +106,19 @@ model Booking {
 
   user  User  @relation(fields: [userId], references: [user_id], onDelete: Cascade)
   place Place @relation(fields: [placeId], references: [place_id], onDelete: Cascade)
+}
+
+model Message {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  message_id Int      @unique
+  senderId   Int
+  receiverId Int
+  placeId    Int?
+  content    String
+  read       Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  sender   User   @relation("SentMessages", fields: [senderId], references: [user_id], onDelete: Cascade)
+  receiver User   @relation("ReceivedMessages", fields: [receiverId], references: [user_id], onDelete: Cascade)
+  place    Place? @relation(fields: [placeId], references: [place_id], onDelete: Cascade)
 }

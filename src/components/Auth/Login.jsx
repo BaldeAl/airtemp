@@ -26,6 +26,7 @@ const Login = () => {
         if (response.ok) {
             localStorage.setItem('token', data.token);
             localStorage.setItem('UserName', data.user.name);
+            localStorage.setItem('role', data.user.role);
             router.push("/");
         } else {
             setMessage("Erreur de connexion. Veuillez réessayer.");

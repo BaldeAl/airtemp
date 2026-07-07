@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { HiHeart, HiOutlineHeart } from "react-icons/hi";
 
-const FavoriteButton = ({ placeId, className = "" }) => {
+const FavoriteButton = ({ placeId, className = "", onToggle }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     const favs = JSON.parse(localStorage.getItem("favorites") || "[]");
-    setIsFavorite(favs.includes(placeId));
+    // Ensure consistent number comparison
+    setIsFavorite(favs.map(Number).includes(Number(placeId)));
   }, [placeId]);
 
   const toggleFavorite = async (e) => {
@@ -22,28 +23,46 @@ const FavoriteButton = ({ placeId, className = "" }) => {
     const newState = !isFavorite;
     setIsFavorite(newState);
 
-    const favs = JSON.parse(localStorage.getItem("favorites") || "[]");
+    // Update localStorage with consistent number types
+    const numericPlaceId = Number(placeId);
+    const favs = JSON.parse(localStorage.getItem("favorites") || "[]").map(Number);
     if (newState) {
-      favs.push(placeId);
+      if (!favs.includes(numericPlaceId)) favs.push(numericPlaceId);
     } else {
-      const index = favs.indexOf(placeId);
+      const index = favs.indexOf(numericPlaceId);
       if (index > -1) favs.splice(index, 1);
     }
     localStorage.setItem("favorites", JSON.stringify(favs));
 
     if (token) {
       try {
-        await fetch("/api/favorites", {
+        const res = await fetch("/api/favorites", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ placeId }),
+          body: JSON.stringify({ placeId: numericPlaceId }),
         });
+        // If server returned an error, revert the UI state
+        if (!res.ok) {
+          setIsFavorite(!newState);
+          const revertFavs = JSON.parse(localStorage.getItem("favorites") || "[]").map(Number);
+          if (!newState) {
+            if (!revertFavs.includes(numericPlaceId)) revertFavs.push(numericPlaceId);
+          } else {
+            const idx = revertFavs.indexOf(numericPlaceId);
+            if (idx > -1) revertFavs.splice(idx, 1);
+          }
+          localStorage.setItem("favorites", JSON.stringify(revertFavs));
+        }
       } catch (err) {
         console.error("Failed to sync favorite");
       }
+    }
+
+    if (onToggle) {
+      onToggle(placeId, newState);
     }
   };
 

@@ -22,43 +22,59 @@ export default async function handle(
   }
 
   if (req.method === "GET") {
-    const bookings = await prisma.booking.findMany({
-      where: { userId },
-      include: {
-        place: {
-          include: {
-            city: true,
+    try {
+      const bookings = await prisma.booking.findMany({
+        where: { userId },
+        include: {
+          place: {
+            include: {
+              city: true,
+            },
           },
         },
-      },
-      orderBy: { createdAt: "desc" },
-    });
-    return res.json(bookings);
+        orderBy: { createdAt: "desc" },
+      });
+      return res.json(bookings);
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
   }
 
   if (req.method === "POST") {
     const { placeId, checkIn, checkOut, guests, totalPrice } = req.body;
 
-    const allBookings = await prisma.booking.findMany();
-    const booking = await prisma.booking.create({
-      data: {
-        booking_id: allBookings.length + 1,
-        checkIn: new Date(checkIn),
-        checkOut: new Date(checkOut),
-        guests,
-        totalPrice,
-        status: "confirmed",
-        user: { connect: { user_id: userId } },
-        place: { connect: { place_id: placeId } },
-      },
-      include: {
-        place: {
-          include: { city: true },
-        },
-      },
-    });
+    try {
+      // Generate a unique booking_id using max + 1 to avoid collisions
+      const maxBooking = await prisma.booking.findFirst({
+        orderBy: { booking_id: "desc" },
+        select: { booking_id: true },
+      });
+      const nextBookingId = (maxBooking?.booking_id ?? 0) + 1;
 
-    return res.status(201).json(booking);
+      const booking = await prisma.booking.create({
+        data: {
+          booking_id: nextBookingId,
+          checkIn: new Date(checkIn),
+          checkOut: new Date(checkOut),
+          guests,
+          totalPrice,
+          status: "confirmed",
+          user: { connect: { user_id: userId } },
+          place: { connect: { place_id: placeId } },
+        },
+        include: {
+          place: {
+            include: { city: true },
+          },
+        },
+      });
+
+      return res.status(201).json(booking);
+    } catch (error) {
+      console.error("Error creating booking:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
   }
 
   return res.status(405).json({ message: "Method not allowed" });

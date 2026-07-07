@@ -2,21 +2,50 @@ import Link from "next/link";
 import { useContext, useState, useEffect } from "react";
 import { ThemeContext } from "../context/theme";
 import { BsFillSunFill, BsMoon } from "react-icons/bs";
-import { HiHeart, HiCalendar, HiMenu, HiX } from "react-icons/hi";
+import { HiHeart, HiCalendar, HiMenu, HiX, HiShieldCheck, HiHome, HiClipboardList, HiChat } from "react-icons/hi";
 import { FaRegUserCircle } from "react-icons/fa";
 import { useRouter } from "next/router";
 
 const Navbar = () => {
   const [token, setToken] = useState("");
   const [user, setUser] = useState(null);
+  const [role, setRole] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
   const { theme, toggleTheme } = useContext(ThemeContext);
 
   useEffect(() => {
-    setToken(localStorage.getItem("token"));
+    const storedToken = localStorage.getItem("token");
+    setToken(storedToken);
     setUser(localStorage.getItem("UserName"));
+    setRole(localStorage.getItem("role"));
+
+    // Auto-refresh role from server to handle promote_admin or role changes
+    if (storedToken) {
+      fetch("/api/auth/me", {
+        headers: { Authorization: `Bearer ${storedToken}` },
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed");
+          return res.json();
+        })
+        .then((data) => {
+          if (data.user && data.user.role) {
+            const serverRole = data.user.role;
+            const localRole = localStorage.getItem("role");
+            if (serverRole !== localRole) {
+              localStorage.setItem("role", serverRole);
+              setRole(serverRole);
+            }
+            if (data.user.name) {
+              localStorage.setItem("UserName", data.user.name);
+              setUser(data.user.name);
+            }
+          }
+        })
+        .catch(() => {});
+    }
   }, []);
 
   useEffect(() => {
@@ -31,7 +60,9 @@ const Navbar = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("UserName");
     localStorage.removeItem("favorites");
+    localStorage.removeItem("role");
     setToken(null);
+    setRole(null);
     router.push("/");
   };
 
@@ -68,6 +99,35 @@ const Navbar = () => {
 
             {token ? (
               <>
+                {role === "ADMIN" && (
+                  <Link
+                    href="/admin"
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
+                  >
+                    <HiShieldCheck className="text-[#6C5CE7]" />
+                    <span className="hidden lg:inline">Admin Dashboard</span>
+                  </Link>
+                )}
+
+                {(role === "HOST" || role === "ADMIN") && (
+                  <>
+                    <Link
+                      href="/host/places"
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
+                    >
+                      <HiHome className="text-[#0984E3]" />
+                      <span className="hidden lg:inline">Manage Places</span>
+                    </Link>
+                    <Link
+                      href="/host/bookings"
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
+                    >
+                      <HiClipboardList className="text-[#00B894]" />
+                      <span className="hidden lg:inline">Guest Bookings</span>
+                    </Link>
+                  </>
+                )}
+
                 <Link
                   href="/favorites"
                   className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
@@ -82,6 +142,14 @@ const Navbar = () => {
                 >
                   <HiCalendar className="text-[#4ECDC4]" />
                   <span className="hidden lg:inline">Bookings</span>
+                </Link>
+
+                <Link
+                  href="/messages"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
+                >
+                  <HiChat className="text-[#A29BFE]" />
+                  <span className="hidden lg:inline">Messages</span>
                 </Link>
 
                 <Link
@@ -101,7 +169,7 @@ const Navbar = () => {
               </>
             ) : (
               <Link
-                href="/Auth/login/"
+                href="/Auth/login"
                 className="btn-pill px-6 py-2.5 text-sm"
               >
                 Login
@@ -129,6 +197,35 @@ const Navbar = () => {
 
             {token ? (
               <>
+                {role === "ADMIN" && (
+                  <Link
+                    href="/admin"
+                    className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
+                  >
+                    <HiShieldCheck className="text-[#6C5CE7]" />
+                    <span>Admin Dashboard</span>
+                  </Link>
+                )}
+
+                {(role === "HOST" || role === "ADMIN") && (
+                  <>
+                    <Link
+                      href="/host/places"
+                      className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
+                    >
+                      <HiHome className="text-[#0984E3]" />
+                      <span>Manage Places</span>
+                    </Link>
+                    <Link
+                      href="/host/bookings"
+                      className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
+                    >
+                      <HiClipboardList className="text-[#00B894]" />
+                      <span>Guest Bookings</span>
+                    </Link>
+                  </>
+                )}
+
                 <Link
                   href="/favorites"
                   className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
@@ -143,6 +240,14 @@ const Navbar = () => {
                 >
                   <HiCalendar className="text-[#4ECDC4]" />
                   <span>Bookings</span>
+                </Link>
+
+                <Link
+                  href="/messages"
+                  className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
+                >
+                  <HiChat className="text-[#A29BFE]" />
+                  <span>Messages</span>
                 </Link>
 
                 <Link
@@ -162,7 +267,7 @@ const Navbar = () => {
               </>
             ) : (
               <Link
-                href="/Auth/login/"
+                href="/Auth/login"
                 className="block w-full text-center btn-pill py-3 mt-2"
               >
                 Login

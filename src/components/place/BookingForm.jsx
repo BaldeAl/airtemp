@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 
 const BookingForm = ({ place }) => {
@@ -8,6 +8,8 @@ const BookingForm = ({ place }) => {
   const [guests, setGuests] = useState(1);
   const [isBooked, setIsBooked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [availabilityStatus, setAvailabilityStatus] = useState(null); // null | 'checking' | 'available' | 'unavailable'
+  const [availabilityMessage, setAvailabilityMessage] = useState("");
 
   const nights =
     checkIn && checkOut
@@ -23,6 +25,43 @@ const BookingForm = ({ place }) => {
   const serviceFee = Math.round(place.priceByNight * nights * 0.12);
   const totalPrice = place.priceByNight * nights + serviceFee;
 
+  // Check availability when dates change
+  const checkAvailability = useCallback(async () => {
+    if (!checkIn || !checkOut) {
+      setAvailabilityStatus(null);
+      return;
+    }
+
+    if (new Date(checkOut) <= new Date(checkIn)) {
+      setAvailabilityStatus(null);
+      return;
+    }
+
+    setAvailabilityStatus("checking");
+    try {
+      const res = await fetch("/api/bookings/check-availability", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          placeId: place.place_id,
+          checkIn,
+          checkOut,
+        }),
+      });
+
+      const data = await res.json();
+      setAvailabilityStatus(data.available ? "available" : "unavailable");
+      setAvailabilityMessage(data.message);
+    } catch {
+      setAvailabilityStatus(null);
+    }
+  }, [checkIn, checkOut, place.place_id]);
+
+  useEffect(() => {
+    const timer = setTimeout(checkAvailability, 300);
+    return () => clearTimeout(timer);
+  }, [checkAvailability]);
+
   const handleBook = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
@@ -30,6 +69,8 @@ const BookingForm = ({ place }) => {
       router.push("/Auth/login");
       return;
     }
+
+    if (availabilityStatus === "unavailable") return;
 
     setIsLoading(true);
     try {
@@ -112,6 +153,36 @@ const BookingForm = ({ place }) => {
           </div>
         </div>
 
+        {/* Availability indicator */}
+        {availabilityStatus && (
+          <div
+            className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold animate-fade-in ${
+              availabilityStatus === "checking"
+                ? "bg-[#FFE66D]/15 text-[#C9A227]"
+                : availabilityStatus === "available"
+                ? "bg-[#55EFC4]/15 text-[#00B894]"
+                : "bg-[#FF6B6B]/10 text-[#FF6B6B]"
+            }`}
+          >
+            {availabilityStatus === "checking" ? (
+              <>
+                <span className="inline-block w-3 h-3 border-2 border-[#C9A227] border-t-transparent rounded-full animate-spin" />
+                Checking availability...
+              </>
+            ) : availabilityStatus === "available" ? (
+              <>
+                <span>✓</span>
+                {availabilityMessage}
+              </>
+            ) : (
+              <>
+                <span>✕</span>
+                {availabilityMessage}
+              </>
+            )}
+          </div>
+        )}
+
         <div>
           <label className="text-xs font-bold text-[#636E72] dark:text-[#B2BEC3] mb-1.5 block uppercase tracking-wide">Guests</label>
           <select
@@ -129,14 +200,14 @@ const BookingForm = ({ place }) => {
 
         <button
           type="submit"
-          disabled={isLoading || !checkIn || !checkOut}
+          disabled={isLoading || !checkIn || !checkOut || availabilityStatus === "unavailable" || availabilityStatus === "checking"}
           className="w-full btn-pill py-3.5 text-base"
         >
-          {isLoading ? "Booking..." : "Reserve"}
+          {isLoading ? "Booking..." : availabilityStatus === "unavailable" ? "Not Available" : "Reserve"}
         </button>
       </form>
 
-      {nights > 0 && (
+      {nights > 0 && availabilityStatus !== "unavailable" && (
         <div className="mt-5 space-y-3 pt-5 border-t border-[#E8E8E4] dark:border-[#3D3D5C] animate-fade-in">
           <div className="flex justify-between text-sm">
             <span className="text-[#636E72] dark:text-[#B2BEC3]">

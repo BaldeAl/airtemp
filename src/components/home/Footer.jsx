@@ -1,15 +1,76 @@
 import Link from "next/link";
+import { HiHeart, HiCode } from "react-icons/hi";
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-white dark:bg-[#1A1A2E] border-t border-[#E8E8E4] dark:border-[#2D2D4A] mt-auto">
-      <div className="w-full mx-auto px-6 lg:px-12 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <Link href="/" className="text-xl font-extrabold text-[#2D3436] dark:text-white">
-          Air<span className="text-[#FF6B6B]">Al</span>
-        </Link>
-        <p className="text-sm text-[#B2BEC3]">
-          © {new Date().getFullYear()} AirAl · Made with ❤️
+    <footer className="w-full bg-[#FAFAF8] dark:bg-[#1A1A2E] border-t border-[#E8E8E4] dark:border-[#2D2D4A] mt-auto">
+      <div className="w-full max-w-7xl mx-auto px-6 lg:px-12 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="space-y-4">
+          <Link href="/" className="text-2xl font-extrabold text-[#2D3436] dark:text-white">
+            Air<span className="text-[#FF6B6B]">Al</span>
+          </Link>
+          <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] leading-relaxed max-w-xs">
+            Discover amazing places to stay, anywhere in the world. Your next adventure starts here.
+          </p>
+        </div>
+        
+        <div>
+          <h3 className="text-sm font-extrabold text-[#2D3436] dark:text-white uppercase tracking-wider mb-4">Support</h3>
+          <ul className="space-y-3">
+            <li>
+              <Link href="/help" className="text-sm text-[#636E72] dark:text-[#B2BEC3] hover:text-[#4ECDC4] dark:hover:text-[#4ECDC4] transition-colors">Help Center</Link>
+            </li>
+            <li>
+              <Link href="/safety" className="text-sm text-[#636E72] dark:text-[#B2BEC3] hover:text-[#4ECDC4] dark:hover:text-[#4ECDC4] transition-colors">Safety information</Link>
+            </li>
+            <li>
+              <Link href="/cancellation" className="text-sm text-[#636E72] dark:text-[#B2BEC3] hover:text-[#4ECDC4] dark:hover:text-[#4ECDC4] transition-colors">Cancellation options</Link>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-extrabold text-[#2D3436] dark:text-white uppercase tracking-wider mb-4">Hosting</h3>
+          <ul className="space-y-3">
+            <li>
+              <Link href="/host/places" className="text-sm text-[#636E72] dark:text-[#B2BEC3] hover:text-[#FF6B6B] dark:hover:text-[#FF6B6B] transition-colors">Manage listings</Link>
+            </li>
+            <li>
+              <Link href="/host/bookings" className="text-sm text-[#636E72] dark:text-[#B2BEC3] hover:text-[#FF6B6B] dark:hover:text-[#FF6B6B] transition-colors">Guest bookings</Link>
+            </li>
+            <li>
+              <Link href="/host/resources" className="text-sm text-[#636E72] dark:text-[#B2BEC3] hover:text-[#FF6B6B] dark:hover:text-[#FF6B6B] transition-colors">Hosting resources</Link>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-extrabold text-[#2D3436] dark:text-white uppercase tracking-wider mb-4">AirAl</h3>
+          <ul className="space-y-3">
+            <li>
+              <Link href="/about" className="text-sm text-[#636E72] dark:text-[#B2BEC3] hover:text-[#A29BFE] dark:hover:text-[#A29BFE] transition-colors">About us</Link>
+            </li>
+            <li>
+              <Link href="/careers" className="text-sm text-[#636E72] dark:text-[#B2BEC3] hover:text-[#A29BFE] dark:hover:text-[#A29BFE] transition-colors">Careers</Link>
+            </li>
+            <li>
+              <Link href="/investors" className="text-sm text-[#636E72] dark:text-[#B2BEC3] hover:text-[#A29BFE] dark:hover:text-[#A29BFE] transition-colors">Investors</Link>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="w-full max-w-7xl mx-auto px-6 lg:px-12 py-6 border-t border-[#E8E8E4] dark:border-[#2D2D4A] flex flex-col md:flex-row items-center justify-between gap-4">
+        <p className="text-sm text-[#B2BEC3] flex items-center gap-1">
+          © {new Date().getFullYear()} AirAl, Inc. All rights reserved.
         </p>
+        <div className="flex items-center gap-4 text-sm text-[#636E72] dark:text-[#B2BEC3]">
+          <Link href="/terms" className="hover:text-[#2D3436] dark:hover:text-white transition-colors">Terms</Link>
+          <span className="text-[#E8E8E4] dark:text-[#2D2D4A]">·</span>
+          <Link href="/privacy" className="hover:text-[#2D3436] dark:hover:text-white transition-colors">Privacy</Link>
+          <span className="text-[#E8E8E4] dark:text-[#2D2D4A]">·</span>
+          <Link href="/sitemap" className="hover:text-[#2D3436] dark:hover:text-white transition-colors">Sitemap</Link>
+        </div>
       </div>
     </footer>
   );

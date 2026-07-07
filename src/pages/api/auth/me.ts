@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { sign, verify } from "jsonwebtoken";
 import prisma from "../../../lib/prisma";
 import { User } from "@prisma/client";
+import { hashSync } from "bcryptjs";
 
 export default async function handle(
   req: NextApiRequest,
@@ -34,19 +35,37 @@ export default async function handle(
         },
       });
 
-      res.status(200).json({ user });
+      // Fetch stats
+      const [bookingsCount, reviewsCount, favoritesCount] = await Promise.all([
+        prisma.booking.count({ where: { userId } }),
+        prisma.review.count({ where: { userId } }),
+        prisma.favorite.count({ where: { userId } }),
+      ]);
+
+      res.status(200).json({
+        user,
+        stats: {
+          bookings: bookingsCount,
+          reviews: reviewsCount,
+          favorites: favoritesCount,
+        },
+      });
       return;
     } else if (req.method === "PUT") {
-      const { name, email, password } = req.body;
+      const { name, email, password, bio, avatar } = req.body;
+
+      const updateData: Record<string, unknown> = {};
+      if (name !== undefined) updateData.name = name;
+      if (email !== undefined) updateData.email = email;
+      if (password !== undefined && password.trim() !== "") updateData.password = hashSync(password, 10);
+      if (bio !== undefined) updateData.bio = bio;
+      if (avatar !== undefined) updateData.avatar = avatar;
+
       const user = await prisma.user.update({
         where: {
           user_id: userId,
         },
-        data: {
-          name,
-          email,
-          password,
-        },
+        data: updateData,
       });
 
       const userCopied = { ...user } as Partial<User>;

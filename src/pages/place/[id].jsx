@@ -3,17 +3,14 @@ import PlaceDetails from "../../components/place/PlaceDetails";
 
 
 
-const place = () => {
+const Place = () => {
     return ( 
         <>
-     <Layout>
-
-
-            <PlaceDetails/>
-        
-    </Layout>
+            <Layout>
+                <PlaceDetails/>
+            </Layout>
         </>
      );
 }
  
-export default place;
+export default Place;

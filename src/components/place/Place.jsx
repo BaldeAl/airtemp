@@ -5,7 +5,7 @@ import StarRating from "./StarRating";
 import FavoriteButton from "./FavoriteButton";
 import { HiLocationMarker } from "react-icons/hi";
 
-const Place = ({ place, index = 0 }) => {
+const Place = ({ place, index = 0, onFavoriteToggle }) => {
   if (!place) {
     return <Loading />;
   }
@@ -50,7 +50,7 @@ const Place = ({ place, index = 0 }) => {
           </div>
 
           <div className="absolute top-3 right-3">
-            <FavoriteButton placeId={place.place_id} />
+            <FavoriteButton placeId={place.place_id} onToggle={onFavoriteToggle} />
           </div>
 
           <div className="absolute bottom-3 left-3">

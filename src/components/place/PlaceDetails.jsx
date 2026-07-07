@@ -6,12 +6,12 @@ import Loading from "../loading/Loading";
 import ImageGallery from "./ImageGallery";
 import PlaceInfo from "./PlaceInfo";
 import Amenities from "./Amenities";
-import ReviewsList from "./ReviewsList";
+import ReviewSection from "./ReviewSection";
 import BookingForm from "./BookingForm";
 import HostCard from "./HostCard";
 import StarRating from "./StarRating";
 import FavoriteButton from "./FavoriteButton";
-import { HiLocationMarker, HiArrowLeft, HiShare } from "react-icons/hi";
+import { HiLocationMarker, HiArrowLeft, HiShare, HiChat } from "react-icons/hi";
 import Link from "next/link";
 
 const PlaceDetails = () => {
@@ -110,13 +110,20 @@ const PlaceDetails = () => {
             </div>
 
             <div className="border-t border-[#E8E8E4] dark:border-[#2D2D4A]">
-              <ReviewsList reviews={place.Review} />
+              <ReviewSection placeId={place.place_id} hostId={place.hostId} reviews={place.Review} />
             </div>
           </div>
 
           <div className="w-full lg:w-[380px] flex-shrink-0 space-y-6">
             <BookingForm place={place} />
             <HostCard host={place.host} />
+            <Link
+              href={`/messages?contact=${place.host?.user_id}&placeId=${place.place_id}`}
+              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-full font-bold text-[#636E72] dark:text-[#B2BEC3] border-2 border-[#E8E8E4] dark:border-[#3D3D5C] hover:border-[#A29BFE] hover:text-[#A29BFE] transition-all text-sm"
+            >
+              <HiChat className="text-lg" />
+              Contact Host
+            </Link>
           </div>
         </div>
       </div>
