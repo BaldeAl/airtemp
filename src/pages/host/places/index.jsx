@@ -16,7 +16,7 @@ export default function HostPlaces() {
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role');
 
-    if (!token || (role !== 'HOST' && role !== 'ADMIN')) {
+    if (!token || (role !== 'HOST' && role !== 'HOST_PENDING' && role !== 'ADMIN')) {
       router.push('/');
       return;
     }
@@ -63,6 +63,8 @@ export default function HostPlaces() {
     );
   }
 
+  const role = typeof window !== 'undefined' ? localStorage.getItem('role') : null;
+
   return (
     <>
       <Head>
@@ -86,35 +88,51 @@ export default function HostPlaces() {
                 {places.length} {places.length === 1 ? 'place' : 'places'} listed
               </p>
             </div>
-            <Link
-              href="/host/places/new"
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-white bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] hover:opacity-90 transition-all shadow-lg text-sm"
-            >
-              <HiPlus className="text-lg" />
-              Add New Place
-            </Link>
+            {role !== 'HOST_PENDING' && (
+              <Link
+                href="/host/places/new"
+                className="flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-white bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] hover:opacity-90 transition-all shadow-lg text-sm"
+              >
+                <HiPlus className="text-lg" />
+                Add New Place
+              </Link>
+            )}
           </div>
 
           {/* Content */}
           {places.length === 0 ? (
-            <div className="card-cartoon p-12 flex flex-col items-center justify-center text-center animate-fade-in">
-              <div className="w-20 h-20 mb-4 rounded-full bg-[#0984E3]/10 flex items-center justify-center">
-                <HiHome className="text-4xl text-[#0984E3]" />
+            role === 'HOST_PENDING' ? (
+              <div className="card-cartoon p-12 flex flex-col items-center justify-center text-center animate-fade-in border-2 border-[#FFE66D]/50 bg-[#FFE66D]/5">
+                <div className="w-20 h-20 mb-4 rounded-full bg-[#FFE66D]/20 flex items-center justify-center">
+                  <HiStar className="text-4xl text-[#C9A227]" />
+                </div>
+                <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-2">
+                  Account Under Review
+                </h3>
+                <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] mb-6 max-w-sm">
+                  Your host application is currently being reviewed by an administrator. Once validated, you will be able to add places and start hosting!
+                </p>
               </div>
-              <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-2">
-                No Places Yet
-              </h3>
-              <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] mb-6 max-w-sm">
-                Start hosting by adding your first place. Share your property with travelers around the world!
-              </p>
-              <Link
-                href="/host/places/new"
-                className="flex items-center gap-2 px-6 py-3 rounded-full font-bold text-white bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] hover:opacity-90 transition-all text-sm"
-              >
-                <HiPlus className="text-lg" />
-                Add Your First Place
-              </Link>
-            </div>
+            ) : (
+              <div className="card-cartoon p-12 flex flex-col items-center justify-center text-center animate-fade-in">
+                <div className="w-20 h-20 mb-4 rounded-full bg-[#0984E3]/10 flex items-center justify-center">
+                  <HiHome className="text-4xl text-[#0984E3]" />
+                </div>
+                <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-2">
+                  No Places Yet
+                </h3>
+                <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] mb-6 max-w-sm">
+                  Start hosting by adding your first place. Share your property with travelers around the world!
+                </p>
+                <Link
+                  href="/host/places/new"
+                  className="flex items-center gap-2 px-6 py-3 rounded-full font-bold text-white bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] hover:opacity-90 transition-all text-sm"
+                >
+                  <HiPlus className="text-lg" />
+                  Add Your First Place
+                </Link>
+              </div>
+            )
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {places.map((place, i) => (

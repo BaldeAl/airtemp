@@ -32,7 +32,7 @@ export default async function handle(
       select: { role: true },
     });
 
-    if (!user || (user.role !== "HOST" && user.role !== "ADMIN")) {
+    if (!user || (user.role !== "HOST" && user.role !== "HOST_PENDING" && user.role !== "ADMIN")) {
       return res.status(403).json({ message: "Only hosts can access this" });
     }
 

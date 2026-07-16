@@ -60,6 +60,7 @@ export default async function handle(
         numberOfBathrooms,
         maxGuests,
         priceByNight,
+        totalUnits,
         cityName
       } = req.body;
 
@@ -96,6 +97,7 @@ export default async function handle(
           numberOfBathrooms: numberOfBathrooms !== undefined ? Number(numberOfBathrooms) : existingPlace.numberOfBathrooms,
           maxGuests: maxGuests !== undefined ? Number(maxGuests) : existingPlace.maxGuests,
           priceByNight: priceByNight !== undefined ? Number(priceByNight) : existingPlace.priceByNight,
+          totalUnits: totalUnits !== undefined ? Number(totalUnits) : existingPlace.totalUnits,
           city: { connect: { city_id: city.city_id } }
         },
       });

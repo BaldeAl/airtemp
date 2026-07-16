@@ -109,7 +109,7 @@ const Navbar = () => {
                   </Link>
                 )}
 
-                {(role === "HOST" || role === "ADMIN") && (
+                {(role === "HOST" || role === "HOST_PENDING" || role === "ADMIN") && (
                   <>
                     <Link
                       href="/host/places"
@@ -207,7 +207,7 @@ const Navbar = () => {
                   </Link>
                 )}
 
-                {(role === "HOST" || role === "ADMIN") && (
+                {(role === "HOST" || role === "HOST_PENDING" || role === "ADMIN") && (
                   <>
                     <Link
                       href="/host/places"

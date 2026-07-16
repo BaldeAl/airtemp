@@ -4,11 +4,19 @@ import { sign } from "jsonwebtoken";
 import { User } from "@prisma/client";
 import { hashSync } from "bcryptjs";
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "10mb",
+    },
+  },
+};
+
 export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { email, password, name, isHost, address } = req.body;
+  const { email, password, name, isHost, address, phone, phoneCountryCode, identityDocument } = req.body;
 
   try {
     const existingUser = await prisma.user.findUnique({
@@ -39,6 +47,9 @@ export default async function handle(
         name,
         role: isHost ? "HOST_PENDING" : "USER",
         address: isHost ? address : null,
+        phone: isHost ? phone : null,
+        phoneCountryCode: isHost ? phoneCountryCode : null,
+        identityDocument: isHost ? identityDocument : null,
       },
     });
 

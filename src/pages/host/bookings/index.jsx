@@ -17,7 +17,10 @@ import {
   HiClipboardList,
   HiUser,
   HiMail,
+  HiCheck,
+  HiX,
 } from 'react-icons/hi';
+import { toast } from 'react-toastify';
 
 const statusConfig = {
   confirmed: {
@@ -57,12 +60,14 @@ function getNights(checkIn, checkOut) {
 
 export default function HostBookingsPage() {
   const [data, setData] = useState(null);
-  const [activeTab, setActiveTab] = useState('upcoming');
+  const [activeTab, setActiveTab] = useState('pending');
+  const [actionLoading, setActionLoading] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (!token) {
+    const role = localStorage.getItem('role');
+    if (!token || (role !== 'HOST' && role !== 'HOST_PENDING' && role !== 'ADMIN')) {
       router.push('/Auth/login');
       return;
     }
@@ -82,6 +87,45 @@ export default function HostBookingsPage() {
       .catch((err) => console.error(err));
   }, [router]);
 
+  const handleBookingAction = async (bookingId, action) => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    setActionLoading(`${bookingId}-${action}`);
+    try {
+      const res = await fetch('/api/host/bookings/approve', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ bookingId, action }),
+      });
+
+      if (res.ok) {
+        const result = await res.json();
+        // Update local state
+        setData((prev) => ({
+          ...prev,
+          bookings: prev.bookings.map((b) =>
+            b.booking_id === bookingId
+              ? { ...b, status: action === 'approve' ? 'confirmed' : 'cancelled' }
+              : b
+          ),
+        }));
+        toast.success(action === 'approve' ? 'Réservation confirmée !' : 'Réservation refusée.');
+      } else {
+        const err = await res.json();
+        toast.error(err.message || 'Action failed');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('An error occurred.');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   if (!data) {
     return (
       <Layout>
@@ -93,6 +137,7 @@ export default function HostBookingsPage() {
   const now = new Date();
   const bookings = data.bookings || [];
 
+  const pending = bookings.filter((b) => b.status === 'pending');
   const upcoming = bookings.filter(
     (b) => new Date(b.checkOut) >= now && b.status === 'confirmed'
   );
@@ -102,13 +147,22 @@ export default function HostBookingsPage() {
   const cancelled = bookings.filter((b) => b.status === 'cancelled');
 
   const tabs = [
+    { key: 'pending', label: 'Pending', count: pending.length, color: '#FDCB6E' },
     { key: 'upcoming', label: 'Upcoming', count: upcoming.length, color: '#4ECDC4' },
     { key: 'past', label: 'Past', count: past.length, color: '#B2BEC3' },
     { key: 'cancelled', label: 'Cancelled', count: cancelled.length, color: '#FF6B6B' },
   ];
 
   const activeBookings =
-    activeTab === 'upcoming' ? upcoming : activeTab === 'past' ? past : cancelled;
+    activeTab === 'pending'
+      ? pending
+      : activeTab === 'upcoming'
+      ? upcoming
+      : activeTab === 'past'
+      ? past
+      : cancelled;
+
+  const role = typeof window !== 'undefined' ? localStorage.getItem('role') : null;
 
   return (
     <>
@@ -134,7 +188,16 @@ export default function HostBookingsPage() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-3 gap-4 mb-8 animate-fade-in-up stagger-1">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8 animate-fade-in-up stagger-1">
+            <div className="card-cartoon p-4 sm:p-5 text-center">
+              <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-[#FDCB6E]/10 flex items-center justify-center">
+                <HiClock className="text-lg text-[#C9A227]" />
+              </div>
+              <div className="text-xl sm:text-2xl font-extrabold text-[#2D3436] dark:text-white">
+                {pending.length}
+              </div>
+              <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">Pending</div>
+            </div>
             <div className="card-cartoon p-4 sm:p-5 text-center">
               <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-[#0984E3]/10 flex items-center justify-center">
                 <HiClipboardList className="text-lg text-[#0984E3]" />
@@ -165,7 +228,7 @@ export default function HostBookingsPage() {
           </div>
 
           {/* Tabs */}
-          <div className="flex items-center gap-2 mb-6 animate-fade-in-up stagger-2">
+          <div className="flex items-center gap-2 mb-6 animate-fade-in-up stagger-2 flex-wrap">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
@@ -192,23 +255,45 @@ export default function HostBookingsPage() {
 
           {/* Booking List */}
           {activeBookings.length === 0 ? (
-            <div className="card-cartoon p-12 flex flex-col items-center justify-center text-center animate-fade-in">
-              <div className="w-20 h-20 mb-4 rounded-full bg-[#4ECDC4]/10 flex items-center justify-center">
-                <HiCalendar className="text-4xl text-[#4ECDC4]/40" />
+            role === 'HOST_PENDING' ? (
+              <div className="card-cartoon p-12 flex flex-col items-center justify-center text-center animate-fade-in border-2 border-[#FFE66D]/50 bg-[#FFE66D]/5">
+                <div className="w-20 h-20 mb-4 rounded-full bg-[#FFE66D]/20 flex items-center justify-center">
+                  <HiClock className="text-4xl text-[#C9A227]" />
+                </div>
+                <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-2">
+                  Account Under Review
+                </h3>
+                <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] max-w-sm">
+                  Your host application is currently being reviewed by an administrator. Once validated, you will receive bookings here.
+                </p>
               </div>
-              <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-2">
-                No {activeTab} bookings
-              </h3>
-              <p className="text-sm text-[#636E72] dark:text-[#B2BEC3]">
-                {activeTab === 'upcoming'
-                  ? 'When guests book your places, upcoming bookings will appear here.'
-                  : `No ${activeTab} bookings to show.`}
-              </p>
-            </div>
+            ) : (
+              <div className="card-cartoon p-12 flex flex-col items-center justify-center text-center animate-fade-in">
+                <div className="w-20 h-20 mb-4 rounded-full bg-[#4ECDC4]/10 flex items-center justify-center">
+                  <HiCalendar className="text-4xl text-[#4ECDC4]/40" />
+                </div>
+                <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-2">
+                  No {activeTab} bookings
+                </h3>
+                <p className="text-sm text-[#636E72] dark:text-[#B2BEC3]">
+                  {activeTab === 'pending'
+                    ? 'No reservations waiting for your approval.'
+                    : activeTab === 'upcoming'
+                    ? 'When guests book your places, upcoming bookings will appear here.'
+                    : `No ${activeTab} bookings to show.`}
+                </p>
+              </div>
+            )
           ) : (
             <div className="space-y-4">
               {activeBookings.map((booking, i) => (
-                <HostBookingCard key={booking.id || booking.booking_id} booking={booking} index={i} />
+                <HostBookingCard
+                  key={booking.id || booking.booking_id}
+                  booking={booking}
+                  index={i}
+                  onAction={handleBookingAction}
+                  actionLoading={actionLoading}
+                />
               ))}
             </div>
           )}
@@ -218,12 +303,13 @@ export default function HostBookingsPage() {
   );
 }
 
-function HostBookingCard({ booking, index = 0 }) {
+function HostBookingCard({ booking, index = 0, onAction, actionLoading }) {
   const place = booking.place;
   const guest = booking.user;
   const nights = getNights(booking.checkIn, booking.checkOut);
   const status = statusConfig[booking.status] || statusConfig.confirmed;
   const StatusIcon = status.icon;
+  const isPending = booking.status === 'pending';
 
   return (
     <div
@@ -303,10 +389,34 @@ function HostBookingCard({ booking, index = 0 }) {
           </span>
         </div>
 
-        {/* Price */}
+        {/* Price + Actions */}
         <div className="flex items-center justify-between mt-4 pt-3 border-t border-[#E8E8E4] dark:border-[#2D2D4A]">
-          <span className="text-sm text-[#636E72] dark:text-[#B2BEC3]">Total earned</span>
           <span className="text-lg font-extrabold text-[#00B894]">{booking.totalPrice}€</span>
+
+          {isPending && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => onAction(booking.booking_id, 'reject')}
+                disabled={actionLoading === `${booking.booking_id}-reject`}
+                className="flex items-center gap-1 px-4 py-2 rounded-full text-xs font-bold text-[#FF6B6B] border-2 border-[#FF6B6B]/20 hover:bg-[#FF6B6B]/10 transition-all disabled:opacity-60"
+              >
+                <HiX className="text-sm" />
+                {actionLoading === `${booking.booking_id}-reject` ? 'Refusing...' : 'Refuse'}
+              </button>
+              <button
+                onClick={() => onAction(booking.booking_id, 'approve')}
+                disabled={actionLoading === `${booking.booking_id}-approve`}
+                className="flex items-center gap-1 px-4 py-2 rounded-full text-xs font-bold text-white bg-[#00B894] hover:bg-[#00A080] transition-all disabled:opacity-60"
+              >
+                <HiCheck className="text-sm" />
+                {actionLoading === `${booking.booking_id}-approve` ? 'Approving...' : 'Accept'}
+              </button>
+            </div>
+          )}
+
+          {!isPending && (
+            <span className="text-sm text-[#636E72] dark:text-[#B2BEC3]">Total earned</span>
+          )}
         </div>
       </div>
     </div>

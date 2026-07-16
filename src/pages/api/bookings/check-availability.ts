@@ -27,11 +27,21 @@ export default async function handle(
   }
 
   try {
-    // Find any confirmed booking that overlaps with the requested dates
-    const conflictingBooking = await prisma.booking.findFirst({
+    // Get the place to know how many units are available
+    const place = await prisma.place.findUnique({
+      where: { place_id: placeId },
+      select: { totalUnits: true },
+    });
+
+    if (!place) {
+      return res.status(404).json({ message: "Place not found" });
+    }
+
+    // Count overlapping bookings that are confirmed or pending
+    const overlappingCount = await prisma.booking.count({
       where: {
         placeId,
-        status: "confirmed",
+        status: { in: ["confirmed", "pending"] },
         AND: [
           { checkIn: { lt: checkOutDate } },
           { checkOut: { gt: checkInDate } },
@@ -39,11 +49,15 @@ export default async function handle(
       },
     });
 
+    const available = overlappingCount < place.totalUnits;
+
     return res.status(200).json({
-      available: !conflictingBooking,
-      message: conflictingBooking
-        ? "These dates are not available. Another booking exists for this period."
-        : "Dates are available!",
+      available,
+      message: available
+        ? "Dates are available!"
+        : "These dates are not available. All units are booked for this period.",
+      availableUnits: place.totalUnits - overlappingCount,
+      totalUnits: place.totalUnits,
     });
   } catch (error) {
     console.error("Error checking availability:", error);

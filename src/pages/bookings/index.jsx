@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import Loading from '../../components/loading/Loading';
 import Link from 'next/link';
 import Image from 'next/image';
-import { HiCalendar, HiLocationMarker, HiUsers, HiClock, HiCheckCircle, HiXCircle, HiX } from 'react-icons/hi';
+import { HiCalendar, HiLocationMarker, HiUsers, HiClock, HiCheckCircle, HiXCircle, HiX, HiExclamation } from 'react-icons/hi';
 
 const statusConfig = {
   confirmed: {
@@ -43,11 +43,26 @@ function getNights(checkIn, checkOut) {
   );
 }
 
+function getHoursUntilCheckIn(checkIn) {
+  return (new Date(checkIn).getTime() - new Date().getTime()) / (1000 * 60 * 60);
+}
+
+function canCancel(booking) {
+  // Pending bookings can always be cancelled
+  if (booking.status === 'pending') return true;
+  // Confirmed bookings can only be cancelled 72h+ before check-in
+  if (booking.status === 'confirmed') {
+    return getHoursUntilCheckIn(booking.checkIn) >= 72;
+  }
+  return false;
+}
+
 export default function BookingsPage() {
   const [bookings, setBookings] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [cancellingId, setCancellingId] = useState(null);
   const [showCancelModal, setShowCancelModal] = useState(null);
+  const [cancelError, setCancelError] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -76,6 +91,7 @@ export default function BookingsPage() {
     if (!token) return;
 
     setCancellingId(bookingId);
+    setCancelError('');
     try {
       const res = await fetch('/api/bookings/cancel', {
         method: 'POST',
@@ -87,18 +103,21 @@ export default function BookingsPage() {
       });
 
       if (res.ok) {
-        const updated = await res.json();
         setBookings((prev) =>
           prev.map((b) =>
             b.booking_id === bookingId ? { ...b, status: 'cancelled' } : b
           )
         );
+        setShowCancelModal(null);
+      } else {
+        const data = await res.json();
+        setCancelError(data.message || 'Cancel failed');
       }
     } catch (err) {
       console.error('Cancel failed:', err);
+      setCancelError('Network error');
     } finally {
       setCancellingId(null);
-      setShowCancelModal(null);
     }
   };
 
@@ -139,9 +158,9 @@ export default function BookingsPage() {
     );
   }
 
-  // Separate bookings into upcoming and past
+  // Separate bookings into categories
   const now = new Date();
-  const upcoming = bookings.filter((b) => new Date(b.checkOut) >= now && b.status !== 'cancelled');
+  const upcoming = bookings.filter((b) => new Date(b.checkOut) >= now && (b.status === 'confirmed' || b.status === 'pending'));
   const past = bookings.filter((b) => new Date(b.checkOut) < now && b.status !== 'cancelled');
   const cancelled = bookings.filter((b) => b.status === 'cancelled');
 
@@ -187,7 +206,7 @@ export default function BookingsPage() {
             </div>
           ) : (
             <div className="space-y-10">
-              {/* Upcoming Bookings */}
+              {/* Upcoming Bookings (confirmed + pending) */}
               {upcoming.length > 0 && (
                 <section>
                   <h2 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-4 flex items-center gap-2 animate-fade-in-up">
@@ -200,7 +219,7 @@ export default function BookingsPage() {
                         key={booking.id || booking.booking_id}
                         booking={booking}
                         index={i}
-                        onCancel={() => setShowCancelModal(booking.booking_id)}
+                        onCancel={canCancel(booking) ? () => setShowCancelModal(booking.booking_id) : null}
                       />
                     ))}
                   </div>
@@ -251,12 +270,20 @@ export default function BookingsPage() {
                 <h3 className="text-xl font-extrabold text-[#2D3436] dark:text-white mb-2">
                   Cancel Booking?
                 </h3>
-                <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] mb-6">
+                <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] mb-4">
                   Are you sure you want to cancel this booking? This action cannot be undone.
                 </p>
+
+                {cancelError && (
+                  <div className="flex items-center gap-2 p-3 rounded-2xl bg-[#FF6B6B]/10 text-[#FF6B6B] mb-4">
+                    <HiExclamation className="w-5 h-5 flex-shrink-0" />
+                    <span className="text-xs font-bold">{cancelError}</span>
+                  </div>
+                )}
+
                 <div className="flex gap-3">
                   <button
-                    onClick={() => setShowCancelModal(null)}
+                    onClick={() => { setShowCancelModal(null); setCancelError(''); }}
                     className="flex-1 py-3 rounded-full font-bold text-[#636E72] dark:text-[#B2BEC3] border-2 border-[#E8E8E4] dark:border-[#3D3D5C] hover:border-[#2D3436] dark:hover:border-white hover:text-[#2D3436] dark:hover:text-white transition-all text-sm"
                   >
                     Keep Booking
@@ -283,7 +310,11 @@ function BookingCard({ booking, index = 0, isPast = false, onCancel }) {
   const nights = getNights(booking.checkIn, booking.checkOut);
   const status = statusConfig[booking.status] || statusConfig.confirmed;
   const StatusIcon = status.icon;
-  const isUpcoming = !isPast && booking.status === 'confirmed';
+  const isActive = !isPast && (booking.status === 'confirmed' || booking.status === 'pending');
+
+  // Show 72h warning for confirmed bookings close to check-in
+  const hoursLeft = getHoursUntilCheckIn(booking.checkIn);
+  const showNoCancel = booking.status === 'confirmed' && hoursLeft < 72 && hoursLeft > 0 && !isPast;
 
   return (
     <div
@@ -348,13 +379,21 @@ function BookingCard({ booking, index = 0, isPast = false, onCancel }) {
                 {nights} night{nights !== 1 ? 's' : ''}
               </span>
             </div>
+
+            {/* 72h warning */}
+            {showNoCancel && (
+              <div className="flex items-center gap-1.5 mt-3 px-3 py-2 rounded-xl bg-[#FFE66D]/15 text-[#C9A227] text-xs font-bold">
+                <HiExclamation className="text-sm flex-shrink-0" />
+                Annulation impossible : moins de 72h avant le check-in
+              </div>
+            )}
           </div>
 
           <div className="flex items-center justify-between mt-4 pt-3 border-t border-[#E8E8E4] dark:border-[#2D2D4A]">
             <span className="text-sm text-[#636E72] dark:text-[#B2BEC3]">Total price</span>
             <div className="flex items-center gap-3">
               <span className="text-lg font-extrabold text-[#FF6B6B]">{booking.totalPrice}€</span>
-              {isUpcoming && onCancel && (
+              {isActive && onCancel && (
                 <button
                   onClick={(e) => {
                     e.preventDefault();

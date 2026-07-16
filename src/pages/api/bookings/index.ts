@@ -59,7 +59,7 @@ export default async function handle(
           checkOut: new Date(checkOut),
           guests,
           totalPrice,
-          status: "confirmed",
+          status: "pending",
           user: { connect: { user_id: userId } },
           place: { connect: { place_id: placeId } },
         },

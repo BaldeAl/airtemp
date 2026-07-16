@@ -31,8 +31,20 @@ export default async function handle(
       return res.status(403).json({ message: "Forbidden: Admins only" });
     }
 
-    const pendingHosts = await prisma.user.findMany({
-      where: { role: "HOST_PENDING" },
+    const hosts = await prisma.user.findMany({
+      where: {
+        OR: [
+          {
+            role: {
+              in: ["HOST_PENDING", "HOST"],
+            },
+          },
+          {
+            role: "USER",
+            identityDocument: { not: null },
+          },
+        ],
+      },
       orderBy: { createdAt: "desc" },
       select: {
         id: true,
@@ -40,11 +52,15 @@ export default async function handle(
         name: true,
         email: true,
         address: true,
+        phone: true,
+        phoneCountryCode: true,
+        identityDocument: true,
+        role: true,
         createdAt: true,
       },
     });
 
-    return res.status(200).json(pendingHosts);
+    return res.status(200).json(hosts);
   } catch (error) {
     console.error("Error fetching pending hosts:", error);
     return res.status(500).json({ message: "Internal server error" });

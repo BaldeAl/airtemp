@@ -397,7 +397,7 @@ export default function ProfilePage() {
                 </Link>
               )}
 
-              {(user.role === 'HOST' || user.role === 'ADMIN') && (
+              {(user.role === 'HOST' || user.role === 'HOST_PENDING' || user.role === 'ADMIN') && (
                 <Link
                   href="/host/places"
                   className="flex items-center gap-3 p-3 rounded-2xl hover:bg-[#F0F0EC] dark:hover:bg-[#2D2D4A] transition-all"

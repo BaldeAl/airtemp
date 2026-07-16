@@ -17,6 +17,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
   const [maxGuests, setMaxGuests] = useState(initialData.maxGuests || '');
   const [numberOfRooms, setNumberOfRooms] = useState(initialData.numberOfRooms || '');
   const [numberOfBathrooms, setNumberOfBathrooms] = useState(initialData.numberOfBathrooms || '');
+  const [totalUnits, setTotalUnits] = useState(initialData.totalUnits || 1);
   const [cityName, setCityName] = useState(initialData.city?.name || initialData.cityName || '');
 
   // Images: 1 main + up to 4 additional = 5 max
@@ -77,6 +78,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
       numberOfBathrooms: Number(numberOfBathrooms) || 0,
       maxGuests: Number(maxGuests) || 1,
       priceByNight: Number(priceByNight) || 0,
+      totalUnits: Number(totalUnits) || 1,
       cityName,
     };
 
@@ -170,7 +172,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
       </div>
 
       {/* Numbers Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
         <div>
           <label className={labelClass}>Price / Night (€) *</label>
           <input
@@ -216,6 +218,19 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
             placeholder="1"
             className={inputClass}
           />
+        </div>
+        <div>
+          <label className={labelClass}>Locaux dispo *</label>
+          <input
+            type="number"
+            value={totalUnits}
+            onChange={(e) => setTotalUnits(e.target.value)}
+            required
+            min="1"
+            placeholder="1"
+            className={inputClass}
+          />
+          <p className="text-xs text-[#B2BEC3] mt-1">Nombre de logements identiques</p>
         </div>
       </div>
 

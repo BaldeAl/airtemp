@@ -103,12 +103,18 @@ const BookingForm = ({ place }) => {
     return (
       <div className="card-cartoon p-6 sticky top-28">
         <div className="text-center py-6">
-          <div className="text-5xl mb-4">🎉</div>
-          <h3 className="text-xl font-extrabold text-[#2D3436] dark:text-white mb-2">Booking Confirmed!</h3>
+          <div className="text-5xl mb-4">⏳</div>
+          <h3 className="text-xl font-extrabold text-[#2D3436] dark:text-white mb-2">Reservation Pending!</h3>
           <p className="text-[#636E72] dark:text-[#B2BEC3] text-sm mb-2">
             {nights} night{nights !== 1 ? "s" : ""} at {place.name}
           </p>
-          <p className="text-lg font-extrabold text-[#FF6B6B] mb-6">{totalPrice}€ total</p>
+          <p className="text-lg font-extrabold text-[#FF6B6B] mb-4">{totalPrice}€ total</p>
+          <div className="flex items-start gap-2 p-3 rounded-2xl bg-[#FFE66D]/15 text-[#C9A227] mb-6">
+            <span className="text-sm">ℹ️</span>
+            <span className="text-xs font-semibold leading-relaxed text-left">
+              Votre réservation est en attente de validation par le gérant. Vous serez notifié dès qu&apos;elle sera confirmée.
+            </span>
+          </div>
           <button
             onClick={() => router.push("/bookings")}
             className="btn-pill w-full py-3"

@@ -12,17 +12,18 @@ export default async function handle(
   }
 
   let userId: number;
+  let callingUser: any;
   try {
     const decoded = verify(token, process.env.JWT_SECRET as string) as {
       user_id: number;
     };
     userId = decoded.user_id;
 
-    const callingUser = await prisma.user.findUnique({
+    callingUser = await prisma.user.findUnique({
       where: { user_id: userId },
     });
 
-    if (!callingUser || (callingUser.role !== "HOST" && callingUser.role !== "ADMIN")) {
+    if (!callingUser || (callingUser.role !== "HOST" && callingUser.role !== "HOST_PENDING" && callingUser.role !== "ADMIN")) {
       return res.status(403).json({ message: "Forbidden: Hosts only" });
     }
   } catch {
@@ -47,6 +48,9 @@ export default async function handle(
   }
 
   if (req.method === "POST") {
+    if (callingUser?.role === "HOST_PENDING") {
+      return res.status(403).json({ message: "Forbidden: Account pending validation" });
+    }
     try {
       const {
         name,
@@ -59,6 +63,7 @@ export default async function handle(
         numberOfBathrooms,
         maxGuests,
         priceByNight,
+        totalUnits,
         latitude,
         longitude,
         cityName
@@ -106,6 +111,7 @@ export default async function handle(
           numberOfBathrooms: Number(numberOfBathrooms) || 0,
           maxGuests: Number(maxGuests) || 1,
           priceByNight: Number(priceByNight) || 0,
+          totalUnits: Number(totalUnits) || 1,
           latitude: latitude ? Number(latitude) : null,
           longitude: longitude ? Number(longitude) : null,
           host: { connect: { user_id: userId } },

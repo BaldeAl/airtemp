@@ -46,11 +46,27 @@ export default async function handle(
         .json({ message: "You can only cancel your own bookings" });
     }
 
-    if (booking.status !== "confirmed") {
+    if (booking.status !== "confirmed" && booking.status !== "pending") {
       return res
         .status(400)
-        .json({ message: "Only confirmed bookings can be cancelled" });
+        .json({ message: "Only confirmed or pending bookings can be cancelled" });
     }
+
+    // For confirmed bookings, enforce the 72h rule
+    if (booking.status === "confirmed") {
+      const now = new Date();
+      const checkInDate = new Date(booking.checkIn);
+      const hoursUntilCheckIn = (checkInDate.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+      if (hoursUntilCheckIn < 72) {
+        return res.status(400).json({
+          message: "Confirmed bookings can only be cancelled at least 72 hours before check-in.",
+          hoursUntilCheckIn: Math.round(hoursUntilCheckIn),
+        });
+      }
+    }
+
+    // Pending bookings can be cancelled freely (no 72h rule)
 
     const updatedBooking = await prisma.booking.update({
       where: { booking_id: bookingId },
