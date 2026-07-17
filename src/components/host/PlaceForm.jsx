@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { HiPhotograph, HiPlus, HiX } from 'react-icons/hi';
+import { useTranslation } from '../../lib/i18n/LanguageContext';
 
 const CATEGORIES = ['City', 'Beach', 'Mountain', 'Countryside', 'Lake', 'Tropical', 'Desert', 'Arctic', 'Island'];
 const AMENITIES_LIST = ['WiFi', 'Pool', 'Parking', 'Kitchen', 'Air Conditioning', 'Heating', 'TV', 'Washer', 'Dryer', 'Gym', 'Hot Tub', 'BBQ', 'Balcony', 'Garden', 'Elevator', 'Pet Friendly'];
@@ -9,6 +10,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { t } = useTranslation();
 
   const [name, setName] = useState(initialData.name || '');
   const [description, setDescription] = useState(initialData.description || '');
@@ -62,7 +64,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
 
     const token = localStorage.getItem('token');
     if (!token) {
-      setError('You must be logged in.');
+      setError(t('place_form.errorNotLoggedIn'));
       setLoading(false);
       return;
     }
@@ -100,11 +102,11 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
         router.push('/host/places');
       } else {
         const data = await res.json();
-        setError(data.message || 'An error occurred.');
+        setError(data.message || t('auth.networkError'));
       }
     } catch (err) {
       console.error(err);
-      setError('Network error. Please try again.');
+      setError(t('auth.networkError'));
     } finally {
       setLoading(false);
     }
@@ -118,26 +120,26 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Name */}
       <div>
-        <label className={labelClass}>Place Name *</label>
+        <label className={labelClass}>{t('place_form.placeName')} *</label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
-          placeholder="Cozy Downtown Apartment"
+          placeholder={t('place_form.placeNamePlaceholder')}
           className={inputClass}
         />
       </div>
 
       {/* Description */}
       <div>
-        <label className={labelClass}>Description *</label>
+        <label className={labelClass}>{t('place_form.description')} *</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
           rows={4}
-          placeholder="A beautiful place with stunning views..."
+          placeholder={t('place_form.descriptionPlaceholder')}
           className={`${inputClass} resize-none`}
         />
       </div>
@@ -145,7 +147,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
       {/* Category + City */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className={labelClass}>Category</label>
+          <label className={labelClass}>{t('place_form.category')}</label>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
@@ -153,19 +155,19 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
           >
             {CATEGORIES.map((cat) => (
               <option key={cat} value={cat}>
-                {cat}
+                {t(`place_form.categories.${cat}`) || cat}
               </option>
             ))}
           </select>
         </div>
         <div>
-          <label className={labelClass}>City *</label>
+          <label className={labelClass}>{t('place_form.city')} *</label>
           <input
             type="text"
             value={cityName}
             onChange={(e) => setCityName(e.target.value)}
             required
-            placeholder="Paris"
+            placeholder={t('place_form.cityPlaceholder')}
             className={inputClass}
           />
         </div>
@@ -174,7 +176,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
       {/* Numbers Row */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
         <div>
-          <label className={labelClass}>Price / Night (€) *</label>
+          <label className={labelClass}>{t('place_form.pricePerNight')} *</label>
           <input
             type="number"
             value={priceByNight}
@@ -186,7 +188,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
           />
         </div>
         <div>
-          <label className={labelClass}>Max Guests *</label>
+          <label className={labelClass}>{t('place_form.maxGuests')} *</label>
           <input
             type="number"
             value={maxGuests}
@@ -198,7 +200,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
           />
         </div>
         <div>
-          <label className={labelClass}>Rooms</label>
+          <label className={labelClass}>{t('place_form.rooms')}</label>
           <input
             type="number"
             value={numberOfRooms}
@@ -209,7 +211,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
           />
         </div>
         <div>
-          <label className={labelClass}>Bathrooms</label>
+          <label className={labelClass}>{t('place_form.bathrooms')}</label>
           <input
             type="number"
             value={numberOfBathrooms}
@@ -220,7 +222,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
           />
         </div>
         <div>
-          <label className={labelClass}>Locaux dispo *</label>
+          <label className={labelClass}>{t('place_form.availableUnits')} *</label>
           <input
             type="number"
             value={totalUnits}
@@ -230,7 +232,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
             placeholder="1"
             className={inputClass}
           />
-          <p className="text-xs text-[#B2BEC3] mt-1">Nombre de logements identiques</p>
+          <p className="text-xs text-[#B2BEC3] mt-1">{t('place_form.unitsDesc')}</p>
         </div>
       </div>
 
@@ -238,7 +240,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
       <div>
         <label className={labelClass}>
           <HiPhotograph className="inline mr-1.5 text-[#6C5CE7]" />
-          Main Image URL *
+          {t('place_form.mainImageUrl')} *
         </label>
         <input
           type="url"
@@ -259,7 +261,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
       <div>
         <label className={labelClass}>
           <HiPhotograph className="inline mr-1.5 text-[#0984E3]" />
-          Additional Images ({additionalImages.length}/4)
+          {t('place_form.additionalImages')} ({additionalImages.length}/4)
         </label>
         <div className="space-y-3">
           {additionalImages.map((img, index) => (
@@ -268,7 +270,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
                 type="url"
                 value={img}
                 onChange={(e) => updateImageField(index, e.target.value)}
-                placeholder={`Image URL ${index + 2}`}
+                placeholder={`${t('place_form.imageUrlPlaceholder')} ${index + 2}`}
                 className={`${inputClass} flex-1`}
               />
               <button
@@ -287,7 +289,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
               className="flex items-center gap-2 px-4 py-2.5 rounded-full border-2 border-dashed border-[#B2BEC3] dark:border-[#3D3D5C] text-sm font-bold text-[#636E72] dark:text-[#B2BEC3] hover:border-[#4ECDC4] hover:text-[#4ECDC4] transition-all"
             >
               <HiPlus className="text-lg" />
-              Add Image
+              {t('place_form.addImage')}
             </button>
           )}
         </div>
@@ -295,7 +297,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
 
       {/* Amenities */}
       <div>
-        <label className={labelClass}>Amenities</label>
+        <label className={labelClass}>{t('place_form.amenities')}</label>
         <div className="flex flex-wrap gap-2">
           {AMENITIES_LIST.map((amenity) => (
             <button
@@ -308,7 +310,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
                   : 'border-[#E8E8E4] dark:border-[#3D3D5C] text-[#636E72] dark:text-[#B2BEC3] hover:border-[#4ECDC4]'
               }`}
             >
-              {amenity}
+              {t(`amenities.${amenity.replace(/\s+/g, '')}`) || amenity}
             </button>
           ))}
         </div>
@@ -329,11 +331,11 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
       >
         {loading
           ? isEdit
-            ? 'Saving changes...'
-            : 'Creating place...'
+            ? t('place_form.savingChanges')
+            : t('place_form.creatingPlace')
           : isEdit
-          ? 'Save Changes'
-          : 'Create Place'}
+          ? t('profile.saveChanges')
+          : t('place_form.createPlace')}
       </button>
     </form>
   );

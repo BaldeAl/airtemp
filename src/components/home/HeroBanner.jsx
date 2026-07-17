@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { BsSearch } from "react-icons/bs";
+import { useTranslation } from "../../lib/i18n/LanguageContext";
 
 const HeroBanner = ({ onSearch }) => {
   const [searchValue, setSearchValue] = useState("");
+  const { t } = useTranslation();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -20,12 +22,12 @@ const HeroBanner = ({ onSearch }) => {
         </div>
 
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#2D3436] dark:text-white mb-4 animate-fade-in-up stagger-1 leading-tight">
-          Find your next{" "}
-          <span className="text-[#FF6B6B]">perfect stay</span>
+          {t("hero.title1")}{" "}
+          <span className="text-[#FF6B6B]">{t("hero.title2")}</span>
         </h1>
 
         <p className="text-base sm:text-lg text-[#636E72] dark:text-[#B2BEC3] mb-8 sm:mb-10 animate-fade-in-up stagger-2 max-w-xl mx-auto px-4">
-          Explore unique homes and experiences in amazing destinations around the globe
+          {t("hero.subtitle")}
         </p>
 
         <form onSubmit={handleSearch} className="animate-fade-in-up stagger-3 px-2">
@@ -33,7 +35,7 @@ const HeroBanner = ({ onSearch }) => {
             <BsSearch className="text-[#B2BEC3] ml-3 sm:ml-4 text-lg flex-shrink-0" />
             <input
               type="text"
-              placeholder="Search by name or city..."
+              placeholder={t("hero.searchPlaceholder")}
               value={searchValue}
               onChange={(e) => {
                 setSearchValue(e.target.value);
@@ -45,7 +47,7 @@ const HeroBanner = ({ onSearch }) => {
               type="submit"
               className="btn-pill px-4 sm:px-6 py-2.5 text-sm flex-shrink-0"
             >
-              Search
+              {t("hero.search")}
             </button>
           </div>
         </form>
@@ -53,17 +55,17 @@ const HeroBanner = ({ onSearch }) => {
         <div className="flex items-center justify-center gap-6 sm:gap-8 mt-10 sm:mt-12 animate-fade-in-up stagger-4">
           <div className="text-center">
             <div className="text-xl sm:text-2xl font-extrabold text-[#2D3436] dark:text-white">100+</div>
-            <div className="text-xs sm:text-sm text-[#B2BEC3] font-medium">Properties</div>
+            <div className="text-xs sm:text-sm text-[#B2BEC3] font-medium">{t("hero.properties")}</div>
           </div>
           <div className="w-px h-8 bg-[#E8E8E4] dark:bg-[#3D3D5C]" />
           <div className="text-center">
             <div className="text-xl sm:text-2xl font-extrabold text-[#2D3436] dark:text-white">50+</div>
-            <div className="text-xs sm:text-sm text-[#B2BEC3] font-medium">Cities</div>
+            <div className="text-xs sm:text-sm text-[#B2BEC3] font-medium">{t("hero.cities")}</div>
           </div>
           <div className="w-px h-8 bg-[#E8E8E4] dark:bg-[#3D3D5C]" />
           <div className="text-center">
             <div className="text-xl sm:text-2xl font-extrabold text-[#FF6B6B]">4.8</div>
-            <div className="text-xs sm:text-sm text-[#B2BEC3] font-medium">Avg Rating</div>
+            <div className="text-xs sm:text-sm text-[#B2BEC3] font-medium">{t("hero.avgRating")}</div>
           </div>
         </div>
       </div>

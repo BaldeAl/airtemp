@@ -4,12 +4,14 @@ import { useState } from "react";
 import { RiErrorWarningFill } from "react-icons/ri";
 import InputField from "../form/InputField";
 import SubmitButton from "../form/ButtonSubmit";
+import { useTranslation } from "../../lib/i18n/LanguageContext";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
     const router = useRouter();
+    const { t } = useTranslation();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -29,7 +31,7 @@ const Login = () => {
             localStorage.setItem('role', data.user.role);
             router.push("/");
         } else {
-            setMessage("Erreur de connexion. Veuillez réessayer.");
+            setMessage(t("auth.loginFailed"));
         }
     };
 
@@ -39,13 +41,13 @@ const Login = () => {
                 <div className="card-cartoon p-6 sm:p-8">
                     <div className="text-center mb-6">
                         <span className="text-4xl mb-3 block">👋</span>
-                        <h2 className="text-2xl font-extrabold text-[#2D3436] dark:text-white">Welcome back</h2>
-                        <p className="text-sm text-[#B2BEC3] mt-1">Sign in to your account</p>
+                        <h2 className="text-2xl font-extrabold text-[#2D3436] dark:text-white">{t("auth.welcomeBack")}</h2>
+                        <p className="text-sm text-[#B2BEC3] mt-1">{t("auth.signInToAccount")}</p>
                     </div>
 
                     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                         <InputField
-                            label="Email"
+                            label={t("auth.email")}
                             type="email"
                             value={email}
                             required
@@ -54,7 +56,7 @@ const Login = () => {
                         />
 
                         <InputField
-                            label="Password"
+                            label={t("auth.password")}
                             type="password"
                             value={password}
                             required
@@ -62,7 +64,7 @@ const Login = () => {
                             onChange={(e) => setPassword(e.target.value)}
                         />
 
-                        <SubmitButton text="Login" />
+                        <SubmitButton text={t("auth.loginBtn")} />
                     </form>
 
                     {message && (
@@ -74,7 +76,7 @@ const Login = () => {
 
                     <div className="text-center mt-6">
                         <Link className="text-sm font-bold text-[#4ECDC4] hover:text-[#3BADA6] transition-colors" href="/Auth/register/">
-                            Don't have an account yet? Register
+                            {t("auth.noAccountYet")}
                         </Link>
                     </div>
                 </div>

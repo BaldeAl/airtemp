@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { useContext, useState, useEffect } from "react";
 import { ThemeContext } from "../context/theme";
+import { useTranslation } from "../../lib/i18n/LanguageContext";
 import { BsFillSunFill, BsMoon } from "react-icons/bs";
-import { HiHeart, HiCalendar, HiMenu, HiX, HiShieldCheck, HiHome, HiClipboardList, HiChat } from "react-icons/hi";
+import { HiHeart, HiCalendar, HiMenu, HiX, HiShieldCheck, HiHome, HiClipboardList, HiChat, HiTranslate } from "react-icons/hi";
 import { FaRegUserCircle } from "react-icons/fa";
 import { useRouter } from "next/router";
+import ReactCountryFlag from "react-country-flag";
 
 const Navbar = () => {
   const [token, setToken] = useState("");
@@ -14,6 +16,7 @@ const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
   const { theme, toggleTheme } = useContext(ThemeContext);
+  const { locale, setLocale, t } = useTranslation();
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -66,6 +69,10 @@ const Navbar = () => {
     router.push("/");
   };
 
+  const toggleLocale = () => {
+    setLocale(locale === "en" ? "fr" : "en");
+  };
+
   return (
     <nav
       className={`w-full sticky top-0 z-30 transition-all duration-300 ${
@@ -84,6 +91,19 @@ const Navbar = () => {
           </Link>
 
           <div className="hidden md:flex items-center gap-1">
+            {/* Language Toggle */}
+            <button
+              id="language-toggle"
+              type="button"
+              className="flex items-center gap-1.5 px-2.5 py-2 rounded-full text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all text-xs font-bold"
+              onClick={toggleLocale}
+              title={t("language.switchTo")}
+            >
+              <ReactCountryFlag countryCode={locale === "en" ? "GB" : "FR"} svg style={{ fontSize: '1.2em' }} />
+              <span className="hidden lg:inline">{locale === "en" ? "EN" : "FR"}</span>
+            </button>
+
+            {/* Theme Toggle */}
             <button
               id="theme-toggle"
               type="button"
@@ -105,7 +125,7 @@ const Navbar = () => {
                     className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                   >
                     <HiShieldCheck className="text-[#6C5CE7]" />
-                    <span className="hidden lg:inline">Admin Dashboard</span>
+                    <span className="hidden lg:inline">{t("navbar.adminDashboard")}</span>
                   </Link>
                 )}
 
@@ -116,14 +136,14 @@ const Navbar = () => {
                       className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                     >
                       <HiHome className="text-[#0984E3]" />
-                      <span className="hidden lg:inline">Manage Places</span>
+                      <span className="hidden lg:inline">{t("navbar.managePlaces")}</span>
                     </Link>
                     <Link
                       href="/host/bookings"
                       className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                     >
                       <HiClipboardList className="text-[#00B894]" />
-                      <span className="hidden lg:inline">Guest Bookings</span>
+                      <span className="hidden lg:inline">{t("navbar.guestBookings")}</span>
                     </Link>
                   </>
                 )}
@@ -133,7 +153,7 @@ const Navbar = () => {
                   className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                 >
                   <HiHeart className="text-[#FF6B6B]" />
-                  <span className="hidden lg:inline">Favorites</span>
+                  <span className="hidden lg:inline">{t("navbar.favorites")}</span>
                 </Link>
 
                 <Link
@@ -141,7 +161,7 @@ const Navbar = () => {
                   className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                 >
                   <HiCalendar className="text-[#4ECDC4]" />
-                  <span className="hidden lg:inline">Bookings</span>
+                  <span className="hidden lg:inline">{t("navbar.bookings")}</span>
                 </Link>
 
                 <Link
@@ -149,7 +169,7 @@ const Navbar = () => {
                   className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                 >
                   <HiChat className="text-[#A29BFE]" />
-                  <span className="hidden lg:inline">Messages</span>
+                  <span className="hidden lg:inline">{t("navbar.messages")}</span>
                 </Link>
 
                 <Link
@@ -164,7 +184,7 @@ const Navbar = () => {
                   onClick={handleLogout}
                   className="ml-1 px-5 py-2 text-sm font-bold text-[#636E72] dark:text-[#B2BEC3] border-2 border-[#E8E8E4] dark:border-[#3D3D5C] rounded-full hover:border-[#FF6B6B] hover:text-[#FF6B6B] transition-all"
                 >
-                  Logout
+                  {t("navbar.logout")}
                 </button>
               </>
             ) : (
@@ -172,7 +192,7 @@ const Navbar = () => {
                 href="/Auth/login"
                 className="btn-pill px-6 py-2.5 text-sm"
               >
-                Login
+                {t("navbar.login")}
               </Link>
             )}
           </div>
@@ -187,12 +207,22 @@ const Navbar = () => {
 
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-[#E8E8E4] dark:border-[#2D2D4A] animate-fade-in-up space-y-1">
+            {/* Language Toggle - Mobile */}
+            <button
+              onClick={toggleLocale}
+              className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
+            >
+              <ReactCountryFlag countryCode={locale === "en" ? "GB" : "FR"} svg style={{ fontSize: '1.2em' }} />
+              <span>{t("language.switchTo")}</span>
+            </button>
+
+            {/* Theme Toggle - Mobile */}
             <button
               onClick={toggleTheme}
               className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
             >
               {theme === "dark" ? <BsFillSunFill className="text-[#FFE66D]" /> : <BsMoon />}
-              <span>{theme === "dark" ? "Light mode" : "Dark mode"}</span>
+              <span>{theme === "dark" ? t("navbar.lightMode") : t("navbar.darkMode")}</span>
             </button>
 
             {token ? (
@@ -203,7 +233,7 @@ const Navbar = () => {
                     className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                   >
                     <HiShieldCheck className="text-[#6C5CE7]" />
-                    <span>Admin Dashboard</span>
+                    <span>{t("navbar.adminDashboard")}</span>
                   </Link>
                 )}
 
@@ -214,14 +244,14 @@ const Navbar = () => {
                       className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                     >
                       <HiHome className="text-[#0984E3]" />
-                      <span>Manage Places</span>
+                      <span>{t("navbar.managePlaces")}</span>
                     </Link>
                     <Link
                       href="/host/bookings"
                       className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                     >
                       <HiClipboardList className="text-[#00B894]" />
-                      <span>Guest Bookings</span>
+                      <span>{t("navbar.guestBookings")}</span>
                     </Link>
                   </>
                 )}
@@ -231,7 +261,7 @@ const Navbar = () => {
                   className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                 >
                   <HiHeart className="text-[#FF6B6B]" />
-                  <span>Favorites</span>
+                  <span>{t("navbar.favorites")}</span>
                 </Link>
 
                 <Link
@@ -239,7 +269,7 @@ const Navbar = () => {
                   className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                 >
                   <HiCalendar className="text-[#4ECDC4]" />
-                  <span>Bookings</span>
+                  <span>{t("navbar.bookings")}</span>
                 </Link>
 
                 <Link
@@ -247,7 +277,7 @@ const Navbar = () => {
                   className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                 >
                   <HiChat className="text-[#A29BFE]" />
-                  <span>Messages</span>
+                  <span>{t("navbar.messages")}</span>
                 </Link>
 
                 <Link
@@ -255,14 +285,14 @@ const Navbar = () => {
                   className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                 >
                   <FaRegUserCircle />
-                  <span>Profile ({user})</span>
+                  <span>{t("navbar.profile")} ({user})</span>
                 </Link>
 
                 <button
                   onClick={handleLogout}
                   className="w-full mt-2 px-4 py-3 text-sm font-bold text-[#FF6B6B] border-2 border-[#E8E8E4] dark:border-[#3D3D5C] rounded-2xl hover:bg-[#FFF0F0] dark:hover:bg-[#2D1A1A] transition-all text-center"
                 >
-                  Logout
+                  {t("navbar.logout")}
                 </button>
               </>
             ) : (
@@ -270,7 +300,7 @@ const Navbar = () => {
                 href="/Auth/login"
                 className="block w-full text-center btn-pill py-3 mt-2"
               >
-                Login
+                {t("navbar.login")}
               </Link>
             )}
           </div>

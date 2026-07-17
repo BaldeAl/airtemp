@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Loading from '../../../components/loading/Loading';
+import { useTranslation } from '../../../lib/i18n/LanguageContext';
 import { HiHome, HiPlus, HiPencil, HiStar, HiTrash } from 'react-icons/hi';
 import { toast } from 'react-toastify';
 
@@ -11,6 +12,7 @@ export default function HostPlaces() {
   const [places, setPlaces] = useState(null);
   const [deleting, setDeleting] = useState(null);
   const router = useRouter();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -33,7 +35,7 @@ export default function HostPlaces() {
   }, [router]);
 
   const handleDelete = async (placeId) => {
-    if (!confirm('Are you sure you want to delete this place? This action cannot be undone.')) return;
+    if (!confirm(t('host_places.confirmDelete'))) return;
 
     const token = localStorage.getItem('token');
     setDeleting(placeId);
@@ -44,12 +46,12 @@ export default function HostPlaces() {
       });
       if (res.ok) {
         setPlaces((prev) => prev.filter((p) => p.place_id !== placeId));
-        toast.success('Place deleted successfully');
+        toast.success(t('host_places.deleteSuccess'));
       } else {
-        toast.error('Failed to delete place.');
+        toast.error(t('host_places.deleteFailed'));
       }
     } catch {
-      toast.error('An error occurred.');
+      toast.error(t('auth.networkError'));
     } finally {
       setDeleting(null);
     }
@@ -68,7 +70,7 @@ export default function HostPlaces() {
   return (
     <>
       <Head>
-        <title>Manage My Places – AirAl</title>
+        <title>{t('host_places.manageTitle')} – AirAl</title>
         <meta name="description" content="Manage your hosted places on AirAl" />
       </Head>
       <Layout>
@@ -81,11 +83,11 @@ export default function HostPlaces() {
                   <HiHome className="text-xl text-[#0984E3]" />
                 </div>
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-[#2D3436] dark:text-white">
-                  My Places
+                  {t('host_places.myPlaces')}
                 </h1>
               </div>
               <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] ml-[52px]">
-                {places.length} {places.length === 1 ? 'place' : 'places'} listed
+                {places.length} {places.length === 1 ? t('host_places.placeListed') : t('host_places.placesListed')}
               </p>
             </div>
             {role !== 'HOST_PENDING' && (
@@ -94,7 +96,7 @@ export default function HostPlaces() {
                 className="flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold text-white bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] hover:opacity-90 transition-all shadow-lg text-sm"
               >
                 <HiPlus className="text-lg" />
-                Add New Place
+                {t('host_places.addNewPlace')}
               </Link>
             )}
           </div>
@@ -107,10 +109,10 @@ export default function HostPlaces() {
                   <HiStar className="text-4xl text-[#C9A227]" />
                 </div>
                 <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-2">
-                  Account Under Review
+                  {t('host_places.accountUnderReview')}
                 </h3>
                 <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] mb-6 max-w-sm">
-                  Your host application is currently being reviewed by an administrator. Once validated, you will be able to add places and start hosting!
+                  {t('host_places.reviewDesc')}
                 </p>
               </div>
             ) : (
@@ -119,17 +121,17 @@ export default function HostPlaces() {
                   <HiHome className="text-4xl text-[#0984E3]" />
                 </div>
                 <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-2">
-                  No Places Yet
+                  {t('host_places.noPlacesYet')}
                 </h3>
                 <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] mb-6 max-w-sm">
-                  Start hosting by adding your first place. Share your property with travelers around the world!
+                  {t('host_places.startHostingDesc')}
                 </p>
                 <Link
                   href="/host/places/new"
                   className="flex items-center gap-2 px-6 py-3 rounded-full font-bold text-white bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] hover:opacity-90 transition-all text-sm"
                 >
                   <HiPlus className="text-lg" />
-                  Add Your First Place
+                  {t('host_places.addFirstPlace')}
                 </Link>
               </div>
             )
@@ -179,10 +181,10 @@ export default function HostPlaces() {
 
                     <div className="flex items-center justify-between text-xs text-[#636E72] dark:text-[#B2BEC3] mb-4">
                       <span>
-                        <strong className="text-[#2D3436] dark:text-white">{place.priceByNight}€</strong> / night
+                        <strong className="text-[#2D3436] dark:text-white">{place.priceByNight}€</strong> {t('booking_form.perNight')}
                       </span>
                       <span>
-                        {place.maxGuests} guests · {place.numberOfRooms} rooms
+                        {place.maxGuests} {t('booking_form.guestsPlural')} · {place.numberOfRooms} {t('place_info.bedrooms')}
                       </span>
                     </div>
 
@@ -192,7 +194,7 @@ export default function HostPlaces() {
                         className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-full border-2 border-[#0984E3] text-[#0984E3] text-xs font-bold hover:bg-[#0984E3] hover:text-white transition-all"
                       >
                         <HiPencil />
-                        Edit
+                        {t('profile.edit')}
                       </Link>
                       <button
                         onClick={() => handleDelete(place.place_id)}

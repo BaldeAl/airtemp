@@ -13,11 +13,13 @@ import StarRating from "./StarRating";
 import FavoriteButton from "./FavoriteButton";
 import { HiLocationMarker, HiArrowLeft, HiShare, HiChat } from "react-icons/hi";
 import Link from "next/link";
+import { useTranslation } from "../../lib/i18n/LanguageContext";
 
 const PlaceDetails = () => {
   const router = useRouter();
   const { id } = router.query;
   const [place, setPlace] = useState(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (id) {
@@ -50,12 +52,12 @@ const PlaceDetails = () => {
             className="flex items-center gap-2 text-[#636E72] dark:text-[#B2BEC3] hover:text-[#2D3436] dark:hover:text-white transition-colors font-semibold"
           >
             <HiArrowLeft />
-            <span className="text-sm">Back</span>
+            <span className="text-sm">{t("place.back")}</span>
           </button>
           <div className="flex items-center gap-2">
             <button className="flex items-center gap-2 px-3 py-2 rounded-full hover:bg-[#F0F0EC] dark:hover:bg-[#232340] text-[#636E72] dark:text-[#B2BEC3] hover:text-[#2D3436] dark:hover:text-white transition-all text-sm font-semibold">
               <HiShare />
-              Share
+              {t("place.share")}
             </button>
             <FavoriteButton placeId={place.place_id} className="hover:bg-[#F0F0EC] dark:hover:bg-[#232340] rounded-full" />
           </div>
@@ -99,7 +101,7 @@ const PlaceDetails = () => {
             />
 
             <div className="py-6 border-t border-[#E8E8E4] dark:border-[#2D2D4A] mt-4">
-              <h3 className="text-xl font-extrabold text-[#2D3436] dark:text-white mb-4">About this place</h3>
+              <h3 className="text-xl font-extrabold text-[#2D3436] dark:text-white mb-4">{t("place.aboutThisPlace")}</h3>
               <p className="text-[#636E72] dark:text-[#B2BEC3] leading-relaxed whitespace-pre-line">
                 {place.description}
               </p>
@@ -122,7 +124,7 @@ const PlaceDetails = () => {
               className="flex items-center justify-center gap-2 w-full py-3.5 rounded-full font-bold text-[#636E72] dark:text-[#B2BEC3] border-2 border-[#E8E8E4] dark:border-[#3D3D5C] hover:border-[#A29BFE] hover:text-[#A29BFE] transition-all text-sm"
             >
               <HiChat className="text-lg" />
-              Contact Host
+              {t("place.contactHost")}
             </Link>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import Loading from '../../components/loading/Loading';
 import Link from 'next/link';
+import { useTranslation } from '../../lib/i18n/LanguageContext';
 import {
   HiChat,
   HiArrowLeft,
@@ -12,17 +13,22 @@ import {
   HiDotsVertical,
 } from 'react-icons/hi';
 
-function timeAgo(date) {
+function timeAgo(date, locale) {
   const now = new Date();
   const diff = now.getTime() - new Date(date).getTime();
   const mins = Math.floor(diff / 60000);
-  if (mins < 1) return 'Just now';
-  if (mins < 60) return `${mins}m ago`;
+  
+  // Basic localization mapping for simple strings (you might want to put this in language files later if it gets complex)
+  const isFr = locale === 'fr-FR';
+  
+  if (mins < 1) return isFr ? "À l'instant" : 'Just now';
+  if (mins < 60) return isFr ? `Il y a ${mins}m` : `${mins}m ago`;
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
+  if (hours < 24) return isFr ? `Il y a ${hours}h` : `${hours}h ago`;
   const days = Math.floor(hours / 24);
-  if (days < 7) return `${days}d ago`;
-  return new Date(date).toLocaleDateString('en-US', {
+  if (days < 7) return isFr ? `Il y a ${days}j` : `${days}d ago`;
+  
+  return new Date(date).toLocaleDateString(locale, {
     month: 'short',
     day: 'numeric',
   });
@@ -37,6 +43,7 @@ export default function MessagesPage() {
   const messagesEndRef = useRef(null);
   const router = useRouter();
   const { contact, placeId } = router.query;
+  const { t, dateLocale } = useTranslation();
 
   // Fetch conversations list
   const fetchConversations = useCallback(() => {
@@ -146,7 +153,7 @@ export default function MessagesPage() {
     return (
       <>
         <Head>
-          <title>Messages – AirAl</title>
+          <title>{t('messages.title')} – AirAl</title>
         </Head>
         <Layout>
           <div className="flex min-h-[calc(100vh-200px)] items-center justify-center px-4">
@@ -155,13 +162,13 @@ export default function MessagesPage() {
                 <HiChat className="text-4xl text-[#A29BFE]" />
               </div>
               <h1 className="text-2xl font-extrabold text-[#2D3436] dark:text-white mb-3">
-                Sign in to view messages
+                {t('messages.signInToView')}
               </h1>
               <p className="text-[#636E72] dark:text-[#B2BEC3] mb-8 text-sm">
-                Connect with hosts and guests by signing in.
+                {t('messages.signInDescription')}
               </p>
               <Link href="/Auth/login/" className="btn-pill px-8 py-3 text-base">
-                Login
+                {t('auth.login')}
               </Link>
             </div>
           </div>
@@ -184,7 +191,7 @@ export default function MessagesPage() {
   return (
     <>
       <Head>
-        <title>Messages – AirAl</title>
+        <title>{t('messages.title')} – AirAl</title>
         <meta name="description" content="Your messages on AirAl" />
       </Head>
       <Layout>
@@ -200,7 +207,7 @@ export default function MessagesPage() {
                 <div className="p-4 sm:p-5 border-b border-[#E8E8E4] dark:border-[#2D2D4A]">
                   <h1 className="text-xl font-extrabold text-[#2D3436] dark:text-white flex items-center gap-2">
                     <HiChat className="text-[#A29BFE]" />
-                    Messages
+                    {t('messages.title')}
                   </h1>
                 </div>
 
@@ -211,10 +218,10 @@ export default function MessagesPage() {
                         <HiChat className="text-3xl text-[#A29BFE]/40" />
                       </div>
                       <h3 className="text-base font-extrabold text-[#2D3436] dark:text-white mb-1">
-                        No messages yet
+                        {t('messages.noMessages')}
                       </h3>
                       <p className="text-xs text-[#B2BEC3]">
-                        Start a conversation from a place listing
+                        {t('messages.startConversation')}
                       </p>
                     </div>
                   ) : (
@@ -246,7 +253,7 @@ export default function MessagesPage() {
                                 {conv.otherUser.name}
                               </span>
                               <span className="text-xs text-[#B2BEC3] flex-shrink-0 ml-2">
-                                {timeAgo(conv.lastMessage.createdAt)}
+                                {timeAgo(conv.lastMessage.createdAt, dateLocale)}
                               </span>
                             </div>
                             <div className="flex items-center justify-between mt-0.5">
@@ -296,11 +303,11 @@ export default function MessagesPage() {
                       </div>
                       <div>
                         <h3 className="text-sm font-extrabold text-[#2D3436] dark:text-white">
-                          {activeChat.otherUser?.name || 'User'}
+                          {activeChat.otherUser?.name || t('booking_form.guest')}
                         </h3>
                         {activeChat.otherUser?.role && (
                           <span className="text-xs text-[#B2BEC3]">
-                            {activeChat.otherUser.role === 'HOST' ? 'Host' : 'Guest'}
+                            {activeChat.otherUser.role === 'HOST' ? t('messages.host') : t('messages.guest')}
                           </span>
                         )}
                       </div>
@@ -310,7 +317,7 @@ export default function MessagesPage() {
                     <div className="flex-1 overflow-y-auto p-4 space-y-3">
                       {activeChat.messages.length === 0 && (
                         <div className="text-center py-8 text-sm text-[#B2BEC3]">
-                          Start the conversation! 👋
+                          {t('messages.startChat')} 👋
                         </div>
                       )}
                       {activeChat.messages.map((msg) => {
@@ -333,7 +340,7 @@ export default function MessagesPage() {
                                   isMine ? 'text-white/60' : 'text-[#B2BEC3]'
                                 }`}
                               >
-                                {timeAgo(msg.createdAt)}
+                                {timeAgo(msg.createdAt, dateLocale)}
                               </p>
                             </div>
                           </div>
@@ -351,7 +358,7 @@ export default function MessagesPage() {
                         type="text"
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Type a message..."
+                        placeholder={t('messages.typeMessage')}
                         className="flex-1 px-4 py-3 rounded-full bg-[#F0F0EC] dark:bg-[#1A1A2E] border-2 border-transparent focus:border-[#A29BFE] outline-none text-sm text-[#2D3436] dark:text-white placeholder:text-[#B2BEC3] transition-all"
                       />
                       <button
@@ -369,10 +376,10 @@ export default function MessagesPage() {
                       <HiChat className="text-4xl text-[#A29BFE]/40" />
                     </div>
                     <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-1">
-                      Select a conversation
+                      {t('messages.selectConversation')}
                     </h3>
                     <p className="text-sm text-[#B2BEC3]">
-                      Choose from your existing conversations or contact a host
+                      {t('messages.chooseConversation')}
                     </p>
                   </div>
                 )}

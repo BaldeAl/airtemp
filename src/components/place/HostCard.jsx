@@ -1,11 +1,14 @@
 import Image from "next/image";
 import { HiCalendar, HiHome } from "react-icons/hi";
+import { useTranslation } from "../../lib/i18n/LanguageContext";
 
 const HostCard = ({ host }) => {
+  const { t, dateLocale } = useTranslation();
+
   if (!host) return null;
 
   const memberSince = host.createdAt
-    ? new Date(host.createdAt).toLocaleDateString("en-US", {
+    ? new Date(host.createdAt).toLocaleDateString(dateLocale, {
         month: "long",
         year: "numeric",
       })
@@ -28,7 +31,7 @@ const HostCard = ({ host }) => {
         </div>
         <div>
           <h4 className="text-lg font-extrabold text-[#2D3436] dark:text-white">{host.name}</h4>
-          <p className="text-sm text-[#B2BEC3] font-medium">Superhost</p>
+          <p className="text-sm text-[#B2BEC3] font-medium">{t("host_card.superhost")}</p>
         </div>
       </div>
 
@@ -39,16 +42,16 @@ const HostCard = ({ host }) => {
       <div className="space-y-3 pt-4 border-t border-[#E8E8E4] dark:border-[#3D3D5C]">
         <div className="flex items-center gap-3 text-sm">
           <HiCalendar className="text-[#B2BEC3]" />
-          <span className="text-[#636E72] dark:text-[#B2BEC3]">Member since {memberSince}</span>
+          <span className="text-[#636E72] dark:text-[#B2BEC3]">{t("host_card.memberSince")} {memberSince}</span>
         </div>
         <div className="flex items-center gap-3 text-sm">
           <HiHome className="text-[#B2BEC3]" />
-          <span className="text-[#636E72] dark:text-[#B2BEC3]">{listingsCount} listing{listingsCount !== 1 ? "s" : ""}</span>
+          <span className="text-[#636E72] dark:text-[#B2BEC3]">{listingsCount} {listingsCount !== 1 ? t("host_card.listings") : t("host_card.listing")}</span>
         </div>
       </div>
 
       <button className="w-full mt-6 btn-pill-outline py-3">
-        Contact Host
+        {t("place.contactHost")}
       </button>
     </div>
   );

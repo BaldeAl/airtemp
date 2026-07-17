@@ -5,12 +5,14 @@ import Loading from '../../../../components/loading/Loading';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { HiPencil } from 'react-icons/hi';
+import { useTranslation } from '../../../../lib/i18n/LanguageContext';
 
 export default function EditPlace() {
   const router = useRouter();
   const { id } = router.query;
   const [place, setPlace] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -54,7 +56,7 @@ export default function EditPlace() {
   return (
     <>
       <Head>
-        <title>Edit {place.name} – AirAl</title>
+        <title>{t('host_places.editPlace')} {place.name} – AirAl</title>
         <meta name="description" content={`Edit ${place.name} on AirAl`} />
       </Head>
       <Layout>
@@ -65,11 +67,11 @@ export default function EditPlace() {
                 <HiPencil className="text-xl text-[#0984E3]" />
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-[#2D3436] dark:text-white">
-                Edit Place
+                {t('host_places.editPlace')}
               </h1>
             </div>
             <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] ml-[52px]">
-              Update the details of <strong>{place.name}</strong>
+              {t('host_places.updateDetails')} <strong>{place.name}</strong>
             </p>
           </div>
 

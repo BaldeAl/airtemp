@@ -5,6 +5,7 @@ import { RiErrorWarningFill } from "react-icons/ri";
 import { HiPhone, HiIdentification, HiInformationCircle } from "react-icons/hi";
 import InputField from "../form/InputField";
 import SubmitButton from "../form/ButtonSubmit";
+import { useTranslation } from "../../lib/i18n/LanguageContext";
 
 const COUNTRY_CODES = [
     { code: "+93", country: "Afghanistan", flag: "🇦🇫" },
@@ -219,6 +220,7 @@ const Register = () => {
     const router = useRouter();
     const [message, setMessage] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const { t } = useTranslation();
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -227,13 +229,13 @@ const Register = () => {
         // Validate file type
         const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
         if (!validTypes.includes(file.type)) {
-            setMessage("Format non supporté. Utilisez JPG, PNG, WebP ou PDF.");
+            setMessage(t("auth.unsupportedFormat"));
             return;
         }
 
         // Validate file size (max 5MB)
         if (file.size > 5 * 1024 * 1024) {
-            setMessage("Le fichier est trop volumineux. Taille max : 5 Mo.");
+            setMessage(t("auth.fileTooLarge"));
             return;
         }
 
@@ -277,22 +279,22 @@ const Register = () => {
                 localStorage.setItem('UserName', name);
                 localStorage.setItem('role', data.user.role);
                 if (isHost) {
-                    setMessage("Compte créé avec succès ! Votre profil de gérant est en attente de validation par un administrateur.");
+                    setMessage(t("auth.accountCreatedHost"));
                     setTimeout(() => router.push("/"), 3000);
                 } else {
                     router.push("/");
                 }
             } else {
                 if (response.status === 409) {
-                    setMessage("Email already in use");
+                    setMessage(t("auth.emailInUse"));
                 } else {
-                    setMessage(data.message || "An error occurred");
+                    setMessage(data.message || t("auth.networkError"));
                 }
                 setIsSubmitting(false);
             }
         } catch (err) {
             console.error("Registration error:", err);
-            setMessage("Network error. Please try again.");
+            setMessage(t("auth.networkError"));
             setIsSubmitting(false);
         }
     };
@@ -303,13 +305,16 @@ const Register = () => {
                 <div className="card-cartoon p-6 sm:p-8">
                     <div className="text-center mb-6">
                         <span className="text-4xl mb-3 block">🚀</span>
-                        <h2 className="text-2xl font-extrabold text-[#2D3436] dark:text-white">Create an account</h2>
-                        <p className="text-sm text-[#B2BEC3] mt-1">Join us and start exploring</p>
+                        <h2 className="text-2xl font-extrabold text-[#2D3436] dark:text-white">{t("auth.createAccount")}</h2>
+                        <p className="text-sm text-[#B2BEC3] mt-1">{t("auth.joinUs")}</p>
                     </div>
 
                     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+                        <p className="text-xs text-[#B2BEC3] -mb-1">
+                            {t("auth.requiredFields")} <span className="text-[#FF6B6B] font-bold">*</span> {t("auth.areRequired")}
+                        </p>
                         <InputField
-                            label="Name"
+                            label={t("auth.name")}
                             type="text"
                             value={name}
                             name="name"
@@ -318,7 +323,7 @@ const Register = () => {
                         />
 
                         <InputField
-                            label="Email"
+                            label={t("auth.email")}
                             type="email"
                             value={email}
                             name="email"
@@ -327,7 +332,7 @@ const Register = () => {
                         />
 
                         <InputField
-                            label="Password"
+                            label={t("auth.password")}
                             type="password"
                             value={password}
                             name="password"
@@ -344,7 +349,7 @@ const Register = () => {
                                 className="w-4 h-4 rounded border-[#B2BEC3] text-[#FF6B6B] focus:ring-[#FF6B6B]"
                             />
                             <label htmlFor="isHost" className="text-sm font-bold text-[#636E72] dark:text-[#B2BEC3]">
-                                Register as a Host / Gérant
+                                {t("auth.registerAsHost")}
                             </label>
                         </div>
 
@@ -354,12 +359,12 @@ const Register = () => {
                                 <div className="flex items-start gap-2 p-3 rounded-2xl bg-[#0984E3]/10 text-[#0984E3]">
                                     <HiInformationCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                                     <span className="text-xs font-semibold leading-relaxed">
-                                        Votre compte sera créé mais les fonctionnalités de gérant seront disponibles après validation par un administrateur.
+                                        {t("auth.hostInfoBanner")}
                                     </span>
                                 </div>
 
                                 <InputField
-                                    label="Address"
+                                    label={t("auth.address")}
                                     type="text"
                                     value={address}
                                     name="address"
@@ -371,7 +376,8 @@ const Register = () => {
                                 <div>
                                     <label className="flex items-center gap-1.5 text-sm font-bold text-[#636E72] dark:text-[#B2BEC3] mb-1.5">
                                         <HiPhone className="text-[#6C5CE7]" />
-                                        Numéro de téléphone
+                                        {t("auth.phoneNumber")}
+                                        <span className="text-[#FF6B6B]">*</span>
                                     </label>
                                     <div className="flex gap-2">
                                         <select
@@ -403,7 +409,8 @@ const Register = () => {
                                 <div>
                                     <label className="flex items-center gap-1.5 text-sm font-bold text-[#636E72] dark:text-[#B2BEC3] mb-1.5">
                                         <HiIdentification className="text-[#FF6B6B]" />
-                                        Pièce d&apos;identité
+                                        {t("auth.identityDocument")}
+                                        <span className="text-[#FF6B6B]">*</span>
                                     </label>
                                     <div className="relative">
                                         <input
@@ -425,12 +432,12 @@ const Register = () => {
                                                 {identityFileName ? (
                                                     <>
                                                         <p className="text-sm font-bold text-[#2D3436] dark:text-white truncate">{identityFileName}</p>
-                                                        <p className="text-xs text-[#00B894] font-semibold">✓ Document uploadé</p>
+                                                        <p className="text-xs text-[#00B894] font-semibold">{t("auth.documentUploaded")}</p>
                                                     </>
                                                 ) : (
                                                     <>
-                                                        <p className="text-sm font-bold text-[#636E72] dark:text-[#B2BEC3]">Téléverser votre pièce d&apos;identité</p>
-                                                        <p className="text-xs text-[#B2BEC3]">JPG, PNG, WebP ou PDF · Max 5 Mo</p>
+                                                        <p className="text-sm font-bold text-[#636E72] dark:text-[#B2BEC3]">{t("auth.uploadIdentity")}</p>
+                                                        <p className="text-xs text-[#B2BEC3]">{t("auth.uploadFormats")}</p>
                                                     </>
                                                 )}
                                             </div>
@@ -441,20 +448,20 @@ const Register = () => {
                         )}
 
                         <SubmitButton
-                            text={isSubmitting ? (isHost ? "Création en cours, veuillez patienter..." : "Registering...") : "Register"}
+                            text={isSubmitting ? (isHost ? t("auth.creatingAccount") : t("auth.registering")) : t("auth.register")}
                             disabled={isSubmitting}
                         />
 
                         {isSubmitting && isHost && (
                             <div className="flex items-center justify-center gap-2 text-xs text-[#636E72] dark:text-[#B2BEC3] animate-fade-in">
                                 <span className="inline-block w-3 h-3 border-2 border-[#4ECDC4] border-t-transparent rounded-full animate-spin" />
-                                Envoi du document en cours...
+                                {t("auth.uploadingDocument")}
                             </div>
                         )}
                     </form>
 
                     {message && (
-                        <div className={`mt-4 flex items-center gap-2 p-3 rounded-2xl ${message.includes('succès') || message.includes('successfully') ? 'bg-[#55EFC4]/15 text-[#00B894]' : 'bg-[#FF6B6B]/10 text-[#FF6B6B]'}`}>
+                        <div className={`mt-4 flex items-center gap-2 p-3 rounded-2xl ${message.includes('success') ? 'bg-[#55EFC4]/15 text-[#00B894]' : 'bg-[#FF6B6B]/10 text-[#FF6B6B]'}`}>
                             <RiErrorWarningFill className="w-5 h-5 flex-shrink-0" />
                             <span className="text-sm font-bold">{message}</span>
                         </div>
@@ -462,7 +469,7 @@ const Register = () => {
 
                     <div className="text-center mt-6">
                         <Link className="text-sm font-bold text-[#4ECDC4] hover:text-[#3BADA6] transition-colors" href="/Auth/login/">
-                            Already have an account? Login
+                            {t("auth.alreadyHaveAccount")}
                         </Link>
                     </div>
                 </div>

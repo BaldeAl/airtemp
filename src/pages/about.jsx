@@ -1,13 +1,16 @@
 import Head from 'next/head';
 import Layout from '../components/Layout';
 import Link from 'next/link';
+import { useTranslation } from '../lib/i18n/LanguageContext';
 import { HiHeart, HiGlobe, HiUsers, HiShieldCheck } from 'react-icons/hi';
 
 export default function AboutPage() {
+  const { t } = useTranslation();
+
   return (
     <>
       <Head>
-        <title>About AirAl – The Future of Travel</title>
+        <title>{t('about.title')} – The Future of Travel</title>
         <meta name="description" content="Learn about AirAl's mission to make everyone feel like they belong anywhere." />
       </Head>
       <Layout>
@@ -15,17 +18,17 @@ export default function AboutPage() {
         <section className="bg-gradient-to-b from-[#FAFAF8] to-white dark:from-[#1A1A2E] dark:to-[#121222] pt-16 pb-20">
           <div className="max-w-4xl mx-auto px-4 text-center">
             <h1 className="text-4xl md:text-6xl font-extrabold text-[#2D3436] dark:text-white mb-6 animate-fade-in-up">
-              Belong <span className="text-[#FF6B6B]">anywhere.</span>
+              {t('about.heroTitle')} <span className="text-[#FF6B6B]">{t('about.heroHighlight')}</span>
             </h1>
             <p className="text-lg md:text-xl text-[#636E72] dark:text-[#B2BEC3] leading-relaxed mb-10 max-w-2xl mx-auto animate-fade-in-up stagger-1">
-              AirAl was born in 2026 when two designers realized there was a better way to experience the world. Today, our community connects millions of hosts and guests around the globe.
+              {t('about.heroDescription')}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4 animate-fade-in-up stagger-2">
               <Link href="/" className="btn-pill px-8 py-3.5 text-base">
-                Start Exploring
+                {t('bookings.explorePlaces')}
               </Link>
               <Link href="/Auth/register" className="px-8 py-3.5 rounded-full font-bold text-[#636E72] dark:text-[#B2BEC3] border-2 border-[#E8E8E4] dark:border-[#3D3D5C] hover:border-[#4ECDC4] hover:text-[#4ECDC4] transition-all bg-white dark:bg-[#232340]">
-                Become a Host
+                {t('about.becomeHost')}
               </Link>
             </div>
           </div>
@@ -39,21 +42,21 @@ export default function AboutPage() {
                 <HiHeart className="text-3xl text-[#FF6B6B]" />
               </div>
               <h3 className="text-3xl font-extrabold text-[#2D3436] dark:text-white mb-2">5M+</h3>
-              <p className="text-[#636E72] dark:text-[#B2BEC3] font-medium">Guest arrivals</p>
+              <p className="text-[#636E72] dark:text-[#B2BEC3] font-medium">{t('about.stats.arrivals')}</p>
             </div>
             <div className="card-cartoon p-8 text-center animate-fade-in-up stagger-1">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#4ECDC4]/10 flex items-center justify-center">
                 <HiGlobe className="text-3xl text-[#4ECDC4]" />
               </div>
               <h3 className="text-3xl font-extrabold text-[#2D3436] dark:text-white mb-2">120+</h3>
-              <p className="text-[#636E72] dark:text-[#B2BEC3] font-medium">Countries & regions</p>
+              <p className="text-[#636E72] dark:text-[#B2BEC3] font-medium">{t('about.stats.countries')}</p>
             </div>
             <div className="card-cartoon p-8 text-center animate-fade-in-up stagger-2">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#A29BFE]/10 flex items-center justify-center">
                 <HiUsers className="text-3xl text-[#A29BFE]" />
               </div>
               <h3 className="text-3xl font-extrabold text-[#2D3436] dark:text-white mb-2">800K</h3>
-              <p className="text-[#636E72] dark:text-[#B2BEC3] font-medium">Host community</p>
+              <p className="text-[#636E72] dark:text-[#B2BEC3] font-medium">{t('about.stats.hosts')}</p>
             </div>
           </div>
         </section>
@@ -66,18 +69,18 @@ export default function AboutPage() {
                 <HiShieldCheck className="text-xl text-[#FDCB6E]" />
               </div>
               <h2 className="text-2xl md:text-3xl font-extrabold text-[#2D3436] dark:text-white">
-                Our Commitment to Trust
+                {t('about.trustTitle')}
               </h2>
             </div>
             <div className="space-y-6 text-[#636E72] dark:text-[#B2BEC3] text-lg leading-relaxed">
               <p>
-                We believe that trust is the foundation of any community. That's why we've built industry-leading safety protocols, secure payments, and a global support team available 24/7.
+                {t('about.trustP1')}
               </p>
               <p>
-                Every host is verified, and every guest profile is linked to authentic reviews. Our AirCover program provides comprehensive protection for every stay, ensuring peace of mind for both hosts and guests.
+                {t('about.trustP2')}
               </p>
               <p>
-                Whether you're opening your home or staying in one, you're never alone with AirAl.
+                {t('about.trustP3')}
               </p>
             </div>
           </div>

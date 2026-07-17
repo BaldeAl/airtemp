@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { HiAdjustments, HiX } from "react-icons/hi";
+import { useTranslation } from "../../lib/i18n/LanguageContext";
 
 const FilterPanel = ({ filters, onFilterChange }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <>
@@ -11,7 +13,7 @@ const FilterPanel = ({ filters, onFilterChange }) => {
         className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white dark:bg-[#232340] border-2 border-[#E8E8E4] dark:border-[#3D3D5C] text-[#636E72] dark:text-[#B2BEC3] hover:border-[#4ECDC4] hover:text-[#4ECDC4] transition-all text-sm font-bold"
       >
         <HiAdjustments className="text-lg" />
-        Filters
+        {t("filters.filters")}
         {(filters.minPrice > 0 || filters.maxPrice < 1000 || filters.minRooms > 0 || filters.minGuests > 0) && (
           <span className="w-2 h-2 rounded-full bg-[#FF6B6B]" />
         )}
@@ -25,7 +27,7 @@ const FilterPanel = ({ filters, onFilterChange }) => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white">Filters</h3>
+              <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white">{t("filters.filters")}</h3>
               <button
                 onClick={() => setIsOpen(false)}
                 className="p-2 rounded-full hover:bg-[#F0F0EC] dark:hover:bg-[#1A1A2E] text-[#636E72] hover:text-[#2D3436] dark:hover:text-white transition-all"
@@ -37,7 +39,7 @@ const FilterPanel = ({ filters, onFilterChange }) => {
             <div className="space-y-6">
               <div>
                 <label className="text-sm font-bold text-[#636E72] dark:text-[#B2BEC3] mb-3 block">
-                  Price range: {filters.minPrice}€ – {filters.maxPrice}€
+                  {t("filters.priceRange")}: {filters.minPrice}€ – {filters.maxPrice}€
                 </label>
                 <div className="flex items-center gap-4">
                   <input
@@ -67,7 +69,7 @@ const FilterPanel = ({ filters, onFilterChange }) => {
 
               <div>
                 <label className="text-sm font-bold text-[#636E72] dark:text-[#B2BEC3] mb-3 block">
-                  Minimum bedrooms
+                  {t("filters.minBedrooms")}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {[0, 1, 2, 3, 4, 5].map((num) => (
@@ -80,7 +82,7 @@ const FilterPanel = ({ filters, onFilterChange }) => {
                           : "bg-[#F0F0EC] dark:bg-[#1A1A2E] text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#E8E8E4] dark:hover:bg-[#2D2D4A]"
                       }`}
                     >
-                      {num === 0 ? "Any" : `${num}+`}
+                      {num === 0 ? t("filters.any") : `${num}+`}
                     </button>
                   ))}
                 </div>
@@ -88,7 +90,7 @@ const FilterPanel = ({ filters, onFilterChange }) => {
 
               <div>
                 <label className="text-sm font-bold text-[#636E72] dark:text-[#B2BEC3] mb-3 block">
-                  Minimum guests
+                  {t("filters.minGuests")}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {[0, 1, 2, 4, 6, 8].map((num) => (
@@ -101,7 +103,7 @@ const FilterPanel = ({ filters, onFilterChange }) => {
                           : "bg-[#F0F0EC] dark:bg-[#1A1A2E] text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#E8E8E4] dark:hover:bg-[#2D2D4A]"
                       }`}
                     >
-                      {num === 0 ? "Any" : `${num}+`}
+                      {num === 0 ? t("filters.any") : `${num}+`}
                     </button>
                   ))}
                 </div>
@@ -120,13 +122,13 @@ const FilterPanel = ({ filters, onFilterChange }) => {
                 }
                 className="flex-1 btn-pill-outline py-3"
               >
-                Clear all
+                {t("filters.clearAll")}
               </button>
               <button
                 onClick={() => setIsOpen(false)}
                 className="flex-1 btn-pill py-3"
               >
-                Show results
+                {t("filters.showResults")}
               </button>
             </div>
           </div>

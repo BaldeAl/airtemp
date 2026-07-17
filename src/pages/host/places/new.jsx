@@ -4,9 +4,11 @@ import PlaceForm from '../../../components/host/PlaceForm';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { HiPlus } from 'react-icons/hi';
+import { useTranslation } from '../../../lib/i18n/LanguageContext';
 
 export default function NewPlace() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -19,7 +21,7 @@ export default function NewPlace() {
   return (
     <>
       <Head>
-        <title>Add New Place – AirAl</title>
+        <title>{t('host_places.addNewPlace')} – AirAl</title>
         <meta name="description" content="Add a new place to host on AirAl" />
       </Head>
       <Layout>
@@ -30,11 +32,11 @@ export default function NewPlace() {
                 <HiPlus className="text-xl text-[#FF6B6B]" />
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-[#2D3436] dark:text-white">
-                Add New Place
+                {t('host_places.addNewPlace')}
               </h1>
             </div>
             <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] ml-[52px]">
-              Fill in the details about your property
+              {t('host_places.fillDetails')}
             </p>
           </div>
 

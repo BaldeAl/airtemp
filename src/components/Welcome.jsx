@@ -1,24 +1,29 @@
-import { useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
+import { useTranslation } from "../lib/i18n/LanguageContext";
 
 const WelcomeMessage = () => {
-  const [userName, setUserName] = useState("");
+  const { t } = useTranslation();
 
   useEffect(() => {
-    const storedUserName = localStorage.getItem("UserName");
-
-    if (storedUserName) {
-      toast.success(`Welcome 👋 , ${storedUserName}`);
-    } else {
-      toast.success(`Welcome 👋`);
+    // Check if we already showed the welcome message in this session
+    const hasWelcomed = sessionStorage.getItem("hasWelcomed");
+    
+    if (!hasWelcomed) {
+      const storedUserName = localStorage.getItem("UserName");
+  
+      if (storedUserName) {
+        toast.success(t("welcome.welcomeUser", { name: storedUserName }));
+      } else {
+        toast.success(t("welcome.welcomeGuest"));
+      }
+      
+      sessionStorage.setItem("hasWelcomed", "true");
     }
-  }, []);
+  }, [t]);
 
-  return (
-    <div>
-      <ToastContainer />
-    </div>
-  );
+  // ToastContainer is already rendered globally in _app.js
+  return null;
 };
 
 export default WelcomeMessage;

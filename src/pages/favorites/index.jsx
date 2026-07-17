@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import Place from '../../components/place/Place';
 import Loading from '../../components/loading/Loading';
+import { useTranslation } from '../../lib/i18n/LanguageContext';
 import { HiHeart, HiOutlineHeart } from 'react-icons/hi';
 import Link from 'next/link';
 
@@ -11,6 +12,7 @@ export default function FavoritesPage() {
   const [favorites, setFavorites] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const router = useRouter();
+  const { t } = useTranslation();
 
   const fetchFavorites = useCallback(() => {
     const token = localStorage.getItem('token');
@@ -68,7 +70,7 @@ export default function FavoritesPage() {
     return (
       <>
         <Head>
-          <title>Favorites – AirAl</title>
+          <title>{t('favorites.title')} – AirAl</title>
           <meta name="description" content="Sign in to see your favorite places" />
         </Head>
         <Layout>
@@ -78,13 +80,13 @@ export default function FavoritesPage() {
                 <HiOutlineHeart className="text-4xl text-[#FF6B6B]" />
               </div>
               <h1 className="text-2xl font-extrabold text-[#2D3436] dark:text-white mb-3">
-                Sign in to view favorites
+                {t('favorites.signInToView')}
               </h1>
               <p className="text-[#636E72] dark:text-[#B2BEC3] mb-8 text-sm leading-relaxed">
-                Keep track of your favorite places by signing in to your account.
+                {t('favorites.signInDescription')}
               </p>
               <Link href="/Auth/login/" className="btn-pill px-8 py-3 text-base">
-                Login
+                {t('auth.login')}
               </Link>
             </div>
           </div>
@@ -96,7 +98,7 @@ export default function FavoritesPage() {
   return (
     <>
       <Head>
-        <title>My Favorites – AirAl</title>
+        <title>{t('favorites.myFavorites')} – AirAl</title>
         <meta name="description" content="Your favorite places on AirAl" />
       </Head>
       <Layout>
@@ -108,12 +110,12 @@ export default function FavoritesPage() {
                 <HiHeart className="text-xl text-[#FF6B6B]" />
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-[#2D3436] dark:text-white">
-                My Favorites
+                {t('favorites.myFavorites')}
               </h1>
             </div>
             <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] ml-[52px]">
               <span className="font-extrabold text-[#2D3436] dark:text-white">{favorites.length}</span>{' '}
-              saved place{favorites.length !== 1 ? 's' : ''}
+              {favorites.length !== 1 ? t('favorites.savedPlaces') : t('favorites.savedPlace')}
             </p>
           </div>
 
@@ -124,13 +126,13 @@ export default function FavoritesPage() {
                 <HiOutlineHeart className="text-5xl text-[#FF6B6B]/40" />
               </div>
               <h3 className="text-xl font-extrabold text-[#2D3436] dark:text-white mb-2">
-                No favorites yet
+                {t('favorites.noFavorites')}
               </h3>
               <p className="text-[#636E72] dark:text-[#B2BEC3] text-center max-w-md text-sm mb-8">
-                Start exploring and tap the heart icon on places you love to save them here.
+                {t('favorites.noFavoritesDesc')}
               </p>
               <Link href="/" className="btn-pill px-8 py-3">
-                Explore Places
+                {t('bookings.explorePlaces')}
               </Link>
             </div>
           ) : (

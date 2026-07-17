@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Loading from '../../../components/loading/Loading';
 import Link from 'next/link';
+import { useTranslation } from '../../../lib/i18n/LanguageContext';
 import {
   HiUser,
   HiMail,
@@ -25,6 +26,7 @@ export default function ProfilePage() {
   const [flash, setFlash] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { t, dateLocale } = useTranslation();
 
   // Edit form state
   const [editName, setEditName] = useState('');
@@ -90,7 +92,7 @@ export default function ProfilePage() {
         }
         setIsEditing(false);
         setEditPassword('');
-        setFlash('Profile updated successfully!');
+        setFlash(t('profile.profileUpdated'));
         setTimeout(() => setFlash(null), 3000);
       }
     } catch (err) {
@@ -117,16 +119,16 @@ export default function ProfilePage() {
     );
   }
 
-  const memberSince = new Date(user.createdAt).toLocaleDateString('en-US', {
+  const memberSince = new Date(user.createdAt).toLocaleDateString(dateLocale, {
     month: 'long',
     year: 'numeric',
   });
 
   const roleLabels = {
-    USER: { label: 'Guest', color: 'bg-[#4ECDC4]/15 text-[#3BADA6]' },
-    HOST: { label: 'Host', color: 'bg-[#6C5CE7]/15 text-[#6C5CE7]' },
-    HOST_PENDING: { label: 'Host (Pending)', color: 'bg-[#FFE66D]/20 text-[#C9A227]' },
-    ADMIN: { label: 'Admin', color: 'bg-[#FF6B6B]/15 text-[#FF6B6B]' },
+    USER: { label: t('profile.guest'), color: 'bg-[#4ECDC4]/15 text-[#3BADA6]' },
+    HOST: { label: t('profile.host'), color: 'bg-[#6C5CE7]/15 text-[#6C5CE7]' },
+    HOST_PENDING: { label: t('profile.hostPending'), color: 'bg-[#FFE66D]/20 text-[#C9A227]' },
+    ADMIN: { label: t('profile.admin'), color: 'bg-[#FF6B6B]/15 text-[#FF6B6B]' },
   };
 
   const roleInfo = roleLabels[user.role] || roleLabels.USER;
@@ -137,7 +139,7 @@ export default function ProfilePage() {
   return (
     <>
       <Head>
-        <title>My Profile – AirAl</title>
+        <title>{t('profile.myProfile')} – AirAl</title>
         <meta name="description" content="Manage your AirAl profile" />
       </Head>
       <Layout>
@@ -188,7 +190,7 @@ export default function ProfilePage() {
                       </span>
                       <span className="text-sm text-[#B2BEC3] flex items-center gap-1">
                         <HiCalendar className="text-xs" />
-                        Member since {memberSince}
+                        {t('profile.memberSince')} {memberSince}
                       </span>
                     </div>
                   </div>
@@ -198,7 +200,7 @@ export default function ProfilePage() {
                       className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold text-[#636E72] dark:text-[#B2BEC3] border-2 border-[#E8E8E4] dark:border-[#3D3D5C] hover:border-[#4ECDC4] hover:text-[#4ECDC4] transition-all"
                     >
                       <HiPencil />
-                      Edit
+                      {t('profile.edit')}
                     </button>
                   )}
                 </div>
@@ -227,7 +229,7 @@ export default function ProfilePage() {
                 <div className="text-xl sm:text-2xl font-extrabold text-[#2D3436] dark:text-white">
                   {stats.bookings}
                 </div>
-                <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">Bookings</div>
+                <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">{t('profile.bookings')}</div>
               </div>
               <div className="card-cartoon p-4 sm:p-5 text-center">
                 <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-[#FFE66D]/15 flex items-center justify-center">
@@ -236,7 +238,7 @@ export default function ProfilePage() {
                 <div className="text-xl sm:text-2xl font-extrabold text-[#2D3436] dark:text-white">
                   {stats.reviews}
                 </div>
-                <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">Reviews</div>
+                <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">{t('profile.reviews')}</div>
               </div>
               <div className="card-cartoon p-4 sm:p-5 text-center">
                 <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-[#FF6B6B]/10 flex items-center justify-center">
@@ -245,7 +247,7 @@ export default function ProfilePage() {
                 <div className="text-xl sm:text-2xl font-extrabold text-[#2D3436] dark:text-white">
                   {stats.favorites}
                 </div>
-                <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">Favorites</div>
+                <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">{t('profile.favorites')}</div>
               </div>
             </div>
           )}
@@ -255,37 +257,37 @@ export default function ProfilePage() {
             <div className="card-cartoon p-6 sm:p-8 mb-6 animate-fade-in-up">
               <h2 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-5 flex items-center gap-2">
                 <HiPencil className="text-[#4ECDC4]" />
-                Edit Profile
+                {t('profile.editProfile')}
               </h2>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-extrabold text-[#2D3436] dark:text-white mb-1.5">
-                    Name
+                    {t('profile.nameLabel')}
                   </label>
                   <input
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
                     className={inputClass}
-                    placeholder="Your name"
+                    placeholder={t('profile.yourName')}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-extrabold text-[#2D3436] dark:text-white mb-1.5">
-                    Email
+                    {t('profile.emailLabel')}
                   </label>
                   <input
                     type="email"
                     value={editEmail}
                     onChange={(e) => setEditEmail(e.target.value)}
                     className={inputClass}
-                    placeholder="your@email.com"
+                    placeholder={t('profile.yourEmail')}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-extrabold text-[#2D3436] dark:text-white mb-1.5">
                     <HiPhotograph className="inline mr-1.5 text-[#6C5CE7]" />
-                    Avatar URL
+                    {t('profile.avatarUrl')}
                   </label>
                   <input
                     type="url"
@@ -302,32 +304,32 @@ export default function ProfilePage() {
                         className="w-12 h-12 rounded-full object-cover border-2 border-[#E8E8E4] dark:border-[#3D3D5C]"
                         onError={(e) => (e.target.style.display = 'none')}
                       />
-                      <span className="text-xs text-[#B2BEC3]">Avatar preview</span>
+                      <span className="text-xs text-[#B2BEC3]">{t('profile.avatarPreview')}</span>
                     </div>
                   )}
                 </div>
                 <div>
                   <label className="block text-sm font-extrabold text-[#2D3436] dark:text-white mb-1.5">
-                    Bio
+                    {t('profile.bio')}
                   </label>
                   <textarea
                     value={editBio}
                     onChange={(e) => setEditBio(e.target.value)}
                     className={`${inputClass} resize-none`}
                     rows={3}
-                    placeholder="Tell us about yourself..."
+                    placeholder={t('profile.bioPlaceholder')}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-extrabold text-[#2D3436] dark:text-white mb-1.5">
-                    New Password
+                    {t('profile.newPassword')}
                   </label>
                   <input
                     type="password"
                     value={editPassword}
                     onChange={(e) => setEditPassword(e.target.value)}
                     className={inputClass}
-                    placeholder="Leave blank to keep current password"
+                    placeholder={t('profile.passwordPlaceholder')}
                   />
                 </div>
                 <div className="flex gap-3 pt-2">
@@ -336,7 +338,7 @@ export default function ProfilePage() {
                     className="flex-1 py-3 rounded-full font-bold text-[#636E72] dark:text-[#B2BEC3] border-2 border-[#E8E8E4] dark:border-[#3D3D5C] hover:border-[#2D3436] dark:hover:border-white hover:text-[#2D3436] dark:hover:text-white transition-all text-sm flex items-center justify-center gap-1.5"
                   >
                     <HiX />
-                    Cancel
+                    {t('profile.cancel')}
                   </button>
                   <button
                     onClick={handleSave}
@@ -344,7 +346,7 @@ export default function ProfilePage() {
                     className="flex-1 py-3 rounded-full font-bold text-white bg-gradient-to-r from-[#4ECDC4] to-[#44B0A8] hover:opacity-90 transition-all text-sm disabled:opacity-60 flex items-center justify-center gap-1.5"
                   >
                     <HiCheck />
-                    {loading ? 'Saving...' : 'Save Changes'}
+                    {loading ? t('profile.saving') : t('profile.saveChanges')}
                   </button>
                 </div>
               </div>
@@ -354,7 +356,7 @@ export default function ProfilePage() {
           {/* Quick Links */}
           <div className="card-cartoon p-6 sm:p-8 animate-fade-in-up stagger-2">
             <h2 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-4">
-              Quick Links
+              {t('profile.quickLinks')}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Link
@@ -365,8 +367,8 @@ export default function ProfilePage() {
                   <HiCalendar className="text-[#4ECDC4]" />
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-[#2D3436] dark:text-white">My Bookings</div>
-                  <div className="text-xs text-[#B2BEC3]">View your trips</div>
+                  <div className="text-sm font-bold text-[#2D3436] dark:text-white">{t('profile.myBookings')}</div>
+                  <div className="text-xs text-[#B2BEC3]">{t('profile.viewTrips')}</div>
                 </div>
               </Link>
               <Link
@@ -377,8 +379,8 @@ export default function ProfilePage() {
                   <HiHeart className="text-[#FF6B6B]" />
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-[#2D3436] dark:text-white">Favorites</div>
-                  <div className="text-xs text-[#B2BEC3]">Saved places</div>
+                  <div className="text-sm font-bold text-[#2D3436] dark:text-white">{t('profile.favorites')}</div>
+                  <div className="text-xs text-[#B2BEC3]">{t('profile.savedPlaces')}</div>
                 </div>
               </Link>
 
@@ -391,8 +393,8 @@ export default function ProfilePage() {
                     <HiHome className="text-[#6C5CE7]" />
                   </div>
                   <div>
-                    <div className="text-sm font-bold text-[#2D3436] dark:text-white">Become a Host</div>
-                    <div className="text-xs text-[#B2BEC3]">Start earning by sharing your space</div>
+                    <div className="text-sm font-bold text-[#2D3436] dark:text-white">{t('profile.becomeHost')}</div>
+                    <div className="text-xs text-[#B2BEC3]">{t('profile.startEarning')}</div>
                   </div>
                 </Link>
               )}
@@ -406,8 +408,8 @@ export default function ProfilePage() {
                     <HiHome className="text-[#0984E3]" />
                   </div>
                   <div>
-                    <div className="text-sm font-bold text-[#2D3436] dark:text-white">My Places</div>
-                    <div className="text-xs text-[#B2BEC3]">Manage your listings</div>
+                    <div className="text-sm font-bold text-[#2D3436] dark:text-white">{t('profile.myPlaces')}</div>
+                    <div className="text-xs text-[#B2BEC3]">{t('profile.manageListings')}</div>
                   </div>
                 </Link>
               )}

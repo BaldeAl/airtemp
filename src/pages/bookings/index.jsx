@@ -5,28 +5,11 @@ import { useRouter } from 'next/router';
 import Loading from '../../components/loading/Loading';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useTranslation } from '../../lib/i18n/LanguageContext';
 import { HiCalendar, HiLocationMarker, HiUsers, HiClock, HiCheckCircle, HiXCircle, HiX, HiExclamation } from 'react-icons/hi';
 
-const statusConfig = {
-  confirmed: {
-    icon: HiCheckCircle,
-    label: 'Confirmed',
-    badgeClass: 'bg-[#55EFC4]/15 text-[#00B894]',
-  },
-  pending: {
-    icon: HiClock,
-    label: 'Pending',
-    badgeClass: 'bg-[#FFE66D]/20 text-[#C9A227]',
-  },
-  cancelled: {
-    icon: HiXCircle,
-    label: 'Cancelled',
-    badgeClass: 'bg-[#FF6B6B]/10 text-[#FF6B6B]',
-  },
-};
-
-function formatDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString('en-US', {
+function formatDate(dateStr, locale) {
+  return new Date(dateStr).toLocaleDateString(locale, {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
@@ -64,6 +47,25 @@ export default function BookingsPage() {
   const [showCancelModal, setShowCancelModal] = useState(null);
   const [cancelError, setCancelError] = useState('');
   const router = useRouter();
+  const { t, dateLocale } = useTranslation();
+
+  const statusConfig = {
+    confirmed: {
+      icon: HiCheckCircle,
+      label: t('bookings.status.confirmed'),
+      badgeClass: 'bg-[#55EFC4]/15 text-[#00B894]',
+    },
+    pending: {
+      icon: HiClock,
+      label: t('bookings.status.pending'),
+      badgeClass: 'bg-[#FFE66D]/20 text-[#C9A227]',
+    },
+    cancelled: {
+      icon: HiXCircle,
+      label: t('bookings.status.cancelled'),
+      badgeClass: 'bg-[#FF6B6B]/10 text-[#FF6B6B]',
+    },
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -111,11 +113,11 @@ export default function BookingsPage() {
         setShowCancelModal(null);
       } else {
         const data = await res.json();
-        setCancelError(data.message || 'Cancel failed');
+        setCancelError(data.message || t('bookings.cancelFailed'));
       }
     } catch (err) {
       console.error('Cancel failed:', err);
-      setCancelError('Network error');
+      setCancelError(t('auth.networkError'));
     } finally {
       setCancellingId(null);
     }
@@ -133,7 +135,7 @@ export default function BookingsPage() {
     return (
       <>
         <Head>
-          <title>Bookings – AirAl</title>
+          <title>{t('bookings.title')} – AirAl</title>
           <meta name="description" content="Sign in to see your bookings" />
         </Head>
         <Layout>
@@ -143,13 +145,13 @@ export default function BookingsPage() {
                 <HiCalendar className="text-4xl text-[#4ECDC4]" />
               </div>
               <h1 className="text-2xl font-extrabold text-[#2D3436] dark:text-white mb-3">
-                Sign in to view bookings
+                {t('bookings.signInToView')}
               </h1>
               <p className="text-[#636E72] dark:text-[#B2BEC3] mb-8 text-sm leading-relaxed">
-                View and manage your upcoming stays by signing in to your account.
+                {t('bookings.signInDescription')}
               </p>
               <Link href="/Auth/login/" className="btn-pill px-8 py-3 text-base">
-                Login
+                {t('auth.login')}
               </Link>
             </div>
           </div>
@@ -167,7 +169,7 @@ export default function BookingsPage() {
   return (
     <>
       <Head>
-        <title>My Bookings – AirAl</title>
+        <title>{t('bookings.myBookings')} – AirAl</title>
         <meta name="description" content="Your bookings on AirAl" />
       </Head>
       <Layout>
@@ -179,12 +181,12 @@ export default function BookingsPage() {
                 <HiCalendar className="text-xl text-[#4ECDC4]" />
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-[#2D3436] dark:text-white">
-                My Bookings
+                {t('bookings.myBookings')}
               </h1>
             </div>
             <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] ml-[52px]">
               <span className="font-extrabold text-[#2D3436] dark:text-white">{bookings.length}</span>{' '}
-              booking{bookings.length !== 1 ? 's' : ''} total
+              {bookings.length !== 1 ? t('bookings.bookingsWord') : t('bookings.bookingWord')} {t('bookings.total')}
             </p>
           </div>
 
@@ -195,13 +197,13 @@ export default function BookingsPage() {
                 <HiCalendar className="text-5xl text-[#4ECDC4]/40" />
               </div>
               <h3 className="text-xl font-extrabold text-[#2D3436] dark:text-white mb-2">
-                No bookings yet
+                {t('bookings.noBookings')}
               </h3>
               <p className="text-[#636E72] dark:text-[#B2BEC3] text-center max-w-md text-sm mb-8">
-                When you book a stay, it will appear here. Start exploring amazing places!
+                {t('bookings.noBookingsDescription')}
               </p>
               <Link href="/" className="btn-pill px-8 py-3">
-                Explore Places
+                {t('bookings.explorePlaces')}
               </Link>
             </div>
           ) : (
@@ -211,7 +213,7 @@ export default function BookingsPage() {
                 <section>
                   <h2 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-4 flex items-center gap-2 animate-fade-in-up">
                     <span className="w-2 h-2 rounded-full bg-[#4ECDC4]" />
-                    Upcoming
+                    {t('bookings.upcoming')}
                   </h2>
                   <div className="space-y-4">
                     {upcoming.map((booking, i) => (
@@ -220,6 +222,9 @@ export default function BookingsPage() {
                         booking={booking}
                         index={i}
                         onCancel={canCancel(booking) ? () => setShowCancelModal(booking.booking_id) : null}
+                        statusConfig={statusConfig}
+                        t={t}
+                        dateLocale={dateLocale}
                       />
                     ))}
                   </div>
@@ -231,11 +236,11 @@ export default function BookingsPage() {
                 <section>
                   <h2 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-4 flex items-center gap-2 animate-fade-in-up">
                     <span className="w-2 h-2 rounded-full bg-[#B2BEC3]" />
-                    Past
+                    {t('bookings.past')}
                   </h2>
                   <div className="space-y-4">
                     {past.map((booking, i) => (
-                      <BookingCard key={booking.id || booking.booking_id} booking={booking} index={i} isPast />
+                      <BookingCard key={booking.id || booking.booking_id} booking={booking} index={i} isPast statusConfig={statusConfig} t={t} dateLocale={dateLocale} />
                     ))}
                   </div>
                 </section>
@@ -246,11 +251,11 @@ export default function BookingsPage() {
                 <section>
                   <h2 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-4 flex items-center gap-2 animate-fade-in-up">
                     <span className="w-2 h-2 rounded-full bg-[#FF6B6B]" />
-                    Cancelled
+                    {t('bookings.status.cancelled')}
                   </h2>
                   <div className="space-y-4">
                     {cancelled.map((booking, i) => (
-                      <BookingCard key={booking.id || booking.booking_id} booking={booking} index={i} isPast />
+                      <BookingCard key={booking.id || booking.booking_id} booking={booking} index={i} isPast statusConfig={statusConfig} t={t} dateLocale={dateLocale} />
                     ))}
                   </div>
                 </section>
@@ -268,10 +273,10 @@ export default function BookingsPage() {
                   <HiXCircle className="text-3xl text-[#FF6B6B]" />
                 </div>
                 <h3 className="text-xl font-extrabold text-[#2D3436] dark:text-white mb-2">
-                  Cancel Booking?
+                  {t('bookings.cancelBooking')}
                 </h3>
                 <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] mb-4">
-                  Are you sure you want to cancel this booking? This action cannot be undone.
+                  {t('bookings.cancelConfirmation')}
                 </p>
 
                 {cancelError && (
@@ -286,14 +291,14 @@ export default function BookingsPage() {
                     onClick={() => { setShowCancelModal(null); setCancelError(''); }}
                     className="flex-1 py-3 rounded-full font-bold text-[#636E72] dark:text-[#B2BEC3] border-2 border-[#E8E8E4] dark:border-[#3D3D5C] hover:border-[#2D3436] dark:hover:border-white hover:text-[#2D3436] dark:hover:text-white transition-all text-sm"
                   >
-                    Keep Booking
+                    {t('bookings.keepBooking')}
                   </button>
                   <button
                     onClick={() => handleCancel(showCancelModal)}
                     disabled={cancellingId === showCancelModal}
                     className="flex-1 py-3 rounded-full font-bold text-white bg-[#FF6B6B] hover:bg-[#E85555] transition-all text-sm disabled:opacity-60"
                   >
-                    {cancellingId === showCancelModal ? 'Cancelling...' : 'Yes, Cancel'}
+                    {cancellingId === showCancelModal ? t('bookings.cancelling') : t('bookings.yesCancel')}
                   </button>
                 </div>
               </div>
@@ -305,7 +310,7 @@ export default function BookingsPage() {
   );
 }
 
-function BookingCard({ booking, index = 0, isPast = false, onCancel }) {
+function BookingCard({ booking, index = 0, isPast = false, onCancel, statusConfig, t, dateLocale }) {
   const place = booking.place;
   const nights = getNights(booking.checkIn, booking.checkOut);
   const status = statusConfig[booking.status] || statusConfig.confirmed;
@@ -345,7 +350,7 @@ function BookingCard({ booking, index = 0, isPast = false, onCancel }) {
             <div className="flex items-start justify-between gap-3 mb-2">
               <Link href={`/place/${place?.place_id}`}>
                 <h3 className="text-base sm:text-lg font-extrabold text-[#2D3436] dark:text-white truncate hover:text-[#FF6B6B] transition-colors">
-                  {place?.name || 'Unknown Place'}
+                  {place?.name || t('place.unknownPlace')}
                 </h3>
               </Link>
               <span className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold flex-shrink-0 ${status.badgeClass}`}>
@@ -365,18 +370,18 @@ function BookingCard({ booking, index = 0, isPast = false, onCancel }) {
               <div className="flex items-center gap-1.5">
                 <HiCalendar className="text-[#4ECDC4]" />
                 <span>
-                  {formatDate(booking.checkIn)} → {formatDate(booking.checkOut)}
+                  {formatDate(booking.checkIn, dateLocale)} → {formatDate(booking.checkOut, dateLocale)}
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
                 <HiUsers className="text-[#A29BFE]" />
                 <span>
-                  {booking.guests} guest{booking.guests !== 1 ? 's' : ''}
+                  {booking.guests} {booking.guests !== 1 ? t('booking_form.guestsPlural') : t('booking_form.guest')}
                 </span>
               </div>
               <span className="text-[#B2BEC3]">·</span>
               <span className="font-medium">
-                {nights} night{nights !== 1 ? 's' : ''}
+                {nights} {nights !== 1 ? t('booking_form.nights') : t('booking_form.night')}
               </span>
             </div>
 
@@ -384,13 +389,13 @@ function BookingCard({ booking, index = 0, isPast = false, onCancel }) {
             {showNoCancel && (
               <div className="flex items-center gap-1.5 mt-3 px-3 py-2 rounded-xl bg-[#FFE66D]/15 text-[#C9A227] text-xs font-bold">
                 <HiExclamation className="text-sm flex-shrink-0" />
-                Annulation impossible : moins de 72h avant le check-in
+                {t('bookings.noCancelWarning')}
               </div>
             )}
           </div>
 
           <div className="flex items-center justify-between mt-4 pt-3 border-t border-[#E8E8E4] dark:border-[#2D2D4A]">
-            <span className="text-sm text-[#636E72] dark:text-[#B2BEC3]">Total price</span>
+            <span className="text-sm text-[#636E72] dark:text-[#B2BEC3]">{t('booking_form.total')}</span>
             <div className="flex items-center gap-3">
               <span className="text-lg font-extrabold text-[#FF6B6B]">{booking.totalPrice}€</span>
               {isActive && onCancel && (
@@ -402,7 +407,7 @@ function BookingCard({ booking, index = 0, isPast = false, onCancel }) {
                   className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold text-[#FF6B6B] border-2 border-[#FF6B6B]/20 hover:bg-[#FF6B6B]/10 transition-all"
                 >
                   <HiX className="text-sm" />
-                  Cancel
+                  {t('bookings.cancel')}
                 </button>
               )}
             </div>

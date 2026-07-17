@@ -1,7 +1,13 @@
 import Layout from '../components/Layout';
 import Head from 'next/head';
+import { useTranslation } from '../lib/i18n/LanguageContext';
 
-export default function GenericPage({ title = "Page Under Construction" }) {
+export default function GenericPage({ titleKey }) {
+  const { t } = useTranslation();
+
+  // If a translation key is passed, use it, otherwise fallback to "Page Under Construction"
+  const title = titleKey ? t(titleKey) : t('generic.underConstruction');
+
   return (
     <>
       <Head>
@@ -16,7 +22,7 @@ export default function GenericPage({ title = "Page Under Construction" }) {
             {title}
           </h1>
           <p className="text-[#636E72] dark:text-[#B2BEC3] max-w-lg mx-auto">
-            We are working hard to bring you this content. Please check back later!
+            {t('generic.workingHard')}
           </p>
         </div>
       </Layout>

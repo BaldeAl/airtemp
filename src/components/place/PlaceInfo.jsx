@@ -1,10 +1,13 @@
 import { BsDoorOpen, BsDroplet, BsPeople } from "react-icons/bs";
+import { useTranslation } from "../../lib/i18n/LanguageContext";
 
 const PlaceInfo = ({ rooms, bathrooms, guests }) => {
+  const { t } = useTranslation();
+  
   const items = [
-    { icon: BsDoorOpen, label: "Bedrooms", value: rooms, color: "text-[#FF6B6B]", bg: "bg-[#FF6B6B]/10" },
-    { icon: BsDroplet, label: "Bathrooms", value: bathrooms, color: "text-[#4ECDC4]", bg: "bg-[#4ECDC4]/10" },
-    { icon: BsPeople, label: "Max Guests", value: guests, color: "text-[#A29BFE]", bg: "bg-[#A29BFE]/10" },
+    { icon: BsDoorOpen, label: t("place_info.bedrooms"), value: rooms, color: "text-[#FF6B6B]", bg: "bg-[#FF6B6B]/10" },
+    { icon: BsDroplet, label: t("place_info.bathrooms"), value: bathrooms, color: "text-[#4ECDC4]", bg: "bg-[#4ECDC4]/10" },
+    { icon: BsPeople, label: t("place_info.maxGuests"), value: guests, color: "text-[#A29BFE]", bg: "bg-[#A29BFE]/10" },
   ];
 
   return (

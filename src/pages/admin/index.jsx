@@ -3,6 +3,7 @@ import Layout from '../../components/Layout';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Loading from '../../components/loading/Loading';
+import { useTranslation } from '../../lib/i18n/LanguageContext';
 import { HiCheck, HiShieldCheck, HiUser, HiLocationMarker, HiClock, HiPhone, HiIdentification, HiX, HiCheckCircle, HiBan } from 'react-icons/hi';
 import { toast } from 'react-toastify';
 
@@ -13,6 +14,7 @@ export default function AdminDashboard() {
   const [viewingDocument, setViewingDocument] = useState(null);
   const [activeTab, setActiveTab] = useState('pending');
   const router = useRouter();
+  const { t, dateLocale } = useTranslation();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -64,13 +66,13 @@ export default function AdminDashboard() {
             host.user_id === userId ? { ...host, role: 'HOST' } : host
           )
         );
-        toast.success('Host approved successfully!');
+        toast.success(t('admin.approveSuccess'));
       } else {
-        toast.error('Failed to approve host.');
+        toast.error(t('admin.approveFailed'));
       }
     } catch (err) {
       console.error(err);
-      toast.error('An error occurred.');
+      toast.error(t('auth.networkError'));
     } finally {
       setLoadingAction(null);
     }
@@ -81,8 +83,8 @@ export default function AdminDashboard() {
     if (!token) return;
 
     const confirmMsg = action === 'revoke'
-      ? 'Are you sure you want to revoke this host\'s rights?'
-      : 'Are you sure you want to re-grant host rights to this user?';
+      ? t('admin.revokeConfirm')
+      : t('admin.grantConfirm');
     if (!window.confirm(confirmMsg)) return;
 
     setLoadingAction(`${action}-${userId}`);
@@ -106,15 +108,15 @@ export default function AdminDashboard() {
         );
         toast.success(
           action === 'revoke'
-            ? 'Host rights revoked successfully.'
-            : 'Host rights re-granted successfully.'
+            ? t('admin.revokeSuccess')
+            : t('admin.grantSuccess')
         );
       } else {
-        toast.error('Failed to update host role.');
+        toast.error(t('admin.roleUpdateFailed'));
       }
     } catch (err) {
       console.error(err);
-      toast.error('An error occurred.');
+      toast.error(t('auth.networkError'));
     } finally {
       setLoadingAction(null);
     }
@@ -131,12 +133,6 @@ export default function AdminDashboard() {
   const pendingHosts = hosts.filter(h => h.role === "HOST_PENDING");
   const approvedHosts = hosts.filter(h => h.role === "HOST");
   const revokedHosts = hosts.filter(h => h.role === "USER" && h.identityDocument);
-
-  const getHostStatus = (host) => {
-    if (host.role === 'HOST') return 'approved';
-    if (host.role === 'HOST_PENDING') return 'pending';
-    return 'revoked';
-  };
 
   const renderHostCard = (host, isApproved) => (
     <div 
@@ -157,19 +153,19 @@ export default function AdminDashboard() {
           {host.role === 'HOST' && (
             <span className="px-2.5 py-1 rounded-full bg-[#55EFC4]/20 text-[#00B894] text-xs font-bold flex items-center gap-1">
               <HiCheckCircle className="text-sm" />
-              Approved
+              {t('admin.statusApproved')}
             </span>
           )}
           {host.role === 'HOST_PENDING' && (
             <span className="px-2.5 py-1 rounded-full bg-[#FDCB6E]/20 text-[#C9A227] text-xs font-bold flex items-center gap-1">
               <HiClock className="text-sm" />
-              Pending
+              {t('admin.statusPending')}
             </span>
           )}
           {host.role === 'USER' && host.identityDocument && (
             <span className="px-2.5 py-1 rounded-full bg-[#FF6B6B]/20 text-[#FF6B6B] text-xs font-bold flex items-center gap-1">
               <HiBan className="text-sm" />
-              Revoked
+              {t('admin.statusRevoked')}
             </span>
           )}
         </div>
@@ -179,8 +175,8 @@ export default function AdminDashboard() {
           <div className="flex items-start gap-2 text-sm">
             <HiLocationMarker className="text-[#FF6B6B] mt-0.5 flex-shrink-0" />
             <span className="text-[#636E72] dark:text-[#B2BEC3] leading-relaxed">
-              <strong className="text-[#2D3436] dark:text-white block mb-0.5">Address:</strong>
-              {host.address || "No address provided."}
+              <strong className="text-[#2D3436] dark:text-white block mb-0.5">{t('admin.address')}</strong>
+              {host.address || t('admin.noAddress')}
             </span>
           </div>
 
@@ -189,7 +185,7 @@ export default function AdminDashboard() {
             <div className="flex items-start gap-2 text-sm">
               <HiPhone className="text-[#6C5CE7] mt-0.5 flex-shrink-0" />
               <span className="text-[#636E72] dark:text-[#B2BEC3] leading-relaxed">
-                <strong className="text-[#2D3436] dark:text-white block mb-0.5">Phone:</strong>
+                <strong className="text-[#2D3436] dark:text-white block mb-0.5">{t('admin.phone')}</strong>
                 {host.phone}
               </span>
             </div>
@@ -201,10 +197,10 @@ export default function AdminDashboard() {
               <HiIdentification className="text-[#FF6B6B] mt-0.5 flex-shrink-0" />
               <div className="w-full pr-2">
                 <strong className="text-[#2D3436] dark:text-white block mb-1.5 flex items-center justify-between">
-                  Identity Document:
+                  {t('admin.identityDocument')}
                   {isApproved && (
                     <span className="text-[10px] font-normal text-[#B2BEC3] ml-2">
-                      (Conservé dans la limite de durée légale)
+                      {t('admin.retainedDocument')}
                     </span>
                   )}
                 </strong>
@@ -225,7 +221,7 @@ export default function AdminDashboard() {
                   )}
                   <div className="absolute inset-0 bg-black/0 group-hover/doc:bg-black/30 transition-all flex items-center justify-center">
                     <span className="text-white font-bold text-xs opacity-0 group-hover/doc:opacity-100 transition-opacity">
-                      Click to view
+                      {t('admin.clickView')}
                     </span>
                   </div>
                 </button>
@@ -234,7 +230,7 @@ export default function AdminDashboard() {
           )}
 
           <div className="flex items-start gap-2 text-xs text-[#B2BEC3] mt-2 pl-6">
-            <span>Registered: {new Date(host.createdAt).toLocaleDateString()}</span>
+            <span>{t('admin.registered')}: {new Date(host.createdAt).toLocaleDateString(dateLocale)}</span>
           </div>
         </div>
       </div>
@@ -247,11 +243,11 @@ export default function AdminDashboard() {
           className="w-full py-2.5 rounded-full font-bold text-white bg-[#00B894] hover:bg-[#00A080] transition-colors shadow-sm disabled:opacity-70 flex justify-center items-center gap-2"
         >
           {loadingAction === host.user_id ? (
-            "Approving..."
+            t('admin.approving')
           ) : (
             <>
               <HiCheck className="text-lg" />
-              Approve Host
+              {t('admin.approveHost')}
             </>
           )}
         </button>
@@ -265,11 +261,11 @@ export default function AdminDashboard() {
           className="w-full py-2.5 rounded-full font-bold text-white bg-[#FF6B6B] hover:bg-[#E05555] transition-colors shadow-sm disabled:opacity-70 flex justify-center items-center gap-2"
         >
           {loadingAction === `revoke-${host.user_id}` ? (
-            "Revoking..."
+            t('admin.revoking')
           ) : (
             <>
               <HiBan className="text-lg" />
-              Revoke Host Rights
+              {t('admin.revokeHost')}
             </>
           )}
         </button>
@@ -283,11 +279,11 @@ export default function AdminDashboard() {
           className="w-full py-2.5 rounded-full font-bold text-white bg-[#6C5CE7] hover:bg-[#5A4BD1] transition-colors shadow-sm disabled:opacity-70 flex justify-center items-center gap-2"
         >
           {loadingAction === `grant-${host.user_id}` ? (
-            "Granting..."
+            t('admin.granting')
           ) : (
             <>
               <HiCheck className="text-lg" />
-              Re-grant Host Rights
+              {t('admin.grantHost')}
             </>
           )}
         </button>
@@ -298,7 +294,7 @@ export default function AdminDashboard() {
   return (
     <>
       <Head>
-        <title>Admin Dashboard – AirAl</title>
+        <title>{t('admin.title')} – AirAl</title>
         <meta name="description" content="Admin dashboard for AirAl" />
       </Head>
       <Layout>
@@ -310,11 +306,11 @@ export default function AdminDashboard() {
                 <HiShieldCheck className="text-xl text-[#6C5CE7]" />
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-[#2D3436] dark:text-white">
-                Admin Dashboard
+                {t('admin.title')}
               </h1>
             </div>
             <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] ml-[52px]">
-              Manage users and host applications
+              {t('admin.manageUsers')}
             </p>
           </div>
 
@@ -328,7 +324,7 @@ export default function AdminDashboard() {
                   : 'text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340]'
               }`}
             >
-              Pending Validations
+              {t('admin.pendingValidations')}
               <span className={`px-1.5 py-0.5 rounded-full text-xs ${activeTab === 'pending' ? 'bg-white/20 dark:bg-black/20' : 'bg-[#E8E8E4] dark:bg-[#3D3D5C]'}`}>
                 {pendingHosts.length}
               </span>
@@ -341,7 +337,7 @@ export default function AdminDashboard() {
                   : 'text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340]'
               }`}
             >
-              Approved Hosts
+              {t('admin.approvedHosts')}
               <span className={`px-1.5 py-0.5 rounded-full text-xs ${activeTab === 'approved' ? 'bg-white/20 dark:bg-black/20' : 'bg-[#E8E8E4] dark:bg-[#3D3D5C]'}`}>
                 {approvedHosts.length}
               </span>
@@ -354,7 +350,7 @@ export default function AdminDashboard() {
                   : 'text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340]'
               }`}
             >
-              Revoked
+              {t('admin.revoked')}
               <span className={`px-1.5 py-0.5 rounded-full text-xs ${activeTab === 'revoked' ? 'bg-white/20 dark:bg-black/20' : 'bg-[#E8E8E4] dark:bg-[#3D3D5C]'}`}>
                 {revokedHosts.length}
               </span>
@@ -369,8 +365,8 @@ export default function AdminDashboard() {
                     <div className="w-20 h-20 mb-4 rounded-full bg-[#00B894]/10 flex items-center justify-center">
                       <HiCheck className="text-4xl text-[#00B894]" />
                     </div>
-                    <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-2">All Caught Up!</h3>
-                    <p className="text-sm text-[#636E72] dark:text-[#B2BEC3]">There are no pending host applications to review.</p>
+                    <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-2">{t('admin.allCaughtUp')}</h3>
+                    <p className="text-sm text-[#636E72] dark:text-[#B2BEC3]">{t('admin.noPending')}</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -387,8 +383,8 @@ export default function AdminDashboard() {
                     <div className="w-20 h-20 mb-4 rounded-full bg-[#E8E8E4] dark:bg-[#2D2D4A] flex items-center justify-center">
                       <HiUser className="text-4xl text-[#B2BEC3]" />
                     </div>
-                    <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-2">No Approved Hosts</h3>
-                    <p className="text-sm text-[#636E72] dark:text-[#B2BEC3]">There are no approved hosts yet.</p>
+                    <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-2">{t('admin.noApprovedHosts')}</h3>
+                    <p className="text-sm text-[#636E72] dark:text-[#B2BEC3]">{t('admin.noApprovedHostsDesc')}</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -405,8 +401,8 @@ export default function AdminDashboard() {
                     <div className="w-20 h-20 mb-4 rounded-full bg-[#E8E8E4] dark:bg-[#2D2D4A] flex items-center justify-center">
                       <HiBan className="text-4xl text-[#B2BEC3]" />
                     </div>
-                    <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-2">No Revoked Hosts</h3>
-                    <p className="text-sm text-[#636E72] dark:text-[#B2BEC3]">There are no hosts with revoked rights.</p>
+                    <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-2">{t('admin.noRevokedHosts')}</h3>
+                    <p className="text-sm text-[#636E72] dark:text-[#B2BEC3]">{t('admin.noRevokedHostsDesc')}</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

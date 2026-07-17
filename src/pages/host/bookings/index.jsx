@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import Loading from '../../../components/loading/Loading';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useTranslation } from '../../../lib/i18n/LanguageContext';
 import {
   HiCalendar,
   HiLocationMarker,
@@ -22,26 +23,8 @@ import {
 } from 'react-icons/hi';
 import { toast } from 'react-toastify';
 
-const statusConfig = {
-  confirmed: {
-    icon: HiCheckCircle,
-    label: 'Confirmed',
-    badgeClass: 'bg-[#55EFC4]/15 text-[#00B894]',
-  },
-  pending: {
-    icon: HiClock,
-    label: 'Pending',
-    badgeClass: 'bg-[#FFE66D]/20 text-[#C9A227]',
-  },
-  cancelled: {
-    icon: HiXCircle,
-    label: 'Cancelled',
-    badgeClass: 'bg-[#FF6B6B]/10 text-[#FF6B6B]',
-  },
-};
-
-function formatDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString('en-US', {
+function formatDate(dateStr, locale) {
+  return new Date(dateStr).toLocaleDateString(locale, {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
@@ -63,6 +46,25 @@ export default function HostBookingsPage() {
   const [activeTab, setActiveTab] = useState('pending');
   const [actionLoading, setActionLoading] = useState(null);
   const router = useRouter();
+  const { t, dateLocale } = useTranslation();
+
+  const statusConfig = {
+    confirmed: {
+      icon: HiCheckCircle,
+      label: t('bookings.status.confirmed'),
+      badgeClass: 'bg-[#55EFC4]/15 text-[#00B894]',
+    },
+    pending: {
+      icon: HiClock,
+      label: t('bookings.status.pending'),
+      badgeClass: 'bg-[#FFE66D]/20 text-[#C9A227]',
+    },
+    cancelled: {
+      icon: HiXCircle,
+      label: t('bookings.status.cancelled'),
+      badgeClass: 'bg-[#FF6B6B]/10 text-[#FF6B6B]',
+    },
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -113,14 +115,14 @@ export default function HostBookingsPage() {
               : b
           ),
         }));
-        toast.success(action === 'approve' ? 'Réservation confirmée !' : 'Réservation refusée.');
+        toast.success(action === 'approve' ? t('host_bookings.bookingConfirmed') : t('host_bookings.bookingDeclined'));
       } else {
         const err = await res.json();
-        toast.error(err.message || 'Action failed');
+        toast.error(err.message || t('host_bookings.actionFailed'));
       }
     } catch (err) {
       console.error(err);
-      toast.error('An error occurred.');
+      toast.error(t('auth.networkError'));
     } finally {
       setActionLoading(null);
     }
@@ -147,10 +149,10 @@ export default function HostBookingsPage() {
   const cancelled = bookings.filter((b) => b.status === 'cancelled');
 
   const tabs = [
-    { key: 'pending', label: 'Pending', count: pending.length, color: '#FDCB6E' },
-    { key: 'upcoming', label: 'Upcoming', count: upcoming.length, color: '#4ECDC4' },
-    { key: 'past', label: 'Past', count: past.length, color: '#B2BEC3' },
-    { key: 'cancelled', label: 'Cancelled', count: cancelled.length, color: '#FF6B6B' },
+    { key: 'pending', label: t('bookings.status.pending'), count: pending.length, color: '#FDCB6E' },
+    { key: 'upcoming', label: t('bookings.upcoming'), count: upcoming.length, color: '#4ECDC4' },
+    { key: 'past', label: t('bookings.past'), count: past.length, color: '#B2BEC3' },
+    { key: 'cancelled', label: t('bookings.status.cancelled'), count: cancelled.length, color: '#FF6B6B' },
   ];
 
   const activeBookings =
@@ -167,7 +169,7 @@ export default function HostBookingsPage() {
   return (
     <>
       <Head>
-        <title>Host Bookings – AirAl</title>
+        <title>{t('host_bookings.title')} – AirAl</title>
         <meta name="description" content="Manage bookings for your places" />
       </Head>
       <Layout>
@@ -179,11 +181,11 @@ export default function HostBookingsPage() {
                 <HiClipboardList className="text-xl text-[#0984E3]" />
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-[#2D3436] dark:text-white">
-                Guest Bookings
+                {t('host_bookings.guestBookings')}
               </h1>
             </div>
             <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] ml-[52px]">
-              Bookings received on your properties
+              {t('host_bookings.receivedBookings')}
             </p>
           </div>
 
@@ -196,7 +198,7 @@ export default function HostBookingsPage() {
               <div className="text-xl sm:text-2xl font-extrabold text-[#2D3436] dark:text-white">
                 {pending.length}
               </div>
-              <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">Pending</div>
+              <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">{t('bookings.status.pending')}</div>
             </div>
             <div className="card-cartoon p-4 sm:p-5 text-center">
               <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-[#0984E3]/10 flex items-center justify-center">
@@ -205,7 +207,7 @@ export default function HostBookingsPage() {
               <div className="text-xl sm:text-2xl font-extrabold text-[#2D3436] dark:text-white">
                 {data.stats?.total || 0}
               </div>
-              <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">Total Bookings</div>
+              <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">{t('host_bookings.totalBookings')}</div>
             </div>
             <div className="card-cartoon p-4 sm:p-5 text-center">
               <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-[#55EFC4]/10 flex items-center justify-center">
@@ -214,7 +216,7 @@ export default function HostBookingsPage() {
               <div className="text-xl sm:text-2xl font-extrabold text-[#2D3436] dark:text-white">
                 {data.stats?.revenue || 0}€
               </div>
-              <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">Total Revenue</div>
+              <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">{t('host_bookings.totalRevenue')}</div>
             </div>
             <div className="card-cartoon p-4 sm:p-5 text-center">
               <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-[#4ECDC4]/10 flex items-center justify-center">
@@ -223,7 +225,7 @@ export default function HostBookingsPage() {
               <div className="text-xl sm:text-2xl font-extrabold text-[#2D3436] dark:text-white">
                 {data.stats?.upcoming || 0}
               </div>
-              <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">Upcoming</div>
+              <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">{t('bookings.upcoming')}</div>
             </div>
           </div>
 
@@ -261,10 +263,10 @@ export default function HostBookingsPage() {
                   <HiClock className="text-4xl text-[#C9A227]" />
                 </div>
                 <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-2">
-                  Account Under Review
+                  {t('host_places.accountUnderReview')}
                 </h3>
                 <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] max-w-sm">
-                  Your host application is currently being reviewed by an administrator. Once validated, you will receive bookings here.
+                  {t('host_bookings.reviewDesc')}
                 </p>
               </div>
             ) : (
@@ -273,14 +275,14 @@ export default function HostBookingsPage() {
                   <HiCalendar className="text-4xl text-[#4ECDC4]/40" />
                 </div>
                 <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-2">
-                  No {activeTab} bookings
+                  {t('host_bookings.noBookingsPrefix')} {tabs.find(t => t.key === activeTab)?.label?.toLowerCase()} {t('host_bookings.noBookingsSuffix')}
                 </h3>
                 <p className="text-sm text-[#636E72] dark:text-[#B2BEC3]">
                   {activeTab === 'pending'
-                    ? 'No reservations waiting for your approval.'
+                    ? t('host_bookings.noPendingDesc')
                     : activeTab === 'upcoming'
-                    ? 'When guests book your places, upcoming bookings will appear here.'
-                    : `No ${activeTab} bookings to show.`}
+                    ? t('host_bookings.noUpcomingDesc')
+                    : `${t('host_bookings.noBookingsToShow')} ${tabs.find(t => t.key === activeTab)?.label?.toLowerCase()} ${t('host_bookings.noBookingsSuffix')}.`}
                 </p>
               </div>
             )
@@ -293,6 +295,9 @@ export default function HostBookingsPage() {
                   index={i}
                   onAction={handleBookingAction}
                   actionLoading={actionLoading}
+                  statusConfig={statusConfig}
+                  t={t}
+                  dateLocale={dateLocale}
                 />
               ))}
             </div>
@@ -303,7 +308,7 @@ export default function HostBookingsPage() {
   );
 }
 
-function HostBookingCard({ booking, index = 0, onAction, actionLoading }) {
+function HostBookingCard({ booking, index = 0, onAction, actionLoading, statusConfig, t, dateLocale }) {
   const place = booking.place;
   const guest = booking.user;
   const nights = getNights(booking.checkIn, booking.checkOut);
@@ -335,7 +340,7 @@ function HostBookingCard({ booking, index = 0, onAction, actionLoading }) {
             <div className="min-w-0">
               <Link href={`/place/${place?.place_id}`}>
                 <h3 className="text-sm font-extrabold text-[#2D3436] dark:text-white truncate hover:text-[#FF6B6B] transition-colors">
-                  {place?.name || 'Unknown Place'}
+                  {place?.name || t('place.unknownPlace')}
                 </h3>
               </Link>
               {place?.city && (
@@ -360,11 +365,11 @@ function HostBookingCard({ booking, index = 0, onAction, actionLoading }) {
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5 text-sm font-bold text-[#2D3436] dark:text-white">
               <HiUser className="text-[#A29BFE] text-xs" />
-              {guest?.name || 'Guest'}
+              {guest?.name || t('booking_form.guest')}
             </div>
             <div className="flex items-center gap-1.5 text-xs text-[#B2BEC3]">
               <HiMail className="text-xs" />
-              {guest?.email || 'No email'}
+              {guest?.email || t('host_bookings.noEmail')}
             </div>
           </div>
         </div>
@@ -374,18 +379,18 @@ function HostBookingCard({ booking, index = 0, onAction, actionLoading }) {
           <div className="flex items-center gap-1.5">
             <HiCalendar className="text-[#4ECDC4]" />
             <span>
-              {formatDate(booking.checkIn)} → {formatDate(booking.checkOut)}
+              {formatDate(booking.checkIn, dateLocale)} → {formatDate(booking.checkOut, dateLocale)}
             </span>
           </div>
           <div className="flex items-center gap-1.5">
             <HiUsers className="text-[#A29BFE]" />
             <span>
-              {booking.guests} guest{booking.guests !== 1 ? 's' : ''}
+              {booking.guests} {booking.guests !== 1 ? t('booking_form.guestsPlural') : t('booking_form.guest')}
             </span>
           </div>
           <span className="text-[#B2BEC3]">·</span>
           <span className="font-medium">
-            {nights} night{nights !== 1 ? 's' : ''}
+            {nights} {nights !== 1 ? t('booking_form.nights') : t('booking_form.night')}
           </span>
         </div>
 
@@ -401,7 +406,7 @@ function HostBookingCard({ booking, index = 0, onAction, actionLoading }) {
                 className="flex items-center gap-1 px-4 py-2 rounded-full text-xs font-bold text-[#FF6B6B] border-2 border-[#FF6B6B]/20 hover:bg-[#FF6B6B]/10 transition-all disabled:opacity-60"
               >
                 <HiX className="text-sm" />
-                {actionLoading === `${booking.booking_id}-reject` ? 'Refusing...' : 'Refuse'}
+                {actionLoading === `${booking.booking_id}-reject` ? t('host_bookings.refusing') : t('host_bookings.refuse')}
               </button>
               <button
                 onClick={() => onAction(booking.booking_id, 'approve')}
@@ -409,13 +414,13 @@ function HostBookingCard({ booking, index = 0, onAction, actionLoading }) {
                 className="flex items-center gap-1 px-4 py-2 rounded-full text-xs font-bold text-white bg-[#00B894] hover:bg-[#00A080] transition-all disabled:opacity-60"
               >
                 <HiCheck className="text-sm" />
-                {actionLoading === `${booking.booking_id}-approve` ? 'Approving...' : 'Accept'}
+                {actionLoading === `${booking.booking_id}-approve` ? t('host_bookings.approving') : t('host_bookings.accept')}
               </button>
             </div>
           )}
 
           {!isPending && (
-            <span className="text-sm text-[#636E72] dark:text-[#B2BEC3]">Total earned</span>
+            <span className="text-sm text-[#636E72] dark:text-[#B2BEC3]">{t('host_bookings.totalEarned')}</span>
           )}
         </div>
       </div>

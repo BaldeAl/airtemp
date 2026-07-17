@@ -1,2 +1,2 @@
 import GenericPage from './GenericPage';
-export default function Terms() { return <GenericPage title="Terms of Service" />; }
+export default function Terms() { return <GenericPage titleKey="footer.terms" />; }

@@ -8,7 +8,10 @@ const InputField = ({ label, type, value, onChange, name, required }) => {
     };
     return (
         <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-bold text-[#636E72] dark:text-[#B2BEC3]">{label}</span>
+            <span className="text-sm font-bold text-[#636E72] dark:text-[#B2BEC3]">
+                {label}
+                {required && <span className="text-[#FF6B6B] ml-0.5">*</span>}
+            </span>
             <div className="relative">
                 <input
                     className="input-cartoon"
