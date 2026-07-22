@@ -5,18 +5,25 @@ const ReviewsList = ({ reviews }) => {
   if (!reviews || reviews.length === 0) {
     return (
       <div className="py-6">
-        <h3 className="text-xl font-extrabold text-[#2D3436] dark:text-white mb-4">Reviews</h3>
-        <p className="text-[#636E72] dark:text-[#B2BEC3]">No reviews yet. Be the first to review!</p>
+        <h3 className="text-xl font-extrabold text-[#2D3436] dark:text-white mb-4">
+          Reviews
+        </h3>
+        <p className="text-[#636E72] dark:text-[#B2BEC3]">
+          No reviews yet. Be the first to review!
+        </p>
       </div>
     );
   }
 
-  const avgRating = reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length;
+  const avgRating =
+    reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length;
 
   return (
     <div className="py-6">
       <div className="flex items-center gap-4 mb-6">
-        <h3 className="text-xl font-extrabold text-[#2D3436] dark:text-white">Reviews</h3>
+        <h3 className="text-xl font-extrabold text-[#2D3436] dark:text-white">
+          Reviews
+        </h3>
         <StarRating rating={avgRating} size="md" reviewCount={reviews.length} />
       </div>
 
@@ -35,7 +42,9 @@ const ReviewsList = ({ reviews }) => {
                 className="rounded-full"
               />
               <div className="flex-1">
-                <p className="text-sm font-bold text-[#2D3436] dark:text-white">{review.user?.name || "Anonymous"}</p>
+                <p className="text-sm font-bold text-[#2D3436] dark:text-white">
+                  {review.user?.name || "Anonymous"}
+                </p>
                 <p className="text-xs text-[#B2BEC3]">
                   {new Date(review.createdAt).toLocaleDateString("en-US", {
                     month: "short",
@@ -45,7 +54,9 @@ const ReviewsList = ({ reviews }) => {
               </div>
               <StarRating rating={review.rating} size="xs" showValue={false} />
             </div>
-            <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] leading-relaxed">{review.comment}</p>
+            <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] leading-relaxed">
+              {review.comment}
+            </p>
           </div>
         ))}
       </div>

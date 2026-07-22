@@ -1,2 +1,4 @@
-import GenericPage from './GenericPage';
-export default function Careers() { return <GenericPage title="Careers" />; }
+import GenericPage from "./GenericPage";
+export default function Careers() {
+  return <GenericPage titleKey="generic.careers" />;
+}

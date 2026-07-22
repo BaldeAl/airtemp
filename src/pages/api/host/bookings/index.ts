@@ -4,7 +4,7 @@ import { verify } from "jsonwebtoken";
 
 export default async function handle(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "GET") {
     return res.status(405).json({ message: "Method not allowed" });
@@ -32,7 +32,12 @@ export default async function handle(
       select: { role: true },
     });
 
-    if (!user || (user.role !== "HOST" && user.role !== "HOST_PENDING" && user.role !== "ADMIN")) {
+    if (
+      !user ||
+      (user.role !== "HOST" &&
+        user.role !== "HOST_PENDING" &&
+        user.role !== "ADMIN")
+    ) {
       return res.status(403).json({ message: "Only hosts can access this" });
     }
 
@@ -71,7 +76,7 @@ export default async function handle(
 
     const now = new Date();
     const upcomingCount = bookings.filter(
-      (b) => new Date(b.checkIn) >= now && b.status === "confirmed"
+      (b) => new Date(b.checkIn) >= now && b.status === "confirmed",
     ).length;
 
     return res.status(200).json({

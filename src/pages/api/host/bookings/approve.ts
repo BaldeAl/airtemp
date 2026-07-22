@@ -4,7 +4,7 @@ import { verify } from "jsonwebtoken";
 
 export default async function handle(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
@@ -33,7 +33,9 @@ export default async function handle(
     });
 
     if (!user || (user.role !== "HOST" && user.role !== "ADMIN")) {
-      return res.status(403).json({ message: "Only hosts can manage bookings" });
+      return res
+        .status(403)
+        .json({ message: "Only hosts can manage bookings" });
     }
 
     const { bookingId, action } = req.body;
@@ -43,7 +45,9 @@ export default async function handle(
     }
 
     if (!action || !["approve", "reject"].includes(action)) {
-      return res.status(400).json({ message: "action must be 'approve' or 'reject'" });
+      return res
+        .status(400)
+        .json({ message: "action must be 'approve' or 'reject'" });
     }
 
     // Find the booking and verify it belongs to a place owned by this host
@@ -59,11 +63,15 @@ export default async function handle(
     }
 
     if (booking.place.hostId !== userId) {
-      return res.status(403).json({ message: "You can only manage bookings for your own places" });
+      return res
+        .status(403)
+        .json({ message: "You can only manage bookings for your own places" });
     }
 
     if (booking.status !== "pending") {
-      return res.status(400).json({ message: "Only pending bookings can be approved or rejected" });
+      return res
+        .status(400)
+        .json({ message: "Only pending bookings can be approved or rejected" });
     }
 
     const newStatus = action === "approve" ? "confirmed" : "cancelled";

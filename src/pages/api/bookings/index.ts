@@ -4,7 +4,7 @@ import { verify } from "jsonwebtoken";
 
 export default async function handle(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {

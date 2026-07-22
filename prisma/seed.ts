@@ -3,14 +3,46 @@ import { faker } from "@faker-js/faker";
 
 const prisma = new PrismaClient();
 
-const CATEGORIES = ["Beach", "Mountain", "City", "Countryside", "Luxury", "Tropical", "Lakefront", "Ski", "Desert", "Historic"];
+const CATEGORIES = [
+  "Beach",
+  "Mountain",
+  "City",
+  "Countryside",
+  "Luxury",
+  "Tropical",
+  "Lakefront",
+  "Ski",
+  "Desert",
+  "Historic",
+];
 
 const ALL_AMENITIES = [
-  "WiFi", "Kitchen", "Parking", "Pool", "Air conditioning", "Heating",
-  "Washer", "Dryer", "TV", "Iron", "Workspace", "Hot tub",
-  "BBQ grill", "Gym", "Elevator", "Fireplace", "Garden", "Balcony",
-  "Beach access", "Mountain view", "Lake view", "City view",
-  "Pet friendly", "Smoke alarm", "First aid kit", "Fire extinguisher"
+  "WiFi",
+  "Kitchen",
+  "Parking",
+  "Pool",
+  "Air conditioning",
+  "Heating",
+  "Washer",
+  "Dryer",
+  "TV",
+  "Iron",
+  "Workspace",
+  "Hot tub",
+  "BBQ grill",
+  "Gym",
+  "Elevator",
+  "Fireplace",
+  "Garden",
+  "Balcony",
+  "Beach access",
+  "Mountain view",
+  "Lake view",
+  "City view",
+  "Pet friendly",
+  "Smoke alarm",
+  "First aid kit",
+  "Fire extinguisher",
 ];
 
 function randomAmenities(): string[] {
@@ -21,7 +53,7 @@ function randomAmenities(): string[] {
 
 function randomImages(): string[] {
   return Array.from({ length: faker.number.int({ min: 3, max: 6 }) }).map(() =>
-    faker.image.url({ width: 800, height: 600 })
+    faker.image.url({ width: 800, height: 600 }),
   );
 }
 
@@ -33,14 +65,14 @@ const userData: Prisma.UserCreateInput[] = Array.from({ length: 100 }).map(
     password: faker.internet.password(),
     avatar: faker.image.avatar(),
     bio: faker.lorem.sentence({ min: 5, max: 15 }),
-  })
+  }),
 );
 
 const cityData: Prisma.CityCreateInput[] = Array.from({ length: 100 }).map(
   (_, id) => ({
     city_id: id,
     name: faker.location.city(),
-  })
+  }),
 );
 
 const placeData: Prisma.PlaceCreateInput[] = Array.from({ length: 100 }).map(
@@ -51,7 +83,8 @@ const placeData: Prisma.PlaceCreateInput[] = Array.from({ length: 100 }).map(
     image: faker.image.url({ width: 800, height: 600 }),
     images: randomImages(),
     amenities: randomAmenities(),
-    category: CATEGORIES[faker.number.int({ min: 0, max: CATEGORIES.length - 1 })],
+    category:
+      CATEGORIES[faker.number.int({ min: 0, max: CATEGORIES.length - 1 })],
     numberOfRooms: faker.number.int({ min: 1, max: 10 }),
     numberOfBathrooms: faker.number.int({ min: 1, max: 3 }),
     maxGuests: faker.number.int({ min: 1, max: 10 }),
@@ -68,7 +101,7 @@ const placeData: Prisma.PlaceCreateInput[] = Array.from({ length: 100 }).map(
         city_id: faker.number.int({ min: 1, max: 99 }),
       },
     },
-  })
+  }),
 );
 
 const REVIEW_COMMENTS = [
@@ -130,8 +163,13 @@ async function main() {
           data: {
             review_id: reviewId++,
             rating: faker.number.int({ min: 3, max: 5 }),
-            comment: REVIEW_COMMENTS[faker.number.int({ min: 0, max: REVIEW_COMMENTS.length - 1 })],
-            user: { connect: { user_id: faker.number.int({ min: 1, max: 99 }) } },
+            comment:
+              REVIEW_COMMENTS[
+                faker.number.int({ min: 0, max: REVIEW_COMMENTS.length - 1 })
+              ],
+            user: {
+              connect: { user_id: faker.number.int({ min: 1, max: 99 }) },
+            },
             place: { connect: { place_id: placeId } },
           },
         });

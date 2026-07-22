@@ -4,7 +4,7 @@ import { verify } from "jsonwebtoken";
 
 export default async function handle(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
@@ -22,7 +22,10 @@ export default async function handle(
       where: { user_id: userId },
     });
 
-    if (!callingUser || (callingUser.role !== "HOST" && callingUser.role !== "ADMIN")) {
+    if (
+      !callingUser ||
+      (callingUser.role !== "HOST" && callingUser.role !== "ADMIN")
+    ) {
       return res.status(403).json({ message: "Forbidden: Hosts only" });
     }
   } catch {
@@ -44,7 +47,9 @@ export default async function handle(
   }
 
   if (existingPlace.hostId !== userId) {
-    return res.status(403).json({ message: "Forbidden: You do not own this place" });
+    return res
+      .status(403)
+      .json({ message: "Forbidden: You do not own this place" });
   }
 
   if (req.method === "PUT") {
@@ -61,26 +66,26 @@ export default async function handle(
         maxGuests,
         priceByNight,
         totalUnits,
-        cityName
+        cityName,
       } = req.body;
 
       // Ensure city exists, or create it if missing
       const actualCityName = cityName || "Paris";
       let city = await prisma.city.findFirst({
-        where: { name: actualCityName }
+        where: { name: actualCityName },
       });
-      
+
       if (!city) {
         const maxCity = await prisma.city.findFirst({
           orderBy: { city_id: "desc" },
-          select: { city_id: true }
+          select: { city_id: true },
         });
         const nextCityId = (maxCity?.city_id ?? 0) + 1;
         city = await prisma.city.create({
           data: {
             city_id: nextCityId,
-            name: actualCityName
-          }
+            name: actualCityName,
+          },
         });
       }
 
@@ -88,17 +93,34 @@ export default async function handle(
         where: { place_id: placeId },
         data: {
           name: name !== undefined ? name : existingPlace.name,
-          description: description !== undefined ? description : existingPlace.description,
+          description:
+            description !== undefined ? description : existingPlace.description,
           image: image !== undefined ? image : existingPlace.image,
           images: images !== undefined ? images : existingPlace.images,
-          amenities: amenities !== undefined ? amenities : existingPlace.amenities,
+          amenities:
+            amenities !== undefined ? amenities : existingPlace.amenities,
           category: category !== undefined ? category : existingPlace.category,
-          numberOfRooms: numberOfRooms !== undefined ? Number(numberOfRooms) : existingPlace.numberOfRooms,
-          numberOfBathrooms: numberOfBathrooms !== undefined ? Number(numberOfBathrooms) : existingPlace.numberOfBathrooms,
-          maxGuests: maxGuests !== undefined ? Number(maxGuests) : existingPlace.maxGuests,
-          priceByNight: priceByNight !== undefined ? Number(priceByNight) : existingPlace.priceByNight,
-          totalUnits: totalUnits !== undefined ? Number(totalUnits) : existingPlace.totalUnits,
-          city: { connect: { city_id: city.city_id } }
+          numberOfRooms:
+            numberOfRooms !== undefined
+              ? Number(numberOfRooms)
+              : existingPlace.numberOfRooms,
+          numberOfBathrooms:
+            numberOfBathrooms !== undefined
+              ? Number(numberOfBathrooms)
+              : existingPlace.numberOfBathrooms,
+          maxGuests:
+            maxGuests !== undefined
+              ? Number(maxGuests)
+              : existingPlace.maxGuests,
+          priceByNight:
+            priceByNight !== undefined
+              ? Number(priceByNight)
+              : existingPlace.priceByNight,
+          totalUnits:
+            totalUnits !== undefined
+              ? Number(totalUnits)
+              : existingPlace.totalUnits,
+          city: { connect: { city_id: city.city_id } },
         },
       });
 

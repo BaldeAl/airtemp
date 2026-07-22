@@ -4,7 +4,7 @@ import { verify } from "jsonwebtoken";
 
 export default async function handle(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
@@ -49,18 +49,22 @@ export default async function handle(
     if (booking.status !== "confirmed" && booking.status !== "pending") {
       return res
         .status(400)
-        .json({ message: "Only confirmed or pending bookings can be cancelled" });
+        .json({
+          message: "Only confirmed or pending bookings can be cancelled",
+        });
     }
 
     // For confirmed bookings, enforce the 72h rule
     if (booking.status === "confirmed") {
       const now = new Date();
       const checkInDate = new Date(booking.checkIn);
-      const hoursUntilCheckIn = (checkInDate.getTime() - now.getTime()) / (1000 * 60 * 60);
+      const hoursUntilCheckIn =
+        (checkInDate.getTime() - now.getTime()) / (1000 * 60 * 60);
 
       if (hoursUntilCheckIn < 72) {
         return res.status(400).json({
-          message: "Confirmed bookings can only be cancelled at least 72 hours before check-in.",
+          message:
+            "Confirmed bookings can only be cancelled at least 72 hours before check-in.",
           hoursUntilCheckIn: Math.round(hoursUntilCheckIn),
         });
       }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { HiStar, HiOutlineStar } from "react-icons/hi";
 import StarRating from "./StarRating";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { useTranslation } from "../../lib/i18n/LanguageContext";
 
 const ReviewSection = ({ placeId, hostId, reviews: initialReviews }) => {
@@ -39,7 +39,7 @@ const ReviewSection = ({ placeId, hostId, reviews: initialReviews }) => {
         }
         // Check if user already reviewed
         const already = initialReviews?.find(
-          (r) => r.userId === payload.user_id
+          (r) => r.userId === payload.user_id,
         );
         if (already) setHasReviewed(true);
       } catch {
@@ -119,9 +119,13 @@ const ReviewSection = ({ placeId, hostId, reviews: initialReviews }) => {
         setReviews((prev) =>
           prev.map((r) =>
             r.review_id === reviewId
-              ? { ...r, hostReply: data.hostReply, hostReplyAt: data.hostReplyAt }
-              : r
-          )
+              ? {
+                  ...r,
+                  hostReply: data.hostReply,
+                  hostReplyAt: data.hostReplyAt,
+                }
+              : r,
+          ),
         );
         setReplyingTo(null);
         setReplyText("");
@@ -284,11 +288,14 @@ const ReviewSection = ({ placeId, hostId, reviews: initialReviews }) => {
                       {review.user?.name || t("reviews.anonymous")}
                     </p>
                     <p className="text-xs text-[#B2BEC3]">
-                      {new Date(review.createdAt).toLocaleDateString(dateLocale, {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })}
+                      {new Date(review.createdAt).toLocaleDateString(
+                        dateLocale,
+                        {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        },
+                      )}
                     </p>
                   </div>
                   <StarRating
@@ -305,8 +312,13 @@ const ReviewSection = ({ placeId, hostId, reviews: initialReviews }) => {
 
                 {/* Host Reply */}
                 {review.hostReply && (
-                  <div className="mt-3 ml-4 p-3 rounded-xl bg-[#F0F0EC] dark:bg-[#1A1A2E] border-l-3 border-[#0984E3]"
-                    style={{ borderLeftWidth: '3px', borderLeftColor: '#0984E3' }}>
+                  <div
+                    className="mt-3 ml-4 p-3 rounded-xl bg-[#F0F0EC] dark:bg-[#1A1A2E] border-l-3 border-[#0984E3]"
+                    style={{
+                      borderLeftWidth: "3px",
+                      borderLeftColor: "#0984E3",
+                    }}
+                  >
                     <p className="text-xs font-extrabold text-[#0984E3] mb-1">
                       {t("reviews.hostReply")}
                     </p>
@@ -315,11 +327,14 @@ const ReviewSection = ({ placeId, hostId, reviews: initialReviews }) => {
                     </p>
                     {review.hostReplyAt && (
                       <p className="text-xs text-[#B2BEC3] mt-1">
-                        {new Date(review.hostReplyAt).toLocaleDateString(dateLocale, {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })}
+                        {new Date(review.hostReplyAt).toLocaleDateString(
+                          dateLocale,
+                          {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          },
+                        )}
                       </p>
                     )}
                   </div>
@@ -344,7 +359,9 @@ const ReviewSection = ({ placeId, hostId, reviews: initialReviews }) => {
                             disabled={replySubmitting || !replyText.trim()}
                             className="px-4 py-1.5 rounded-full font-bold text-white bg-[#0984E3] hover:bg-[#0871C4] transition-all text-xs disabled:opacity-50"
                           >
-                            {replySubmitting ? t("reviews.sending") : t("reviews.sendReply")}
+                            {replySubmitting
+                              ? t("reviews.sending")
+                              : t("reviews.sendReply")}
                           </button>
                           <button
                             type="button"

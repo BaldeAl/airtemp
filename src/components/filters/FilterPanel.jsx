@@ -14,20 +14,28 @@ const FilterPanel = ({ filters, onFilterChange }) => {
       >
         <HiAdjustments className="text-lg" />
         {t("filters.filters")}
-        {(filters.minPrice > 0 || filters.maxPrice < 1000 || filters.minRooms > 0 || filters.minGuests > 0) && (
+        {(filters.minPrice > 0 ||
+          filters.maxPrice < 1000 ||
+          filters.minRooms > 0 ||
+          filters.minGuests > 0) && (
           <span className="w-2 h-2 rounded-full bg-[#FF6B6B]" />
         )}
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-40 flex items-end md:items-center justify-center" onClick={() => setIsOpen(false)}>
+        <div
+          className="fixed inset-0 z-40 flex items-end md:items-center justify-center"
+          onClick={() => setIsOpen(false)}
+        >
           <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
           <div
             className="relative w-full max-w-md bg-white dark:bg-[#232340] border border-[#E8E8E4] dark:border-[#3D3D5C] rounded-t-3xl md:rounded-3xl p-6 animate-fade-in-up z-50 shadow-cartoon-lg"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white">{t("filters.filters")}</h3>
+              <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white">
+                {t("filters.filters")}
+              </h3>
               <button
                 onClick={() => setIsOpen(false)}
                 className="p-2 rounded-full hover:bg-[#F0F0EC] dark:hover:bg-[#1A1A2E] text-[#636E72] hover:text-[#2D3436] dark:hover:text-white transition-all"
@@ -39,7 +47,8 @@ const FilterPanel = ({ filters, onFilterChange }) => {
             <div className="space-y-6">
               <div>
                 <label className="text-sm font-bold text-[#636E72] dark:text-[#B2BEC3] mb-3 block">
-                  {t("filters.priceRange")}: {filters.minPrice}€ – {filters.maxPrice}€
+                  {t("filters.priceRange")}: {filters.minPrice}€ –{" "}
+                  {filters.maxPrice}€
                 </label>
                 <div className="flex items-center gap-4">
                   <input
@@ -49,7 +58,10 @@ const FilterPanel = ({ filters, onFilterChange }) => {
                     step="10"
                     value={filters.minPrice}
                     onChange={(e) =>
-                      onFilterChange({ ...filters, minPrice: Number(e.target.value) })
+                      onFilterChange({
+                        ...filters,
+                        minPrice: Number(e.target.value),
+                      })
                     }
                     className="flex-1"
                   />
@@ -60,7 +72,10 @@ const FilterPanel = ({ filters, onFilterChange }) => {
                     step="10"
                     value={filters.maxPrice}
                     onChange={(e) =>
-                      onFilterChange({ ...filters, maxPrice: Number(e.target.value) })
+                      onFilterChange({
+                        ...filters,
+                        maxPrice: Number(e.target.value),
+                      })
                     }
                     className="flex-1"
                   />
@@ -75,7 +90,9 @@ const FilterPanel = ({ filters, onFilterChange }) => {
                   {[0, 1, 2, 3, 4, 5].map((num) => (
                     <button
                       key={num}
-                      onClick={() => onFilterChange({ ...filters, minRooms: num })}
+                      onClick={() =>
+                        onFilterChange({ ...filters, minRooms: num })
+                      }
                       className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
                         filters.minRooms === num
                           ? "bg-[#FF6B6B] text-white"
@@ -96,7 +113,9 @@ const FilterPanel = ({ filters, onFilterChange }) => {
                   {[0, 1, 2, 4, 6, 8].map((num) => (
                     <button
                       key={num}
-                      onClick={() => onFilterChange({ ...filters, minGuests: num })}
+                      onClick={() =>
+                        onFilterChange({ ...filters, minGuests: num })
+                      }
                       className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
                         filters.minGuests === num
                           ? "bg-[#FF6B6B] text-white"

@@ -1,43 +1,43 @@
-import Head from 'next/head';
-import Layout from '../../components/Layout';
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { useRouter } from 'next/router';
-import Loading from '../../components/loading/Loading';
-import Link from 'next/link';
-import { useTranslation } from '../../lib/i18n/LanguageContext';
+import Head from "next/head";
+import Layout from "../../components/Layout";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useRouter } from "next/router";
+import Loading from "../../components/loading/Loading";
+import Link from "next/link";
+import { useTranslation } from "../../lib/i18n/LanguageContext";
 import {
   HiChat,
   HiArrowLeft,
   HiPaperAirplane,
   HiUser,
   HiDotsVertical,
-} from 'react-icons/hi';
+} from "react-icons/hi";
 
 function timeAgo(date, locale) {
   const now = new Date();
   const diff = now.getTime() - new Date(date).getTime();
   const mins = Math.floor(diff / 60000);
-  
+
   // Basic localization mapping for simple strings (you might want to put this in language files later if it gets complex)
-  const isFr = locale === 'fr-FR';
-  
-  if (mins < 1) return isFr ? "À l'instant" : 'Just now';
+  const isFr = locale === "fr-FR";
+
+  if (mins < 1) return isFr ? "À l'instant" : "Just now";
   if (mins < 60) return isFr ? `Il y a ${mins}m` : `${mins}m ago`;
   const hours = Math.floor(mins / 60);
   if (hours < 24) return isFr ? `Il y a ${hours}h` : `${hours}h ago`;
   const days = Math.floor(hours / 24);
   if (days < 7) return isFr ? `Il y a ${days}j` : `${days}d ago`;
-  
+
   return new Date(date).toLocaleDateString(locale, {
-    month: 'short',
-    day: 'numeric',
+    month: "short",
+    day: "numeric",
   });
 }
 
 export default function MessagesPage() {
   const [conversations, setConversations] = useState(null);
   const [activeChat, setActiveChat] = useState(null); // { userId, messages, otherUser }
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const messagesEndRef = useRef(null);
@@ -47,18 +47,18 @@ export default function MessagesPage() {
 
   // Fetch conversations list
   const fetchConversations = useCallback(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
       setIsAuthenticated(false);
       setConversations([]);
       return;
     }
 
-    fetch('/api/messages', {
+    fetch("/api/messages", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {
-        if (!res.ok) throw new Error('Failed');
+        if (!res.ok) throw new Error("Failed");
         return res.json();
       })
       .then((data) => setConversations(data.conversations || []))
@@ -71,25 +71,26 @@ export default function MessagesPage() {
 
   // If navigated with ?contact=userId, open that conversation
   useEffect(() => {
-    if (contact && conversations) {
+    if (contact) {
       openChat(Number(contact));
     }
-  }, [contact, conversations]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contact]);
 
   // Scroll to bottom of messages
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [activeChat?.messages]);
 
   const openChat = async (otherUserId) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) return;
 
     try {
       const res = await fetch(`/api/messages/${otherUserId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error('Failed');
+      if (!res.ok) throw new Error("Failed");
       const data = await res.json();
       setActiveChat({
         userId: otherUserId,
@@ -107,15 +108,15 @@ export default function MessagesPage() {
     e.preventDefault();
     if (!newMessage.trim() || !activeChat || sending) return;
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) return;
 
     setSending(true);
     try {
-      const res = await fetch('/api/messages', {
-        method: 'POST',
+      const res = await fetch("/api/messages", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
@@ -131,7 +132,7 @@ export default function MessagesPage() {
           ...prev,
           messages: [...prev.messages, msg],
         }));
-        setNewMessage('');
+        setNewMessage("");
         fetchConversations();
       }
     } catch (err) {
@@ -153,7 +154,7 @@ export default function MessagesPage() {
     return (
       <>
         <Head>
-          <title>{t('messages.title')} – AirAl</title>
+          <title>{t("messages.title")} – AirAl</title>
         </Head>
         <Layout>
           <div className="flex min-h-[calc(100vh-200px)] items-center justify-center px-4">
@@ -162,13 +163,16 @@ export default function MessagesPage() {
                 <HiChat className="text-4xl text-[#A29BFE]" />
               </div>
               <h1 className="text-2xl font-extrabold text-[#2D3436] dark:text-white mb-3">
-                {t('messages.signInToView')}
+                {t("messages.signInToView")}
               </h1>
               <p className="text-[#636E72] dark:text-[#B2BEC3] mb-8 text-sm">
-                {t('messages.signInDescription')}
+                {t("messages.signInDescription")}
               </p>
-              <Link href="/Auth/login/" className="btn-pill px-8 py-3 text-base">
-                {t('auth.login')}
+              <Link
+                href="/Auth/login/"
+                className="btn-pill px-8 py-3 text-base"
+              >
+                {t("auth.login")}
               </Link>
             </div>
           </div>
@@ -179,9 +183,9 @@ export default function MessagesPage() {
 
   const currentUserId = (() => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) return null;
-      const payload = JSON.parse(atob(token.split('.')[1]));
+      const payload = JSON.parse(atob(token.split(".")[1]));
       return payload.user_id;
     } catch {
       return null;
@@ -191,23 +195,29 @@ export default function MessagesPage() {
   return (
     <>
       <Head>
-        <title>{t('messages.title')} – AirAl</title>
+        <title>{t("messages.title")} – AirAl</title>
         <meta name="description" content="Your messages on AirAl" />
       </Head>
       <Layout>
         <div className="max-w-5xl mx-auto px-4 py-6 sm:py-10">
-          <div className="card-cartoon overflow-hidden" style={{ minHeight: 'calc(100vh - 220px)' }}>
-            <div className="flex h-full" style={{ minHeight: 'calc(100vh - 220px)' }}>
+          <div
+            className="card-cartoon overflow-hidden"
+            style={{ minHeight: "calc(100vh - 220px)" }}
+          >
+            <div
+              className="flex h-full"
+              style={{ minHeight: "calc(100vh - 220px)" }}
+            >
               {/* Sidebar - Conversations List */}
               <div
                 className={`${
-                  activeChat ? 'hidden md:flex' : 'flex'
+                  activeChat ? "hidden md:flex" : "flex"
                 } flex-col w-full md:w-80 lg:w-96 border-r border-[#E8E8E4] dark:border-[#2D2D4A]`}
               >
                 <div className="p-4 sm:p-5 border-b border-[#E8E8E4] dark:border-[#2D2D4A]">
                   <h1 className="text-xl font-extrabold text-[#2D3436] dark:text-white flex items-center gap-2">
                     <HiChat className="text-[#A29BFE]" />
-                    {t('messages.title')}
+                    {t("messages.title")}
                   </h1>
                 </div>
 
@@ -218,10 +228,10 @@ export default function MessagesPage() {
                         <HiChat className="text-3xl text-[#A29BFE]/40" />
                       </div>
                       <h3 className="text-base font-extrabold text-[#2D3436] dark:text-white mb-1">
-                        {t('messages.noMessages')}
+                        {t("messages.noMessages")}
                       </h3>
                       <p className="text-xs text-[#B2BEC3]">
-                        {t('messages.startConversation')}
+                        {t("messages.startConversation")}
                       </p>
                     </div>
                   ) : (
@@ -231,8 +241,8 @@ export default function MessagesPage() {
                         onClick={() => openChat(conv.otherUser.user_id)}
                         className={`w-full text-left p-4 border-b border-[#F0F0EC] dark:border-[#2D2D4A] hover:bg-[#F0F0EC] dark:hover:bg-[#2D2D4A] transition-all ${
                           activeChat?.userId === conv.otherUser.user_id
-                            ? 'bg-[#F0F0EC] dark:bg-[#2D2D4A]'
-                            : ''
+                            ? "bg-[#F0F0EC] dark:bg-[#2D2D4A]"
+                            : ""
                         }`}
                       >
                         <div className="flex items-center gap-3">
@@ -244,7 +254,8 @@ export default function MessagesPage() {
                                 className="w-full h-full rounded-full object-cover"
                               />
                             ) : (
-                              conv.otherUser.name?.charAt(0)?.toUpperCase() || 'U'
+                              conv.otherUser.name?.charAt(0)?.toUpperCase() ||
+                              "U"
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
@@ -253,7 +264,10 @@ export default function MessagesPage() {
                                 {conv.otherUser.name}
                               </span>
                               <span className="text-xs text-[#B2BEC3] flex-shrink-0 ml-2">
-                                {timeAgo(conv.lastMessage.createdAt, dateLocale)}
+                                {timeAgo(
+                                  conv.lastMessage.createdAt,
+                                  dateLocale,
+                                )}
                               </span>
                             </div>
                             <div className="flex items-center justify-between mt-0.5">
@@ -277,7 +291,7 @@ export default function MessagesPage() {
               {/* Chat Area */}
               <div
                 className={`${
-                  activeChat ? 'flex' : 'hidden md:flex'
+                  activeChat ? "flex" : "hidden md:flex"
                 } flex-col flex-1`}
               >
                 {activeChat ? (
@@ -298,16 +312,21 @@ export default function MessagesPage() {
                             className="w-full h-full rounded-full object-cover"
                           />
                         ) : (
-                          activeChat.otherUser?.name?.charAt(0)?.toUpperCase() || 'U'
+                          activeChat.otherUser?.name
+                            ?.charAt(0)
+                            ?.toUpperCase() || "U"
                         )}
                       </div>
                       <div>
                         <h3 className="text-sm font-extrabold text-[#2D3436] dark:text-white">
-                          {activeChat.otherUser?.name || t('booking_form.guest')}
+                          {activeChat.otherUser?.name ||
+                            t("booking_form.guest")}
                         </h3>
                         {activeChat.otherUser?.role && (
                           <span className="text-xs text-[#B2BEC3]">
-                            {activeChat.otherUser.role === 'HOST' ? t('messages.host') : t('messages.guest')}
+                            {activeChat.otherUser.role === "HOST"
+                              ? t("messages.host")
+                              : t("messages.guest")}
                           </span>
                         )}
                       </div>
@@ -317,7 +336,7 @@ export default function MessagesPage() {
                     <div className="flex-1 overflow-y-auto p-4 space-y-3">
                       {activeChat.messages.length === 0 && (
                         <div className="text-center py-8 text-sm text-[#B2BEC3]">
-                          {t('messages.startChat')} 👋
+                          {t("messages.startChat")} 👋
                         </div>
                       )}
                       {activeChat.messages.map((msg) => {
@@ -325,19 +344,19 @@ export default function MessagesPage() {
                         return (
                           <div
                             key={msg.id || msg.message_id}
-                            className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}
+                            className={`flex ${isMine ? "justify-end" : "justify-start"}`}
                           >
                             <div
                               className={`max-w-[75%] px-4 py-2.5 rounded-2xl text-sm ${
                                 isMine
-                                  ? 'bg-[#FF6B6B] text-white rounded-br-md'
-                                  : 'bg-[#F0F0EC] dark:bg-[#2D2D4A] text-[#2D3436] dark:text-white rounded-bl-md'
+                                  ? "bg-[#FF6B6B] text-white rounded-br-md"
+                                  : "bg-[#F0F0EC] dark:bg-[#2D2D4A] text-[#2D3436] dark:text-white rounded-bl-md"
                               }`}
                             >
                               <p className="leading-relaxed">{msg.content}</p>
                               <p
                                 className={`text-[10px] mt-1 ${
-                                  isMine ? 'text-white/60' : 'text-[#B2BEC3]'
+                                  isMine ? "text-white/60" : "text-[#B2BEC3]"
                                 }`}
                               >
                                 {timeAgo(msg.createdAt, dateLocale)}
@@ -358,7 +377,7 @@ export default function MessagesPage() {
                         type="text"
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder={t('messages.typeMessage')}
+                        placeholder={t("messages.typeMessage")}
                         className="flex-1 px-4 py-3 rounded-full bg-[#F0F0EC] dark:bg-[#1A1A2E] border-2 border-transparent focus:border-[#A29BFE] outline-none text-sm text-[#2D3436] dark:text-white placeholder:text-[#B2BEC3] transition-all"
                       />
                       <button
@@ -376,10 +395,10 @@ export default function MessagesPage() {
                       <HiChat className="text-4xl text-[#A29BFE]/40" />
                     </div>
                     <h3 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-1">
-                      {t('messages.selectConversation')}
+                      {t("messages.selectConversation")}
                     </h3>
                     <p className="text-sm text-[#B2BEC3]">
-                      {t('messages.chooseConversation')}
+                      {t("messages.chooseConversation")}
                     </p>
                   </div>
                 )}

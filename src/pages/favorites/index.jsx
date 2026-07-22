@@ -1,12 +1,12 @@
-import Head from 'next/head';
-import Layout from '../../components/Layout';
-import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/router';
-import Place from '../../components/place/Place';
-import Loading from '../../components/loading/Loading';
-import { useTranslation } from '../../lib/i18n/LanguageContext';
-import { HiHeart, HiOutlineHeart } from 'react-icons/hi';
-import Link from 'next/link';
+import Head from "next/head";
+import Layout from "../../components/Layout";
+import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/router";
+import Place from "../../components/place/Place";
+import Loading from "../../components/loading/Loading";
+import { useTranslation } from "../../lib/i18n/LanguageContext";
+import { HiHeart, HiOutlineHeart } from "react-icons/hi";
+import Link from "next/link";
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState(null);
@@ -15,20 +15,20 @@ export default function FavoritesPage() {
   const { t } = useTranslation();
 
   const fetchFavorites = useCallback(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
       setIsAuthenticated(false);
       setFavorites([]);
       return;
     }
 
-    fetch('/api/favorites', {
+    fetch("/api/favorites", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => {
-        if (!res.ok) throw new Error('Failed');
+        if (!res.ok) throw new Error("Failed");
         return res.json();
       })
       .then((data) => {
@@ -36,10 +36,10 @@ export default function FavoritesPage() {
         setFavorites(places);
         // Sync localStorage with server state, ensuring consistent number types
         const placeIds = places.map((p) => Number(p.place_id));
-        localStorage.setItem('favorites', JSON.stringify(placeIds));
+        localStorage.setItem("favorites", JSON.stringify(placeIds));
       })
       .catch((err) => {
-        console.error('Error fetching favorites:', err);
+        console.error("Error fetching favorites:", err);
         setFavorites([]);
       });
   }, []);
@@ -53,7 +53,9 @@ export default function FavoritesPage() {
     if (!isFavorite) {
       // Small delay for the heart animation to play before removing card
       setTimeout(() => {
-        setFavorites((prev) => prev ? prev.filter((p) => p.place_id !== placeId) : []);
+        setFavorites((prev) =>
+          prev ? prev.filter((p) => p.place_id !== placeId) : [],
+        );
       }, 300);
     }
   }, []);
@@ -70,8 +72,11 @@ export default function FavoritesPage() {
     return (
       <>
         <Head>
-          <title>{t('favorites.title')} – AirAl</title>
-          <meta name="description" content="Sign in to see your favorite places" />
+          <title>{t("favorites.title")} – AirAl</title>
+          <meta
+            name="description"
+            content="Sign in to see your favorite places"
+          />
         </Head>
         <Layout>
           <div className="flex min-h-[calc(100vh-200px)] items-center justify-center px-4">
@@ -80,13 +85,16 @@ export default function FavoritesPage() {
                 <HiOutlineHeart className="text-4xl text-[#FF6B6B]" />
               </div>
               <h1 className="text-2xl font-extrabold text-[#2D3436] dark:text-white mb-3">
-                {t('favorites.signInToView')}
+                {t("favorites.signInToView")}
               </h1>
               <p className="text-[#636E72] dark:text-[#B2BEC3] mb-8 text-sm leading-relaxed">
-                {t('favorites.signInDescription')}
+                {t("favorites.signInDescription")}
               </p>
-              <Link href="/Auth/login/" className="btn-pill px-8 py-3 text-base">
-                {t('auth.login')}
+              <Link
+                href="/Auth/login/"
+                className="btn-pill px-8 py-3 text-base"
+              >
+                {t("auth.login")}
               </Link>
             </div>
           </div>
@@ -98,7 +106,7 @@ export default function FavoritesPage() {
   return (
     <>
       <Head>
-        <title>{t('favorites.myFavorites')} – AirAl</title>
+        <title>{t("favorites.myFavorites")} – AirAl</title>
         <meta name="description" content="Your favorite places on AirAl" />
       </Head>
       <Layout>
@@ -110,12 +118,16 @@ export default function FavoritesPage() {
                 <HiHeart className="text-xl text-[#FF6B6B]" />
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-[#2D3436] dark:text-white">
-                {t('favorites.myFavorites')}
+                {t("favorites.myFavorites")}
               </h1>
             </div>
             <p className="text-sm text-[#636E72] dark:text-[#B2BEC3] ml-[52px]">
-              <span className="font-extrabold text-[#2D3436] dark:text-white">{favorites.length}</span>{' '}
-              {favorites.length !== 1 ? t('favorites.savedPlaces') : t('favorites.savedPlace')}
+              <span className="font-extrabold text-[#2D3436] dark:text-white">
+                {favorites.length}
+              </span>{" "}
+              {favorites.length !== 1
+                ? t("favorites.savedPlaces")
+                : t("favorites.savedPlace")}
             </p>
           </div>
 
@@ -126,13 +138,13 @@ export default function FavoritesPage() {
                 <HiOutlineHeart className="text-5xl text-[#FF6B6B]/40" />
               </div>
               <h3 className="text-xl font-extrabold text-[#2D3436] dark:text-white mb-2">
-                {t('favorites.noFavorites')}
+                {t("favorites.noFavorites")}
               </h3>
               <p className="text-[#636E72] dark:text-[#B2BEC3] text-center max-w-md text-sm mb-8">
-                {t('favorites.noFavoritesDesc')}
+                {t("favorites.noFavoritesDesc")}
               </p>
               <Link href="/" className="btn-pill px-8 py-3">
-                {t('bookings.explorePlaces')}
+                {t("bookings.explorePlaces")}
               </Link>
             </div>
           ) : (

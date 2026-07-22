@@ -142,6 +142,53 @@
     "listings": "logements",
     "amenities": "Équipements"
   },
+  "place_card": {
+    "perNight": "/ nuit",
+    "bed": "chambre",
+    "beds": "chambres",
+    "guest": "voyageur",
+    "guests": "voyageurs"
+  },
+  "place_info": {
+    "bedrooms": "Chambres",
+    "bathrooms": "Salles de bain",
+    "maxGuests": "Voyageurs max"
+  },
+  "host_card": {
+    "superhost": "Superhôte",
+    "memberSince": "Membre depuis",
+    "listing": "logement",
+    "listings": "logements"
+  },
+  "categories": {
+    "All": "Tout",
+    "Beach": "Plage",
+    "Mountain": "Montagne",
+    "City": "Ville",
+    "Countryside": "Campagne",
+    "Luxury": "Luxe",
+    "Tropical": "Tropical",
+    "Lakefront": "Lac",
+    "Ski": "Ski",
+    "Desert": "Désert",
+    "Historic": "Historique"
+  },
+  "places": {
+    "found": "trouvé(s)",
+    "place": "logement",
+    "places": "logements",
+    "noPlacesFound": "Aucun logement trouvé",
+    "noPlacesHint": "Essayez de modifier votre recherche ou vos filtres pour trouver ce que vous cherchez.",
+    "resetFilters": "Réinitialiser les filtres"
+  },
+  "gallery": {
+    "showAllPhotos": "Voir toutes les photos"
+  },
+  "errors": {
+    "somethingWentWrong": "Quelque chose s'est mal passé",
+    "serverError": "Une erreur {code} s'est produite sur le serveur",
+    "clientError": "Une erreur s'est produite côté client"
+  },
   "booking_form": {
     "perNight": "/ nuit",
     "checkIn": "Arrivée",
@@ -196,37 +243,54 @@
     "clearAll": "Tout effacer",
     "showResults": "Afficher les résultats"
   },
+  "messages": {
+    "title": "Messages",
+    "signInToView": "Connectez-vous pour voir vos messages",
+    "signInDescription": "Connectez-vous pour discuter avec des hôtes ou des voyageurs.",
+    "noMessages": "Aucun message pour le moment",
+    "startConversation": "Commencez une conversation pour la voir ici.",
+    "host": "Hôte",
+    "guest": "Voyageur",
+    "startChat": "Démarrer la discussion",
+    "typeMessage": "Tapez un message...",
+    "selectConversation": "Sélectionnez une conversation",
+    "chooseConversation": "Choisissez une conversation dans la liste pour commencer à discuter."
+  },
   "admin": {
     "title": "Tableau de bord Admin",
-    "subtitle": "Gérer les utilisateurs et les demandes de gérants",
+    "manageUsers": "Gérer les utilisateurs et les demandes de gérants",
     "pendingValidations": "Validations en attente",
     "approvedHosts": "Gérants approuvés",
     "revoked": "Révoqués",
     "allCaughtUp": "Tout est à jour !",
     "noPending": "Il n'y a aucune demande de gérant en attente de validation.",
-    "noApproved": "Aucun gérant approuvé",
-    "noApprovedDescription": "Il n'y a pas encore de gérant approuvé.",
-    "noRevoked": "Aucun gérant révoqué",
-    "noRevokedDescription": "Il n'y a aucun gérant dont les droits ont été révoqués.",
+    "noApprovedHosts": "Aucun gérant approuvé",
+    "noApprovedHostsDesc": "Il n'y a pas encore de gérant approuvé.",
+    "noRevokedHosts": "Aucun gérant révoqué",
+    "noRevokedHostsDesc": "Il n'y a aucun gérant dont les droits ont été révoqués.",
     "approveHost": "Approuver le gérant",
     "approving": "Approbation...",
-    "revokeHostRights": "Révoquer les droits",
+    "approveSuccess": "Gérant approuvé avec succès !",
+    "approveFailed": "Échec de l'approbation du gérant.",
+    "revokeHost": "Révoquer les droits",
     "revoking": "Révocation...",
-    "regrantHostRights": "Réattribuer les droits",
+    "revokeConfirm": "Êtes-vous sûr de vouloir révoquer les droits de ce gérant ?",
+    "revokeSuccess": "Droits du gérant révoqués avec succès.",
+    "grantHost": "Réattribuer les droits",
     "granting": "Attribution...",
-    "approved": "Approuvé",
-    "pendingBadge": "En attente",
-    "revokedBadge": "Révoqué",
-    "addressLabel": "Adresse :",
+    "grantConfirm": "Êtes-vous sûr de vouloir réattribuer les droits de gérant à cet utilisateur ?",
+    "grantSuccess": "Droits de gérant attribués avec succès !",
+    "roleUpdateFailed": "Échec de la mise à jour du rôle.",
+    "statusApproved": "Approuvé",
+    "statusPending": "En attente",
+    "statusRevoked": "Révoqué",
+    "address": "Adresse",
     "noAddress": "Aucune adresse fournie.",
-    "phoneLabel": "Téléphone :",
-    "identityDoc": "Pièce d'identité :",
-    "retainedLegal": "(Conservé dans la limite de durée légale)",
-    "pdfDocument": "📄 Document PDF",
-    "clickToView": "Cliquer pour voir",
-    "registered": "Inscrit le :",
-    "confirmRevoke": "Êtes-vous sûr de vouloir révoquer les droits de ce gérant ?",
-    "confirmGrant": "Êtes-vous sûr de vouloir réattribuer les droits de gérant à cet utilisateur ?"
+    "phone": "Téléphone",
+    "identityDocument": "Pièce d'identité",
+    "retainedDocument": "(Conservé dans la limite de durée légale)",
+    "clickView": "Cliquer pour voir",
+    "registered": "Inscrit le"
   },
   "hostPlaces": {
     "title": "Mes Logements",
@@ -250,6 +314,21 @@
     "placeDeleted": "Logement supprimé avec succès",
     "deleteFailed": "Échec de la suppression du logement.",
     "errorOccurred": "Une erreur est survenue."
+  },
+  "host_places": {
+    "manageTitle": "Gérer les logements",
+    "myPlaces": "Mes Logements",
+    "placeListed": "logement publié",
+    "placesListed": "logements publiés",
+    "addNewPlace": "Ajouter un logement",
+    "addFirstPlace": "Ajouter votre premier logement",
+    "accountUnderReview": "Compte en cours de vérification",
+    "reviewDesc": "Votre demande de gérant est en cours de vérification par un administrateur. Une fois validée, vous pourrez ajouter des logements et commencer à héberger !",
+    "noPlacesYet": "Aucun logement",
+    "startHostingDesc": "Commencez à héberger en ajoutant votre premier logement. Partagez votre propriété avec des voyageurs du monde entier !",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce logement ? Cette action est irréversible.",
+    "deleteSuccess": "Logement supprimé avec succès",
+    "deleteFailed": "Échec de la suppression du logement."
   },
   "hostBookings": {
     "title": "Réservations reçues",
@@ -278,20 +357,27 @@
     "noEmail": "Pas d'email"
   },
   "about": {
-    "metaTitle": "À propos de AirAl – Le futur du voyage",
-    "metaDescription": "Découvrez la mission d'AirAl : faire en sorte que chacun se sente chez soi, partout.",
+    "title": "À propos d'AirAl",
+    "metaTitle": "À propos d'AirAl – L'Avenir du Voyage",
+    "metaDescription": "Découvrez la mission d'AirAl : permettre à chacun de se sentir chez soi, partout.",
     "heroTitle": "Sentez-vous",
     "heroHighlight": "chez vous.",
-    "heroSubtitle": "AirAl est né en 2026 lorsque deux designers ont réalisé qu'il existait une meilleure façon de découvrir le monde. Aujourd'hui, notre communauté connecte des millions d'hôtes et de voyageurs à travers le globe.",
-    "startExploring": "Commencer à explorer",
-    "becomeHost": "Devenir gérant",
-    "guestArrivals": "Arrivées de voyageurs",
+    "heroSubtitle": "AirAl est né en 2026 lorsque deux designers ont réalisé qu'il y avait une meilleure façon de découvrir le monde. Aujourd'hui, notre communauté connecte des millions d'hôtes et de voyageurs à travers le monde.",
+    "heroDescription": "AirAl repose sur l'idée que vous pouvez vous sentir chez vous n'importe où. Nous créons un monde où chacun peut voyager, échanger et se sentir à sa place.",
+    "startExploring": "Commencer l'exploration",
+    "becomeHost": "Devenir hôte",
+    "stats": {
+      "arrivals": "Voyageurs accueillis",
+      "countries": "Pays et régions",
+      "hosts": "Communauté d'hôtes"
+    },
+    "guestArrivals": "Voyageurs accueillis",
     "countriesRegions": "Pays et régions",
-    "hostCommunity": "Communauté de gérants",
-    "commitmentTitle": "Notre engagement envers la confiance",
-    "commitmentP1": "Nous croyons que la confiance est le fondement de toute communauté. C'est pourquoi nous avons mis en place des protocoles de sécurité de pointe, des paiements sécurisés et une équipe de support disponible 24h/24.",
-    "commitmentP2": "Chaque gérant est vérifié et chaque profil de voyageur est lié à des avis authentiques. Notre programme AirCover offre une protection complète pour chaque séjour, garantissant la tranquillité d'esprit pour les gérants comme les voyageurs.",
-    "commitmentP3": "Que vous ouvriez votre logement ou séjourniez dans un autre, vous n'êtes jamais seul avec AirAl."
+    "hostCommunity": "Communauté d'hôtes",
+    "trustTitle": "Notre engagement envers la confiance",
+    "trustP1": "Nous croyons que la confiance est le fondement de toute communauté. C'est pourquoi nous avons développé des protocoles de sécurité de pointe, des paiements sécurisés et une équipe d'assistance mondiale disponible 24h/24 et 7j/7.",
+    "trustP2": "Chaque hôte est vérifié et chaque profil de voyageur est lié à des commentaires authentiques. Notre programme AirCover offre une protection complète pour chaque séjour, garantissant la tranquillité d'esprit des hôtes et des voyageurs.",
+    "trustP3": "Que vous ouvriez votre maison ou que vous y séjourniez, vous n'êtes jamais seul avec AirAl."
   },
   "footer": {
     "description": "Découvrez des logements incroyables dans le monde entier. Votre prochaine aventure commence ici.",
@@ -329,7 +415,9 @@
     "careers": "Carrières",
     "investors": "Investisseurs",
     "sitemap": "Plan du site",
-    "comingSoon": "Bientôt disponible..."
+    "comingSoon": "Bientôt disponible...",
+    "underConstruction": "Page en construction",
+    "workingHard": "Nous travaillons dur pour vous proposer cette page. Revenez plus tard !"
   },
   "language": {
     "switchTo": "English",

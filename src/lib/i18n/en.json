@@ -142,6 +142,53 @@
     "listings": "listings",
     "amenities": "Amenities"
   },
+  "place_card": {
+    "perNight": "/ night",
+    "bed": "bed",
+    "beds": "beds",
+    "guest": "guest",
+    "guests": "guests"
+  },
+  "place_info": {
+    "bedrooms": "Bedrooms",
+    "bathrooms": "Bathrooms",
+    "maxGuests": "Max Guests"
+  },
+  "host_card": {
+    "superhost": "Superhost",
+    "memberSince": "Member since",
+    "listing": "listing",
+    "listings": "listings"
+  },
+  "categories": {
+    "All": "All",
+    "Beach": "Beach",
+    "Mountain": "Mountain",
+    "City": "City",
+    "Countryside": "Countryside",
+    "Luxury": "Luxury",
+    "Tropical": "Tropical",
+    "Lakefront": "Lakefront",
+    "Ski": "Ski",
+    "Desert": "Desert",
+    "Historic": "Historic"
+  },
+  "places": {
+    "found": "found",
+    "place": "place",
+    "places": "places",
+    "noPlacesFound": "No places found",
+    "noPlacesHint": "Try adjusting your search or filters to find what you're looking for.",
+    "resetFilters": "Reset filters"
+  },
+  "gallery": {
+    "showAllPhotos": "Show all photos"
+  },
+  "errors": {
+    "somethingWentWrong": "Something went wrong",
+    "serverError": "An error {code} occurred on server",
+    "clientError": "An error occurred on client"
+  },
   "booking_form": {
     "perNight": "/ night",
     "checkIn": "Check-in",
@@ -196,37 +243,54 @@
     "clearAll": "Clear all",
     "showResults": "Show results"
   },
+  "messages": {
+    "title": "Messages",
+    "signInToView": "Sign in to view messages",
+    "signInDescription": "Log in to chat with hosts or guests.",
+    "noMessages": "No messages yet",
+    "startConversation": "Start a conversation to see it here.",
+    "host": "Host",
+    "guest": "Guest",
+    "startChat": "Start chatting",
+    "typeMessage": "Type a message...",
+    "selectConversation": "Select a conversation",
+    "chooseConversation": "Choose a conversation from the list to start chatting."
+  },
   "admin": {
     "title": "Admin Dashboard",
-    "subtitle": "Manage users and host applications",
+    "manageUsers": "Manage users and host applications",
     "pendingValidations": "Pending Validations",
     "approvedHosts": "Approved Hosts",
     "revoked": "Revoked",
     "allCaughtUp": "All Caught Up!",
     "noPending": "There are no pending host applications to review.",
-    "noApproved": "No Approved Hosts",
-    "noApprovedDescription": "There are no approved hosts yet.",
-    "noRevoked": "No Revoked Hosts",
-    "noRevokedDescription": "There are no hosts with revoked rights.",
+    "noApprovedHosts": "No Approved Hosts",
+    "noApprovedHostsDesc": "There are no approved hosts yet.",
+    "noRevokedHosts": "No Revoked Hosts",
+    "noRevokedHostsDesc": "There are no hosts with revoked rights.",
     "approveHost": "Approve Host",
     "approving": "Approving...",
-    "revokeHostRights": "Revoke Host Rights",
+    "approveSuccess": "Host approved successfully!",
+    "approveFailed": "Failed to approve host.",
+    "revokeHost": "Revoke Host Rights",
     "revoking": "Revoking...",
-    "regrantHostRights": "Re-grant Host Rights",
+    "revokeConfirm": "Are you sure you want to revoke this host's rights?",
+    "revokeSuccess": "Host rights revoked successfully.",
+    "grantHost": "Re-grant Host Rights",
     "granting": "Granting...",
-    "approved": "Approved",
-    "pendingBadge": "Pending",
-    "revokedBadge": "Revoked",
-    "addressLabel": "Address:",
+    "grantConfirm": "Are you sure you want to re-grant host rights to this user?",
+    "grantSuccess": "Host rights granted successfully!",
+    "roleUpdateFailed": "Failed to update role.",
+    "statusApproved": "Approved",
+    "statusPending": "Pending",
+    "statusRevoked": "Revoked",
+    "address": "Address",
     "noAddress": "No address provided.",
-    "phoneLabel": "Phone:",
-    "identityDoc": "Identity Document:",
-    "retainedLegal": "(Retained within legal retention period)",
-    "pdfDocument": "📄 PDF Document",
-    "clickToView": "Click to view",
-    "registered": "Registered:",
-    "confirmRevoke": "Are you sure you want to revoke this host's rights?",
-    "confirmGrant": "Are you sure you want to re-grant host rights to this user?"
+    "phone": "Phone",
+    "identityDocument": "Identity Document",
+    "retainedDocument": "(Retained within legal retention period)",
+    "clickView": "Click to view",
+    "registered": "Registered"
   },
   "hostPlaces": {
     "title": "My Places",
@@ -250,6 +314,21 @@
     "placeDeleted": "Place deleted successfully",
     "deleteFailed": "Failed to delete place.",
     "errorOccurred": "An error occurred."
+  },
+  "host_places": {
+    "manageTitle": "Manage Places",
+    "myPlaces": "My Places",
+    "placeListed": "place listed",
+    "placesListed": "places listed",
+    "addNewPlace": "Add New Place",
+    "addFirstPlace": "Add Your First Place",
+    "accountUnderReview": "Account Under Review",
+    "reviewDesc": "Your host application is currently being reviewed by an administrator. Once validated, you will be able to add places and start hosting!",
+    "noPlacesYet": "No Places Yet",
+    "startHostingDesc": "Start hosting by adding your first place. Share your property with travelers around the world!",
+    "confirmDelete": "Are you sure you want to delete this place? This action cannot be undone.",
+    "deleteSuccess": "Place deleted successfully",
+    "deleteFailed": "Failed to delete place."
   },
   "hostBookings": {
     "title": "Guest Bookings",
@@ -278,16 +357,27 @@
     "noEmail": "No email"
   },
   "about": {
+    "title": "About AirAl",
     "metaTitle": "About AirAl – The Future of Travel",
     "metaDescription": "Learn about AirAl's mission to make everyone feel like they belong anywhere.",
     "heroTitle": "Belong",
     "heroHighlight": "anywhere.",
     "heroSubtitle": "AirAl was born in 2026 when two designers realized there was a better way to experience the world. Today, our community connects millions of hosts and guests around the globe.",
+    "heroDescription": "AirAl is built on the idea that you can belong anywhere. We're creating a world where anyone can travel, connect, and feel at home wherever they go.",
     "startExploring": "Start Exploring",
     "becomeHost": "Become a Host",
+    "stats": {
+      "arrivals": "Guest arrivals",
+      "countries": "Countries & regions",
+      "hosts": "Host community"
+    },
     "guestArrivals": "Guest arrivals",
     "countriesRegions": "Countries & regions",
     "hostCommunity": "Host community",
+    "trustTitle": "Our Commitment to Trust",
+    "trustP1": "We believe that trust is the foundation of any community. That's why we've built industry-leading safety protocols, secure payments, and a global support team available 24/7.",
+    "trustP2": "Every host is verified, and every guest profile is linked to authentic reviews. Our AirCover program provides comprehensive protection for every stay, ensuring peace of mind for both hosts and guests.",
+    "trustP3": "Whether you're opening your home or staying in one, you're never alone with AirAl.",
     "commitmentTitle": "Our Commitment to Trust",
     "commitmentP1": "We believe that trust is the foundation of any community. That's why we've built industry-leading safety protocols, secure payments, and a global support team available 24/7.",
     "commitmentP2": "Every host is verified, and every guest profile is linked to authentic reviews. Our AirCover program provides comprehensive protection for every stay, ensuring peace of mind for both hosts and guests.",
@@ -329,7 +419,9 @@
     "careers": "Careers",
     "investors": "Investors",
     "sitemap": "Sitemap",
-    "comingSoon": "Coming soon..."
+    "comingSoon": "Coming soon...",
+    "underConstruction": "Page Under Construction",
+    "workingHard": "We're working hard to bring this page to you. Please check back later!"
   },
   "language": {
     "switchTo": "Français",

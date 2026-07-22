@@ -8,16 +8,16 @@ const WelcomeMessage = () => {
   useEffect(() => {
     // Check if we already showed the welcome message in this session
     const hasWelcomed = sessionStorage.getItem("hasWelcomed");
-    
+
     if (!hasWelcomed) {
       const storedUserName = localStorage.getItem("UserName");
-  
+
       if (storedUserName) {
         toast.success(t("welcome.welcomeUser", { name: storedUserName }));
       } else {
         toast.success(t("welcome.welcomeGuest"));
       }
-      
+
       sessionStorage.setItem("hasWelcomed", "true");
     }
   }, [t]);

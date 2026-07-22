@@ -1,27 +1,46 @@
 import { BsWifi, BsSnow, BsFire, BsTv, BsWater } from "react-icons/bs";
 import { FaCar } from "react-icons/fa";
-import { MdKitchen, MdLocalLaundryService, MdIron, MdOutlineWorkspaces, MdHotTub, MdOutdoorGrill, MdFitnessCenter, MdElevator, MdFireplace, MdYard, MdBalcony, MdBeachAccess, MdLandscape, MdPets, MdSmokeFree, MdMedicalServices, MdFireExtinguisher, MdWater } from "react-icons/md";
+import {
+  MdKitchen,
+  MdLocalLaundryService,
+  MdIron,
+  MdOutlineWorkspaces,
+  MdHotTub,
+  MdOutdoorGrill,
+  MdFitnessCenter,
+  MdElevator,
+  MdFireplace,
+  MdYard,
+  MdBalcony,
+  MdBeachAccess,
+  MdLandscape,
+  MdPets,
+  MdSmokeFree,
+  MdMedicalServices,
+  MdFireExtinguisher,
+  MdWater,
+} from "react-icons/md";
 import { useTranslation } from "../../lib/i18n/LanguageContext";
 
 const AMENITY_ICONS = {
-  "WiFi": BsWifi,
-  "Kitchen": MdKitchen,
-  "Parking": FaCar,
-  "Pool": BsWater,
+  WiFi: BsWifi,
+  Kitchen: MdKitchen,
+  Parking: FaCar,
+  Pool: BsWater,
   "Air conditioning": BsSnow,
-  "Heating": BsFire,
-  "Washer": MdLocalLaundryService,
-  "Dryer": MdLocalLaundryService,
-  "TV": BsTv,
-  "Iron": MdIron,
-  "Workspace": MdOutlineWorkspaces,
+  Heating: BsFire,
+  Washer: MdLocalLaundryService,
+  Dryer: MdLocalLaundryService,
+  TV: BsTv,
+  Iron: MdIron,
+  Workspace: MdOutlineWorkspaces,
   "Hot tub": MdHotTub,
   "BBQ grill": MdOutdoorGrill,
-  "Gym": MdFitnessCenter,
-  "Elevator": MdElevator,
-  "Fireplace": MdFireplace,
-  "Garden": MdYard,
-  "Balcony": MdBalcony,
+  Gym: MdFitnessCenter,
+  Elevator: MdElevator,
+  Fireplace: MdFireplace,
+  Garden: MdYard,
+  Balcony: MdBalcony,
   "Beach access": MdBeachAccess,
   "Mountain view": MdLandscape,
   "Lake view": MdWater,
@@ -34,24 +53,24 @@ const AMENITY_ICONS = {
 
 // Map original English amenity names to their translation keys
 const AMENITY_KEYS = {
-  "WiFi": "amenities_list.wifi",
-  "Kitchen": "amenities_list.kitchen",
-  "Parking": "amenities_list.parking",
-  "Pool": "amenities_list.pool",
+  WiFi: "amenities_list.wifi",
+  Kitchen: "amenities_list.kitchen",
+  Parking: "amenities_list.parking",
+  Pool: "amenities_list.pool",
   "Air conditioning": "amenities_list.airConditioning",
-  "Heating": "amenities_list.heating",
-  "Washer": "amenities_list.washer",
-  "Dryer": "amenities_list.dryer",
-  "TV": "amenities_list.tv",
-  "Iron": "amenities_list.iron",
-  "Workspace": "amenities_list.workspace",
+  Heating: "amenities_list.heating",
+  Washer: "amenities_list.washer",
+  Dryer: "amenities_list.dryer",
+  TV: "amenities_list.tv",
+  Iron: "amenities_list.iron",
+  Workspace: "amenities_list.workspace",
   "Hot tub": "amenities_list.hotTub",
   "BBQ grill": "amenities_list.bbqGrill",
-  "Gym": "amenities_list.gym",
-  "Elevator": "amenities_list.elevator",
-  "Fireplace": "amenities_list.fireplace",
-  "Garden": "amenities_list.garden",
-  "Balcony": "amenities_list.balcony",
+  Gym: "amenities_list.gym",
+  Elevator: "amenities_list.elevator",
+  Fireplace: "amenities_list.fireplace",
+  Garden: "amenities_list.garden",
+  Balcony: "amenities_list.balcony",
   "Beach access": "amenities_list.beachAccess",
   "Mountain view": "amenities_list.mountainView",
   "Lake view": "amenities_list.lakeView",
@@ -69,14 +88,16 @@ const Amenities = ({ amenities }) => {
 
   return (
     <div className="py-6">
-      <h3 className="text-xl font-extrabold text-[#2D3436] dark:text-white mb-5">{t("place.amenities")}</h3>
+      <h3 className="text-xl font-extrabold text-[#2D3436] dark:text-white mb-5">
+        {t("place.amenities")}
+      </h3>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         {amenities.map((amenity, index) => {
           const Icon = AMENITY_ICONS[amenity] || BsWifi;
           // Use translation key if it exists, otherwise fallback to the raw amenity string
           const translationKey = AMENITY_KEYS[amenity];
           const displayName = translationKey ? t(translationKey) : amenity;
-          
+
           return (
             <div
               key={amenity}
@@ -86,7 +107,9 @@ const Amenities = ({ amenities }) => {
               <div className="p-2 rounded-xl bg-[#4ECDC4]/10">
                 <Icon className="text-lg text-[#4ECDC4]" />
               </div>
-              <span className="text-sm text-[#636E72] dark:text-[#B2BEC3] font-medium">{displayName}</span>
+              <span className="text-sm text-[#636E72] dark:text-[#B2BEC3] font-medium">
+                {displayName}
+              </span>
             </div>
           );
         })}

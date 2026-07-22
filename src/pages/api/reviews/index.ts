@@ -4,7 +4,7 @@ import { verify } from "jsonwebtoken";
 
 export default async function handle(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method === "GET") {
     const placeId = Number(req.query.placeId);
@@ -32,7 +32,7 @@ export default async function handle(
     try {
       const { user_id: userId } = verify(
         token,
-        process.env.JWT_SECRET as string
+        process.env.JWT_SECRET as string,
       ) as { user_id: number };
 
       const { placeId, rating, comment } = req.body;
@@ -48,7 +48,9 @@ export default async function handle(
       }
 
       if (place.hostId === userId) {
-        return res.status(403).json({ message: "You cannot review your own place" });
+        return res
+          .status(403)
+          .json({ message: "You cannot review your own place" });
       }
 
       // Check if user already reviewed this place
@@ -57,7 +59,9 @@ export default async function handle(
       });
 
       if (existingReview) {
-        return res.status(409).json({ message: "You have already reviewed this place" });
+        return res
+          .status(409)
+          .json({ message: "You have already reviewed this place" });
       }
 
       // Generate a unique review_id using max + 1 to avoid collisions

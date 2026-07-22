@@ -4,7 +4,7 @@ import { verify } from "jsonwebtoken";
 
 export default async function handle(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
@@ -31,11 +31,15 @@ export default async function handle(
     const { targetUserId, action } = req.body;
 
     if (!targetUserId || !action) {
-      return res.status(400).json({ message: "targetUserId and action are required" });
+      return res
+        .status(400)
+        .json({ message: "targetUserId and action are required" });
     }
 
     if (action !== "revoke" && action !== "grant") {
-      return res.status(400).json({ message: "action must be 'revoke' or 'grant'" });
+      return res
+        .status(400)
+        .json({ message: "action must be 'revoke' or 'grant'" });
     }
 
     const targetUser = await prisma.user.findUnique({
@@ -55,7 +59,8 @@ export default async function handle(
     });
 
     return res.status(200).json({
-      message: action === "revoke" ? "Host rights revoked" : "Host rights granted",
+      message:
+        action === "revoke" ? "Host rights revoked" : "Host rights granted",
       user: updatedUser,
     });
   } catch (error) {

@@ -42,7 +42,10 @@ const PlaceDetails = () => {
     <>
       <Head>
         <title>{place.name} – AirAl</title>
-        <meta name="description" content={place.description?.substring(0, 160)} />
+        <meta
+          name="description"
+          content={place.description?.substring(0, 160)}
+        />
       </Head>
 
       <div className="max-w-6xl mx-auto px-4 py-6 animate-fade-in">
@@ -59,7 +62,10 @@ const PlaceDetails = () => {
               <HiShare />
               {t("place.share")}
             </button>
-            <FavoriteButton placeId={place.place_id} className="hover:bg-[#F0F0EC] dark:hover:bg-[#232340] rounded-full" />
+            <FavoriteButton
+              placeId={place.place_id}
+              className="hover:bg-[#F0F0EC] dark:hover:bg-[#232340] rounded-full"
+            />
           </div>
         </div>
 
@@ -72,7 +78,10 @@ const PlaceDetails = () => {
           <div className="flex-1 min-w-0">
             <div className="mb-2">
               <span className="badge-coral">
-                {place.category || "Place"}
+                {t(`categories.${place.category}`) !==
+                `categories.${place.category}`
+                  ? t(`categories.${place.category}`)
+                  : place.category || "Place"}
               </span>
             </div>
 
@@ -101,7 +110,9 @@ const PlaceDetails = () => {
             />
 
             <div className="py-6 border-t border-[#E8E8E4] dark:border-[#2D2D4A] mt-4">
-              <h3 className="text-xl font-extrabold text-[#2D3436] dark:text-white mb-4">{t("place.aboutThisPlace")}</h3>
+              <h3 className="text-xl font-extrabold text-[#2D3436] dark:text-white mb-4">
+                {t("place.aboutThisPlace")}
+              </h3>
               <p className="text-[#636E72] dark:text-[#B2BEC3] leading-relaxed whitespace-pre-line">
                 {place.description}
               </p>
@@ -112,20 +123,17 @@ const PlaceDetails = () => {
             </div>
 
             <div className="border-t border-[#E8E8E4] dark:border-[#2D2D4A]">
-              <ReviewSection placeId={place.place_id} hostId={place.hostId} reviews={place.Review} />
+              <ReviewSection
+                placeId={place.place_id}
+                hostId={place.hostId}
+                reviews={place.Review}
+              />
             </div>
           </div>
 
           <div className="w-full lg:w-[380px] flex-shrink-0 space-y-6">
             <BookingForm place={place} />
-            <HostCard host={place.host} />
-            <Link
-              href={`/messages?contact=${place.host?.user_id}&placeId=${place.place_id}`}
-              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-full font-bold text-[#636E72] dark:text-[#B2BEC3] border-2 border-[#E8E8E4] dark:border-[#3D3D5C] hover:border-[#A29BFE] hover:text-[#A29BFE] transition-all text-sm"
-            >
-              <HiChat className="text-lg" />
-              {t("place.contactHost")}
-            </Link>
+            <HostCard host={place.host} placeId={place.place_id} />
           </div>
         </div>
       </div>

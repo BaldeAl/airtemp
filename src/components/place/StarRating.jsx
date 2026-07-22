@@ -13,9 +13,16 @@ const StarRating = ({ rating, size = "sm", showValue = true, reviewCount }) => {
 
   for (let i = 0; i < 5; i++) {
     if (i < fullStars) {
-      stars.push(<HiStar key={i} className={`text-[#FFE66D] ${sizes[size]}`} />);
+      stars.push(
+        <HiStar key={i} className={`text-[#FFE66D] ${sizes[size]}`} />,
+      );
     } else {
-      stars.push(<HiOutlineStar key={i} className={`text-[#FFE66D]/40 ${sizes[size]}`} />);
+      stars.push(
+        <HiOutlineStar
+          key={i}
+          className={`text-[#FFE66D]/40 ${sizes[size]}`}
+        />,
+      );
     }
   }
 

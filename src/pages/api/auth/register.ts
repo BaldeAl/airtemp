@@ -14,9 +14,18 @@ export const config = {
 
 export default async function handle(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
-  const { email, password, name, isHost, address, phone, phoneCountryCode, identityDocument } = req.body;
+  const {
+    email,
+    password,
+    name,
+    isHost,
+    address,
+    phone,
+    phoneCountryCode,
+    identityDocument,
+  } = req.body;
 
   try {
     const existingUser = await prisma.user.findUnique({

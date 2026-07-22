@@ -4,7 +4,7 @@ import { verify } from "jsonwebtoken";
 
 export default async function handle(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
@@ -23,7 +23,12 @@ export default async function handle(
       where: { user_id: userId },
     });
 
-    if (!callingUser || (callingUser.role !== "HOST" && callingUser.role !== "HOST_PENDING" && callingUser.role !== "ADMIN")) {
+    if (
+      !callingUser ||
+      (callingUser.role !== "HOST" &&
+        callingUser.role !== "HOST_PENDING" &&
+        callingUser.role !== "ADMIN")
+    ) {
       return res.status(403).json({ message: "Forbidden: Hosts only" });
     }
   } catch {
@@ -49,7 +54,9 @@ export default async function handle(
 
   if (req.method === "POST") {
     if (callingUser?.role === "HOST_PENDING") {
-      return res.status(403).json({ message: "Forbidden: Account pending validation" });
+      return res
+        .status(403)
+        .json({ message: "Forbidden: Account pending validation" });
     }
     try {
       const {
@@ -66,28 +73,28 @@ export default async function handle(
         totalUnits,
         latitude,
         longitude,
-        cityName
+        cityName,
       } = req.body;
 
       // Ensure city exists, or create it if missing
       // For simplicity, if they type a city name, we find it or use a default one.
       const actualCityName = cityName || "Paris";
       let city = await prisma.city.findFirst({
-        where: { name: actualCityName }
+        where: { name: actualCityName },
       });
-      
+
       if (!city) {
         // Find highest city_id to avoid unique constraint issues
         const maxCity = await prisma.city.findFirst({
           orderBy: { city_id: "desc" },
-          select: { city_id: true }
+          select: { city_id: true },
         });
         const nextCityId = (maxCity?.city_id ?? 0) + 1;
         city = await prisma.city.create({
           data: {
             city_id: nextCityId,
-            name: actualCityName
-          }
+            name: actualCityName,
+          },
         });
       }
 
@@ -115,7 +122,7 @@ export default async function handle(
           latitude: latitude ? Number(latitude) : null,
           longitude: longitude ? Number(longitude) : null,
           host: { connect: { user_id: userId } },
-          city: { connect: { city_id: city.city_id } }
+          city: { connect: { city_id: city.city_id } },
         },
       });
 

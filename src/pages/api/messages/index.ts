@@ -4,7 +4,7 @@ import { verify } from "jsonwebtoken";
 
 export default async function handle(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
@@ -41,7 +41,7 @@ export default async function handle(
         number,
         {
           otherUser: { user_id: number; name: string; avatar: string | null };
-          lastMessage: typeof messages[0];
+          lastMessage: (typeof messages)[0];
           unreadCount: number;
           place?: { place_id: number; name: string; image: string } | null;
         }
@@ -50,8 +50,7 @@ export default async function handle(
       for (const msg of messages) {
         const otherUserId =
           msg.senderId === userId ? msg.receiverId : msg.senderId;
-        const otherUser =
-          msg.senderId === userId ? msg.receiver : msg.sender;
+        const otherUser = msg.senderId === userId ? msg.receiver : msg.sender;
 
         if (!conversationsMap.has(otherUserId)) {
           conversationsMap.set(otherUserId, {
@@ -71,7 +70,7 @@ export default async function handle(
       const conversations = Array.from(conversationsMap.values()).sort(
         (a, b) =>
           new Date(b.lastMessage.createdAt).getTime() -
-          new Date(a.lastMessage.createdAt).getTime()
+          new Date(a.lastMessage.createdAt).getTime(),
       );
 
       return res.status(200).json({ conversations });
@@ -109,9 +108,7 @@ export default async function handle(
           content: content.trim(),
           sender: { connect: { user_id: userId } },
           receiver: { connect: { user_id: receiverId } },
-          ...(placeId
-            ? { place: { connect: { place_id: placeId } } }
-            : {}),
+          ...(placeId ? { place: { connect: { place_id: placeId } } } : {}),
         },
         include: {
           sender: { select: { user_id: true, name: true, avatar: true } },

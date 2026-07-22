@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { ThemeContext } from './context/theme';
+import { useState, useEffect } from "react";
+import { ThemeContext } from "./context/theme";
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState("light");
 
   const toggleTheme = () => {
     if (theme === "light") {

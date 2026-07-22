@@ -25,7 +25,9 @@ const FavoriteButton = ({ placeId, className = "", onToggle }) => {
 
     // Update localStorage with consistent number types
     const numericPlaceId = Number(placeId);
-    const favs = JSON.parse(localStorage.getItem("favorites") || "[]").map(Number);
+    const favs = JSON.parse(localStorage.getItem("favorites") || "[]").map(
+      Number,
+    );
     if (newState) {
       if (!favs.includes(numericPlaceId)) favs.push(numericPlaceId);
     } else {
@@ -47,9 +49,12 @@ const FavoriteButton = ({ placeId, className = "", onToggle }) => {
         // If server returned an error, revert the UI state
         if (!res.ok) {
           setIsFavorite(!newState);
-          const revertFavs = JSON.parse(localStorage.getItem("favorites") || "[]").map(Number);
+          const revertFavs = JSON.parse(
+            localStorage.getItem("favorites") || "[]",
+          ).map(Number);
           if (!newState) {
-            if (!revertFavs.includes(numericPlaceId)) revertFavs.push(numericPlaceId);
+            if (!revertFavs.includes(numericPlaceId))
+              revertFavs.push(numericPlaceId);
           } else {
             const idx = revertFavs.indexOf(numericPlaceId);
             if (idx > -1) revertFavs.splice(idx, 1);

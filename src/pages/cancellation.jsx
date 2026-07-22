@@ -1,2 +1,4 @@
-import GenericPage from './GenericPage';
-export default function Cancellation() { return <GenericPage title="Cancellation Options" />; }
+import GenericPage from "./GenericPage";
+export default function Cancellation() {
+  return <GenericPage titleKey="generic.cancellation" />;
+}

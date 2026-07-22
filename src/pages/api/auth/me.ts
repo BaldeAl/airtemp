@@ -6,7 +6,7 @@ import { hashSync } from "bcryptjs";
 
 export default async function handle(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const token = req.headers.authorization?.split(" ")[1];
 
@@ -18,7 +18,7 @@ export default async function handle(
   try {
     const { user_id: userId } = verify(
       token as string,
-      process.env.JWT_SECRET as string
+      process.env.JWT_SECRET as string,
     ) as {
       user_id: number;
     };
@@ -57,7 +57,8 @@ export default async function handle(
       const updateData: Record<string, unknown> = {};
       if (name !== undefined) updateData.name = name;
       if (email !== undefined) updateData.email = email;
-      if (password !== undefined && password.trim() !== "") updateData.password = hashSync(password, 10);
+      if (password !== undefined && password.trim() !== "")
+        updateData.password = hashSync(password, 10);
       if (bio !== undefined) updateData.bio = bio;
       if (avatar !== undefined) updateData.avatar = avatar;
 

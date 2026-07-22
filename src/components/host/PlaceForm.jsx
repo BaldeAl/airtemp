@@ -1,49 +1,84 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-import { HiPhotograph, HiPlus, HiX } from 'react-icons/hi';
-import { useTranslation } from '../../lib/i18n/LanguageContext';
+import { useState } from "react";
+import { useRouter } from "next/router";
+import { HiPhotograph, HiPlus, HiX } from "react-icons/hi";
+import { useTranslation } from "../../lib/i18n/LanguageContext";
 
-const CATEGORIES = ['City', 'Beach', 'Mountain', 'Countryside', 'Lake', 'Tropical', 'Desert', 'Arctic', 'Island'];
-const AMENITIES_LIST = ['WiFi', 'Pool', 'Parking', 'Kitchen', 'Air Conditioning', 'Heating', 'TV', 'Washer', 'Dryer', 'Gym', 'Hot Tub', 'BBQ', 'Balcony', 'Garden', 'Elevator', 'Pet Friendly'];
+const CATEGORIES = [
+  "City",
+  "Beach",
+  "Mountain",
+  "Countryside",
+  "Lake",
+  "Tropical",
+  "Desert",
+  "Arctic",
+  "Island",
+];
+const AMENITIES_LIST = [
+  "WiFi",
+  "Pool",
+  "Parking",
+  "Kitchen",
+  "Air Conditioning",
+  "Heating",
+  "TV",
+  "Washer",
+  "Dryer",
+  "Gym",
+  "Hot Tub",
+  "BBQ",
+  "Balcony",
+  "Garden",
+  "Elevator",
+  "Pet Friendly",
+];
 
 export default function PlaceForm({ initialData = {}, isEdit = false }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const { t } = useTranslation();
 
-  const [name, setName] = useState(initialData.name || '');
-  const [description, setDescription] = useState(initialData.description || '');
-  const [category, setCategory] = useState(initialData.category || 'City');
-  const [priceByNight, setPriceByNight] = useState(initialData.priceByNight || '');
-  const [maxGuests, setMaxGuests] = useState(initialData.maxGuests || '');
-  const [numberOfRooms, setNumberOfRooms] = useState(initialData.numberOfRooms || '');
-  const [numberOfBathrooms, setNumberOfBathrooms] = useState(initialData.numberOfBathrooms || '');
+  const [name, setName] = useState(initialData.name || "");
+  const [description, setDescription] = useState(initialData.description || "");
+  const [category, setCategory] = useState(initialData.category || "City");
+  const [priceByNight, setPriceByNight] = useState(
+    initialData.priceByNight || "",
+  );
+  const [maxGuests, setMaxGuests] = useState(initialData.maxGuests || "");
+  const [numberOfRooms, setNumberOfRooms] = useState(
+    initialData.numberOfRooms || "",
+  );
+  const [numberOfBathrooms, setNumberOfBathrooms] = useState(
+    initialData.numberOfBathrooms || "",
+  );
   const [totalUnits, setTotalUnits] = useState(initialData.totalUnits || 1);
-  const [cityName, setCityName] = useState(initialData.city?.name || initialData.cityName || '');
+  const [cityName, setCityName] = useState(
+    initialData.city?.name || initialData.cityName || "",
+  );
 
   // Images: 1 main + up to 4 additional = 5 max
-  const [mainImage, setMainImage] = useState(initialData.image || '');
+  const [mainImage, setMainImage] = useState(initialData.image || "");
   const [additionalImages, setAdditionalImages] = useState(
-    initialData.images?.length ? [...initialData.images] : []
+    initialData.images?.length ? [...initialData.images] : [],
   );
 
   // Amenities
   const [selectedAmenities, setSelectedAmenities] = useState(
-    initialData.amenities?.length ? [...initialData.amenities] : []
+    initialData.amenities?.length ? [...initialData.amenities] : [],
   );
 
   const toggleAmenity = (amenity) => {
     setSelectedAmenities((prev) =>
       prev.includes(amenity)
         ? prev.filter((a) => a !== amenity)
-        : [...prev, amenity]
+        : [...prev, amenity],
     );
   };
 
   const addImageField = () => {
     if (additionalImages.length < 4) {
-      setAdditionalImages([...additionalImages, '']);
+      setAdditionalImages([...additionalImages, ""]);
     }
   };
 
@@ -59,12 +94,12 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      setError(t('place_form.errorNotLoggedIn'));
+      setError(t("place_form.errorNotLoggedIn"));
       setLoading(false);
       return;
     }
@@ -73,7 +108,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
       name,
       description,
       image: mainImage,
-      images: additionalImages.filter((img) => img.trim() !== ''),
+      images: additionalImages.filter((img) => img.trim() !== ""),
       amenities: selectedAmenities,
       category,
       numberOfRooms: Number(numberOfRooms) || 0,
@@ -87,59 +122,60 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
     try {
       const url = isEdit
         ? `/api/host/places/${initialData.place_id}`
-        : '/api/host/places';
+        : "/api/host/places";
 
       const res = await fetch(url, {
-        method: isEdit ? 'PUT' : 'POST',
+        method: isEdit ? "PUT" : "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });
 
       if (res.ok) {
-        router.push('/host/places');
+        router.push("/host/places");
       } else {
         const data = await res.json();
-        setError(data.message || t('auth.networkError'));
+        setError(data.message || t("auth.networkError"));
       }
     } catch (err) {
       console.error(err);
-      setError(t('auth.networkError'));
+      setError(t("auth.networkError"));
     } finally {
       setLoading(false);
     }
   };
 
   const inputClass =
-    'w-full px-4 py-3 rounded-2xl border-2 border-[#E8E8E4] dark:border-[#3D3D5C] bg-white dark:bg-[#232340] text-[#2D3436] dark:text-white text-sm font-semibold focus:border-[#4ECDC4] focus:ring-0 outline-none transition-all placeholder:text-[#B2BEC3]';
-  const labelClass = 'block text-sm font-extrabold text-[#2D3436] dark:text-white mb-1.5';
+    "w-full px-4 py-3 rounded-2xl border-2 border-[#E8E8E4] dark:border-[#3D3D5C] bg-white dark:bg-[#232340] text-[#2D3436] dark:text-white text-sm font-semibold focus:border-[#4ECDC4] focus:ring-0 outline-none transition-all placeholder:text-[#B2BEC3]";
+  const labelClass =
+    "block text-sm font-extrabold text-[#2D3436] dark:text-white mb-1.5";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Name */}
       <div>
-        <label className={labelClass}>{t('place_form.placeName')} *</label>
+        <label className={labelClass}>{t("place_form.placeName")} *</label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
-          placeholder={t('place_form.placeNamePlaceholder')}
+          placeholder={t("place_form.placeNamePlaceholder")}
           className={inputClass}
         />
       </div>
 
       {/* Description */}
       <div>
-        <label className={labelClass}>{t('place_form.description')} *</label>
+        <label className={labelClass}>{t("place_form.description")} *</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
           rows={4}
-          placeholder={t('place_form.descriptionPlaceholder')}
+          placeholder={t("place_form.descriptionPlaceholder")}
           className={`${inputClass} resize-none`}
         />
       </div>
@@ -147,7 +183,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
       {/* Category + City */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className={labelClass}>{t('place_form.category')}</label>
+          <label className={labelClass}>{t("place_form.category")}</label>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
@@ -155,19 +191,21 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
           >
             {CATEGORIES.map((cat) => (
               <option key={cat} value={cat}>
-                {t(`place_form.categories.${cat}`) || cat}
+                {t(`categories.${cat}`) !== `categories.${cat}`
+                  ? t(`categories.${cat}`)
+                  : cat}
               </option>
             ))}
           </select>
         </div>
         <div>
-          <label className={labelClass}>{t('place_form.city')} *</label>
+          <label className={labelClass}>{t("place_form.city")} *</label>
           <input
             type="text"
             value={cityName}
             onChange={(e) => setCityName(e.target.value)}
             required
-            placeholder={t('place_form.cityPlaceholder')}
+            placeholder={t("place_form.cityPlaceholder")}
             className={inputClass}
           />
         </div>
@@ -176,7 +214,9 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
       {/* Numbers Row */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
         <div>
-          <label className={labelClass}>{t('place_form.pricePerNight')} *</label>
+          <label className={labelClass}>
+            {t("place_form.pricePerNight")} *
+          </label>
           <input
             type="number"
             value={priceByNight}
@@ -188,7 +228,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
           />
         </div>
         <div>
-          <label className={labelClass}>{t('place_form.maxGuests')} *</label>
+          <label className={labelClass}>{t("place_form.maxGuests")} *</label>
           <input
             type="number"
             value={maxGuests}
@@ -200,7 +240,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
           />
         </div>
         <div>
-          <label className={labelClass}>{t('place_form.rooms')}</label>
+          <label className={labelClass}>{t("place_form.rooms")}</label>
           <input
             type="number"
             value={numberOfRooms}
@@ -211,7 +251,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
           />
         </div>
         <div>
-          <label className={labelClass}>{t('place_form.bathrooms')}</label>
+          <label className={labelClass}>{t("place_form.bathrooms")}</label>
           <input
             type="number"
             value={numberOfBathrooms}
@@ -222,7 +262,9 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
           />
         </div>
         <div>
-          <label className={labelClass}>{t('place_form.availableUnits')} *</label>
+          <label className={labelClass}>
+            {t("place_form.availableUnits")} *
+          </label>
           <input
             type="number"
             value={totalUnits}
@@ -232,7 +274,9 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
             placeholder="1"
             className={inputClass}
           />
-          <p className="text-xs text-[#B2BEC3] mt-1">{t('place_form.unitsDesc')}</p>
+          <p className="text-xs text-[#B2BEC3] mt-1">
+            {t("place_form.unitsDesc")}
+          </p>
         </div>
       </div>
 
@@ -240,7 +284,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
       <div>
         <label className={labelClass}>
           <HiPhotograph className="inline mr-1.5 text-[#6C5CE7]" />
-          {t('place_form.mainImageUrl')} *
+          {t("place_form.mainImageUrl")} *
         </label>
         <input
           type="url"
@@ -252,7 +296,12 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
         />
         {mainImage && (
           <div className="mt-2 rounded-2xl overflow-hidden border-2 border-[#E8E8E4] dark:border-[#3D3D5C] h-40">
-            <img src={mainImage} alt="Preview" className="w-full h-full object-cover" onError={(e) => (e.target.style.display = 'none')} />
+            <img
+              src={mainImage}
+              alt="Preview"
+              className="w-full h-full object-cover"
+              onError={(e) => (e.target.style.display = "none")}
+            />
           </div>
         )}
       </div>
@@ -261,7 +310,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
       <div>
         <label className={labelClass}>
           <HiPhotograph className="inline mr-1.5 text-[#0984E3]" />
-          {t('place_form.additionalImages')} ({additionalImages.length}/4)
+          {t("place_form.additionalImages")} ({additionalImages.length}/4)
         </label>
         <div className="space-y-3">
           {additionalImages.map((img, index) => (
@@ -270,7 +319,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
                 type="url"
                 value={img}
                 onChange={(e) => updateImageField(index, e.target.value)}
-                placeholder={`${t('place_form.imageUrlPlaceholder')} ${index + 2}`}
+                placeholder={`${t("place_form.imageUrlPlaceholder")} ${index + 2}`}
                 className={`${inputClass} flex-1`}
               />
               <button
@@ -289,7 +338,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
               className="flex items-center gap-2 px-4 py-2.5 rounded-full border-2 border-dashed border-[#B2BEC3] dark:border-[#3D3D5C] text-sm font-bold text-[#636E72] dark:text-[#B2BEC3] hover:border-[#4ECDC4] hover:text-[#4ECDC4] transition-all"
             >
               <HiPlus className="text-lg" />
-              {t('place_form.addImage')}
+              {t("place_form.addImage")}
             </button>
           )}
         </div>
@@ -297,7 +346,7 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
 
       {/* Amenities */}
       <div>
-        <label className={labelClass}>{t('place_form.amenities')}</label>
+        <label className={labelClass}>{t("place_form.amenities")}</label>
         <div className="flex flex-wrap gap-2">
           {AMENITIES_LIST.map((amenity) => (
             <button
@@ -306,11 +355,11 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
               onClick={() => toggleAmenity(amenity)}
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all border-2 ${
                 selectedAmenities.includes(amenity)
-                  ? 'bg-[#4ECDC4] border-[#4ECDC4] text-white'
-                  : 'border-[#E8E8E4] dark:border-[#3D3D5C] text-[#636E72] dark:text-[#B2BEC3] hover:border-[#4ECDC4]'
+                  ? "bg-[#4ECDC4] border-[#4ECDC4] text-white"
+                  : "border-[#E8E8E4] dark:border-[#3D3D5C] text-[#636E72] dark:text-[#B2BEC3] hover:border-[#4ECDC4]"
               }`}
             >
-              {t(`amenities.${amenity.replace(/\s+/g, '')}`) || amenity}
+              {t(`amenities.${amenity.replace(/\s+/g, "")}`) || amenity}
             </button>
           ))}
         </div>
@@ -331,11 +380,11 @@ export default function PlaceForm({ initialData = {}, isEdit = false }) {
       >
         {loading
           ? isEdit
-            ? t('place_form.savingChanges')
-            : t('place_form.creatingPlace')
+            ? t("place_form.savingChanges")
+            : t("place_form.creatingPlace")
           : isEdit
-          ? t('profile.saveChanges')
-          : t('place_form.createPlace')}
+            ? t("profile.saveChanges")
+            : t("place_form.createPlace")}
       </button>
     </form>
   );

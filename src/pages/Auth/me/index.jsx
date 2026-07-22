@@ -1,10 +1,10 @@
-import Head from 'next/head';
-import Layout from '../../../components/Layout';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import Loading from '../../../components/loading/Loading';
-import Link from 'next/link';
-import { useTranslation } from '../../../lib/i18n/LanguageContext';
+import Head from "next/head";
+import Layout from "../../../components/Layout";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import Loading from "../../../components/loading/Loading";
+import Link from "next/link";
+import { useTranslation } from "../../../lib/i18n/LanguageContext";
 import {
   HiUser,
   HiMail,
@@ -17,7 +17,7 @@ import {
   HiCheckCircle,
   HiHome,
   HiPhotograph,
-} from 'react-icons/hi';
+} from "react-icons/hi";
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -29,49 +29,49 @@ export default function ProfilePage() {
   const { t, dateLocale } = useTranslation();
 
   // Edit form state
-  const [editName, setEditName] = useState('');
-  const [editEmail, setEditEmail] = useState('');
-  const [editBio, setEditBio] = useState('');
-  const [editAvatar, setEditAvatar] = useState('');
-  const [editPassword, setEditPassword] = useState('');
+  const [editName, setEditName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editBio, setEditBio] = useState("");
+  const [editAvatar, setEditAvatar] = useState("");
+  const [editPassword, setEditPassword] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      router.push('/Auth/login');
+      router.push("/Auth/login");
       return;
     }
 
-    fetch('/api/auth/me', {
+    fetch("/api/auth/me", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {
-        if (!res.ok) throw new Error('Failed');
+        if (!res.ok) throw new Error("Failed");
         return res.json();
       })
       .then((data) => {
         setUser(data.user);
         setStats(data.stats);
-        setEditName(data.user?.name || '');
-        setEditEmail(data.user?.email || '');
-        setEditBio(data.user?.bio || '');
-        setEditAvatar(data.user?.avatar || '');
+        setEditName(data.user?.name || "");
+        setEditEmail(data.user?.email || "");
+        setEditBio(data.user?.bio || "");
+        setEditAvatar(data.user?.avatar || "");
       })
       .catch(() => {
-        router.push('/Auth/login');
+        router.push("/Auth/login");
       });
   }, [router]);
 
   const handleSave = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) return;
 
     setLoading(true);
     try {
-      const res = await fetch('/api/auth/me', {
-        method: 'PUT',
+      const res = await fetch("/api/auth/me", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
@@ -86,13 +86,13 @@ export default function ProfilePage() {
       if (res.ok) {
         const data = await res.json();
         setUser(data.user);
-        localStorage.setItem('UserName', data.user.name);
+        localStorage.setItem("UserName", data.user.name);
         if (data.token) {
-          localStorage.setItem('token', data.token);
+          localStorage.setItem("token", data.token);
         }
         setIsEditing(false);
-        setEditPassword('');
-        setFlash(t('profile.profileUpdated'));
+        setEditPassword("");
+        setFlash(t("profile.profileUpdated"));
         setTimeout(() => setFlash(null), 3000);
       }
     } catch (err) {
@@ -104,11 +104,11 @@ export default function ProfilePage() {
 
   const cancelEdit = () => {
     setIsEditing(false);
-    setEditName(user?.name || '');
-    setEditEmail(user?.email || '');
-    setEditBio(user?.bio || '');
-    setEditAvatar(user?.avatar || '');
-    setEditPassword('');
+    setEditName(user?.name || "");
+    setEditEmail(user?.email || "");
+    setEditBio(user?.bio || "");
+    setEditAvatar(user?.avatar || "");
+    setEditPassword("");
   };
 
   if (!user) {
@@ -120,26 +120,35 @@ export default function ProfilePage() {
   }
 
   const memberSince = new Date(user.createdAt).toLocaleDateString(dateLocale, {
-    month: 'long',
-    year: 'numeric',
+    month: "long",
+    year: "numeric",
   });
 
   const roleLabels = {
-    USER: { label: t('profile.guest'), color: 'bg-[#4ECDC4]/15 text-[#3BADA6]' },
-    HOST: { label: t('profile.host'), color: 'bg-[#6C5CE7]/15 text-[#6C5CE7]' },
-    HOST_PENDING: { label: t('profile.hostPending'), color: 'bg-[#FFE66D]/20 text-[#C9A227]' },
-    ADMIN: { label: t('profile.admin'), color: 'bg-[#FF6B6B]/15 text-[#FF6B6B]' },
+    USER: {
+      label: t("profile.guest"),
+      color: "bg-[#4ECDC4]/15 text-[#3BADA6]",
+    },
+    HOST: { label: t("profile.host"), color: "bg-[#6C5CE7]/15 text-[#6C5CE7]" },
+    HOST_PENDING: {
+      label: t("profile.hostPending"),
+      color: "bg-[#FFE66D]/20 text-[#C9A227]",
+    },
+    ADMIN: {
+      label: t("profile.admin"),
+      color: "bg-[#FF6B6B]/15 text-[#FF6B6B]",
+    },
   };
 
   const roleInfo = roleLabels[user.role] || roleLabels.USER;
 
   const inputClass =
-    'w-full px-4 py-3 rounded-2xl border-2 border-[#E8E8E4] dark:border-[#3D3D5C] bg-white dark:bg-[#232340] text-[#2D3436] dark:text-white text-sm font-semibold focus:border-[#4ECDC4] focus:ring-0 outline-none transition-all placeholder:text-[#B2BEC3]';
+    "w-full px-4 py-3 rounded-2xl border-2 border-[#E8E8E4] dark:border-[#3D3D5C] bg-white dark:bg-[#232340] text-[#2D3436] dark:text-white text-sm font-semibold focus:border-[#4ECDC4] focus:ring-0 outline-none transition-all placeholder:text-[#B2BEC3]";
 
   return (
     <>
       <Head>
-        <title>{t('profile.myProfile')} – AirAl</title>
+        <title>{t("profile.myProfile")} – AirAl</title>
         <meta name="description" content="Manage your AirAl profile" />
       </Head>
       <Layout>
@@ -163,17 +172,17 @@ export default function ProfilePage() {
                     alt={user.name}
                     className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-white dark:border-[#232340] shadow-cartoon"
                     onError={(e) => {
-                      e.target.style.display = 'none';
-                      e.target.nextSibling.style.display = 'flex';
+                      e.target.style.display = "none";
+                      e.target.nextSibling.style.display = "flex";
                     }}
                   />
                 ) : null}
                 <div
                   className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-[#FF6B6B] to-[#FF8E53] flex items-center justify-center text-white text-2xl sm:text-3xl font-extrabold shadow-cartoon ${
-                    user.avatar ? 'hidden' : ''
+                    user.avatar ? "hidden" : ""
                   }`}
                 >
-                  {user.name?.charAt(0)?.toUpperCase() || 'U'}
+                  {user.name?.charAt(0)?.toUpperCase() || "U"}
                 </div>
               </div>
 
@@ -185,12 +194,14 @@ export default function ProfilePage() {
                       {user.name}
                     </h1>
                     <div className="flex flex-wrap items-center gap-2 mt-2">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${roleInfo.color}`}>
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-bold ${roleInfo.color}`}
+                      >
                         {roleInfo.label}
                       </span>
                       <span className="text-sm text-[#B2BEC3] flex items-center gap-1">
                         <HiCalendar className="text-xs" />
-                        {t('profile.memberSince')} {memberSince}
+                        {t("profile.memberSince")} {memberSince}
                       </span>
                     </div>
                   </div>
@@ -200,7 +211,7 @@ export default function ProfilePage() {
                       className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold text-[#636E72] dark:text-[#B2BEC3] border-2 border-[#E8E8E4] dark:border-[#3D3D5C] hover:border-[#4ECDC4] hover:text-[#4ECDC4] transition-all"
                     >
                       <HiPencil />
-                      {t('profile.edit')}
+                      {t("profile.edit")}
                     </button>
                   )}
                 </div>
@@ -229,7 +240,9 @@ export default function ProfilePage() {
                 <div className="text-xl sm:text-2xl font-extrabold text-[#2D3436] dark:text-white">
                   {stats.bookings}
                 </div>
-                <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">{t('profile.bookings')}</div>
+                <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">
+                  {t("profile.bookings")}
+                </div>
               </div>
               <div className="card-cartoon p-4 sm:p-5 text-center">
                 <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-[#FFE66D]/15 flex items-center justify-center">
@@ -238,7 +251,9 @@ export default function ProfilePage() {
                 <div className="text-xl sm:text-2xl font-extrabold text-[#2D3436] dark:text-white">
                   {stats.reviews}
                 </div>
-                <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">{t('profile.reviews')}</div>
+                <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">
+                  {t("profile.reviews")}
+                </div>
               </div>
               <div className="card-cartoon p-4 sm:p-5 text-center">
                 <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-[#FF6B6B]/10 flex items-center justify-center">
@@ -247,7 +262,9 @@ export default function ProfilePage() {
                 <div className="text-xl sm:text-2xl font-extrabold text-[#2D3436] dark:text-white">
                   {stats.favorites}
                 </div>
-                <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">{t('profile.favorites')}</div>
+                <div className="text-xs text-[#B2BEC3] font-medium mt-0.5">
+                  {t("profile.favorites")}
+                </div>
               </div>
             </div>
           )}
@@ -257,37 +274,37 @@ export default function ProfilePage() {
             <div className="card-cartoon p-6 sm:p-8 mb-6 animate-fade-in-up">
               <h2 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-5 flex items-center gap-2">
                 <HiPencil className="text-[#4ECDC4]" />
-                {t('profile.editProfile')}
+                {t("profile.editProfile")}
               </h2>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-extrabold text-[#2D3436] dark:text-white mb-1.5">
-                    {t('profile.nameLabel')}
+                    {t("profile.nameLabel")}
                   </label>
                   <input
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
                     className={inputClass}
-                    placeholder={t('profile.yourName')}
+                    placeholder={t("profile.yourName")}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-extrabold text-[#2D3436] dark:text-white mb-1.5">
-                    {t('profile.emailLabel')}
+                    {t("profile.emailLabel")}
                   </label>
                   <input
                     type="email"
                     value={editEmail}
                     onChange={(e) => setEditEmail(e.target.value)}
                     className={inputClass}
-                    placeholder={t('profile.yourEmail')}
+                    placeholder={t("profile.yourEmail")}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-extrabold text-[#2D3436] dark:text-white mb-1.5">
                     <HiPhotograph className="inline mr-1.5 text-[#6C5CE7]" />
-                    {t('profile.avatarUrl')}
+                    {t("profile.avatarUrl")}
                   </label>
                   <input
                     type="url"
@@ -302,34 +319,36 @@ export default function ProfilePage() {
                         src={editAvatar}
                         alt="Preview"
                         className="w-12 h-12 rounded-full object-cover border-2 border-[#E8E8E4] dark:border-[#3D3D5C]"
-                        onError={(e) => (e.target.style.display = 'none')}
+                        onError={(e) => (e.target.style.display = "none")}
                       />
-                      <span className="text-xs text-[#B2BEC3]">{t('profile.avatarPreview')}</span>
+                      <span className="text-xs text-[#B2BEC3]">
+                        {t("profile.avatarPreview")}
+                      </span>
                     </div>
                   )}
                 </div>
                 <div>
                   <label className="block text-sm font-extrabold text-[#2D3436] dark:text-white mb-1.5">
-                    {t('profile.bio')}
+                    {t("profile.bio")}
                   </label>
                   <textarea
                     value={editBio}
                     onChange={(e) => setEditBio(e.target.value)}
                     className={`${inputClass} resize-none`}
                     rows={3}
-                    placeholder={t('profile.bioPlaceholder')}
+                    placeholder={t("profile.bioPlaceholder")}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-extrabold text-[#2D3436] dark:text-white mb-1.5">
-                    {t('profile.newPassword')}
+                    {t("profile.newPassword")}
                   </label>
                   <input
                     type="password"
                     value={editPassword}
                     onChange={(e) => setEditPassword(e.target.value)}
                     className={inputClass}
-                    placeholder={t('profile.passwordPlaceholder')}
+                    placeholder={t("profile.passwordPlaceholder")}
                   />
                 </div>
                 <div className="flex gap-3 pt-2">
@@ -338,7 +357,7 @@ export default function ProfilePage() {
                     className="flex-1 py-3 rounded-full font-bold text-[#636E72] dark:text-[#B2BEC3] border-2 border-[#E8E8E4] dark:border-[#3D3D5C] hover:border-[#2D3436] dark:hover:border-white hover:text-[#2D3436] dark:hover:text-white transition-all text-sm flex items-center justify-center gap-1.5"
                   >
                     <HiX />
-                    {t('profile.cancel')}
+                    {t("profile.cancel")}
                   </button>
                   <button
                     onClick={handleSave}
@@ -346,7 +365,7 @@ export default function ProfilePage() {
                     className="flex-1 py-3 rounded-full font-bold text-white bg-gradient-to-r from-[#4ECDC4] to-[#44B0A8] hover:opacity-90 transition-all text-sm disabled:opacity-60 flex items-center justify-center gap-1.5"
                   >
                     <HiCheck />
-                    {loading ? t('profile.saving') : t('profile.saveChanges')}
+                    {loading ? t("profile.saving") : t("profile.saveChanges")}
                   </button>
                 </div>
               </div>
@@ -356,7 +375,7 @@ export default function ProfilePage() {
           {/* Quick Links */}
           <div className="card-cartoon p-6 sm:p-8 animate-fade-in-up stagger-2">
             <h2 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-4">
-              {t('profile.quickLinks')}
+              {t("profile.quickLinks")}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Link
@@ -367,8 +386,12 @@ export default function ProfilePage() {
                   <HiCalendar className="text-[#4ECDC4]" />
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-[#2D3436] dark:text-white">{t('profile.myBookings')}</div>
-                  <div className="text-xs text-[#B2BEC3]">{t('profile.viewTrips')}</div>
+                  <div className="text-sm font-bold text-[#2D3436] dark:text-white">
+                    {t("profile.myBookings")}
+                  </div>
+                  <div className="text-xs text-[#B2BEC3]">
+                    {t("profile.viewTrips")}
+                  </div>
                 </div>
               </Link>
               <Link
@@ -379,12 +402,16 @@ export default function ProfilePage() {
                   <HiHeart className="text-[#FF6B6B]" />
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-[#2D3436] dark:text-white">{t('profile.favorites')}</div>
-                  <div className="text-xs text-[#B2BEC3]">{t('profile.savedPlaces')}</div>
+                  <div className="text-sm font-bold text-[#2D3436] dark:text-white">
+                    {t("profile.favorites")}
+                  </div>
+                  <div className="text-xs text-[#B2BEC3]">
+                    {t("profile.savedPlaces")}
+                  </div>
                 </div>
               </Link>
 
-              {user.role === 'USER' && (
+              {user.role === "USER" && (
                 <Link
                   href="/Auth/register"
                   className="flex items-center gap-3 p-3 rounded-2xl hover:bg-[#F0F0EC] dark:hover:bg-[#2D2D4A] transition-all sm:col-span-2"
@@ -393,13 +420,19 @@ export default function ProfilePage() {
                     <HiHome className="text-[#6C5CE7]" />
                   </div>
                   <div>
-                    <div className="text-sm font-bold text-[#2D3436] dark:text-white">{t('profile.becomeHost')}</div>
-                    <div className="text-xs text-[#B2BEC3]">{t('profile.startEarning')}</div>
+                    <div className="text-sm font-bold text-[#2D3436] dark:text-white">
+                      {t("profile.becomeHost")}
+                    </div>
+                    <div className="text-xs text-[#B2BEC3]">
+                      {t("profile.startEarning")}
+                    </div>
                   </div>
                 </Link>
               )}
 
-              {(user.role === 'HOST' || user.role === 'HOST_PENDING' || user.role === 'ADMIN') && (
+              {(user.role === "HOST" ||
+                user.role === "HOST_PENDING" ||
+                user.role === "ADMIN") && (
                 <Link
                   href="/host/places"
                   className="flex items-center gap-3 p-3 rounded-2xl hover:bg-[#F0F0EC] dark:hover:bg-[#2D2D4A] transition-all"
@@ -408,8 +441,12 @@ export default function ProfilePage() {
                     <HiHome className="text-[#0984E3]" />
                   </div>
                   <div>
-                    <div className="text-sm font-bold text-[#2D3436] dark:text-white">{t('profile.myPlaces')}</div>
-                    <div className="text-xs text-[#B2BEC3]">{t('profile.manageListings')}</div>
+                    <div className="text-sm font-bold text-[#2D3436] dark:text-white">
+                      {t("profile.myPlaces")}
+                    </div>
+                    <div className="text-xs text-[#B2BEC3]">
+                      {t("profile.manageListings")}
+                    </div>
                   </div>
                 </Link>
               )}

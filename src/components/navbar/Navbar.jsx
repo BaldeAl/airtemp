@@ -3,7 +3,17 @@ import { useContext, useState, useEffect } from "react";
 import { ThemeContext } from "../context/theme";
 import { useTranslation } from "../../lib/i18n/LanguageContext";
 import { BsFillSunFill, BsMoon } from "react-icons/bs";
-import { HiHeart, HiCalendar, HiMenu, HiX, HiShieldCheck, HiHome, HiClipboardList, HiChat, HiTranslate } from "react-icons/hi";
+import {
+  HiHeart,
+  HiCalendar,
+  HiMenu,
+  HiX,
+  HiShieldCheck,
+  HiHome,
+  HiClipboardList,
+  HiChat,
+  HiTranslate,
+} from "react-icons/hi";
 import { FaRegUserCircle } from "react-icons/fa";
 import { useRouter } from "next/router";
 import ReactCountryFlag from "react-country-flag";
@@ -99,8 +109,14 @@ const Navbar = () => {
               onClick={toggleLocale}
               title={t("language.switchTo")}
             >
-              <ReactCountryFlag countryCode={locale === "en" ? "GB" : "FR"} svg style={{ fontSize: '1.2em' }} />
-              <span className="hidden lg:inline">{locale === "en" ? "EN" : "FR"}</span>
+              <ReactCountryFlag
+                countryCode={locale === "en" ? "GB" : "FR"}
+                svg
+                style={{ fontSize: "1.2em" }}
+              />
+              <span className="hidden lg:inline">
+                {locale === "en" ? "EN" : "FR"}
+              </span>
             </button>
 
             {/* Theme Toggle */}
@@ -125,25 +141,33 @@ const Navbar = () => {
                     className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                   >
                     <HiShieldCheck className="text-[#6C5CE7]" />
-                    <span className="hidden lg:inline">{t("navbar.adminDashboard")}</span>
+                    <span className="hidden lg:inline">
+                      {t("navbar.adminDashboard")}
+                    </span>
                   </Link>
                 )}
 
-                {(role === "HOST" || role === "HOST_PENDING" || role === "ADMIN") && (
+                {(role === "HOST" ||
+                  role === "HOST_PENDING" ||
+                  role === "ADMIN") && (
                   <>
                     <Link
                       href="/host/places"
                       className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                     >
                       <HiHome className="text-[#0984E3]" />
-                      <span className="hidden lg:inline">{t("navbar.managePlaces")}</span>
+                      <span className="hidden lg:inline">
+                        {t("navbar.managePlaces")}
+                      </span>
                     </Link>
                     <Link
                       href="/host/bookings"
                       className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                     >
                       <HiClipboardList className="text-[#00B894]" />
-                      <span className="hidden lg:inline">{t("navbar.guestBookings")}</span>
+                      <span className="hidden lg:inline">
+                        {t("navbar.guestBookings")}
+                      </span>
                     </Link>
                   </>
                 )}
@@ -153,7 +177,9 @@ const Navbar = () => {
                   className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                 >
                   <HiHeart className="text-[#FF6B6B]" />
-                  <span className="hidden lg:inline">{t("navbar.favorites")}</span>
+                  <span className="hidden lg:inline">
+                    {t("navbar.favorites")}
+                  </span>
                 </Link>
 
                 <Link
@@ -161,7 +187,9 @@ const Navbar = () => {
                   className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                 >
                   <HiCalendar className="text-[#4ECDC4]" />
-                  <span className="hidden lg:inline">{t("navbar.bookings")}</span>
+                  <span className="hidden lg:inline">
+                    {t("navbar.bookings")}
+                  </span>
                 </Link>
 
                 <Link
@@ -169,7 +197,9 @@ const Navbar = () => {
                   className="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                 >
                   <HiChat className="text-[#A29BFE]" />
-                  <span className="hidden lg:inline">{t("navbar.messages")}</span>
+                  <span className="hidden lg:inline">
+                    {t("navbar.messages")}
+                  </span>
                 </Link>
 
                 <Link
@@ -188,10 +218,7 @@ const Navbar = () => {
                 </button>
               </>
             ) : (
-              <Link
-                href="/Auth/login"
-                className="btn-pill px-6 py-2.5 text-sm"
-              >
+              <Link href="/Auth/login" className="btn-pill px-6 py-2.5 text-sm">
                 {t("navbar.login")}
               </Link>
             )}
@@ -201,7 +228,11 @@ const Navbar = () => {
             className="md:hidden p-2.5 rounded-full text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {isMenuOpen ? <HiX className="text-xl" /> : <HiMenu className="text-xl" />}
+            {isMenuOpen ? (
+              <HiX className="text-xl" />
+            ) : (
+              <HiMenu className="text-xl" />
+            )}
           </button>
         </div>
 
@@ -212,7 +243,11 @@ const Navbar = () => {
               onClick={toggleLocale}
               className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
             >
-              <ReactCountryFlag countryCode={locale === "en" ? "GB" : "FR"} svg style={{ fontSize: '1.2em' }} />
+              <ReactCountryFlag
+                countryCode={locale === "en" ? "GB" : "FR"}
+                svg
+                style={{ fontSize: "1.2em" }}
+              />
               <span>{t("language.switchTo")}</span>
             </button>
 
@@ -221,8 +256,16 @@ const Navbar = () => {
               onClick={toggleTheme}
               className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
             >
-              {theme === "dark" ? <BsFillSunFill className="text-[#FFE66D]" /> : <BsMoon />}
-              <span>{theme === "dark" ? t("navbar.lightMode") : t("navbar.darkMode")}</span>
+              {theme === "dark" ? (
+                <BsFillSunFill className="text-[#FFE66D]" />
+              ) : (
+                <BsMoon />
+              )}
+              <span>
+                {theme === "dark"
+                  ? t("navbar.lightMode")
+                  : t("navbar.darkMode")}
+              </span>
             </button>
 
             {token ? (
@@ -237,7 +280,9 @@ const Navbar = () => {
                   </Link>
                 )}
 
-                {(role === "HOST" || role === "HOST_PENDING" || role === "ADMIN") && (
+                {(role === "HOST" ||
+                  role === "HOST_PENDING" ||
+                  role === "ADMIN") && (
                   <>
                     <Link
                       href="/host/places"
@@ -285,7 +330,9 @@ const Navbar = () => {
                   className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-sm font-semibold text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#F0F0EC] dark:hover:bg-[#232340] transition-all"
                 >
                   <FaRegUserCircle />
-                  <span>{t("navbar.profile")} ({user})</span>
+                  <span>
+                    {t("navbar.profile")} ({user})
+                  </span>
                 </Link>
 
                 <button

@@ -1,10 +1,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
+import { useTranslation } from "../../lib/i18n/LanguageContext";
 
 const ImageGallery = ({ images, name }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const { t } = useTranslation();
 
   if (!images || images.length === 0) return null;
 
@@ -67,7 +69,7 @@ const ImageGallery = ({ images, name }) => {
           onClick={() => setIsFullscreen(true)}
           className="absolute top-4 right-4 px-3 py-1.5 rounded-full bg-white/90 dark:bg-[#232340]/90 text-[#2D3436] dark:text-white text-xs font-bold opacity-0 group-hover:opacity-100 transition-all hover:shadow-cartoon"
         >
-          Show all photos
+          {t("gallery.showAllPhotos")}
         </button>
       </div>
 
@@ -77,7 +79,9 @@ const ImageGallery = ({ images, name }) => {
             key={i}
             onClick={() => goTo(i)}
             className={`relative aspect-square rounded-2xl overflow-hidden transition-all duration-300 ${
-              i === currentIndex ? "ring-3 ring-[#FF6B6B] ring-offset-2 ring-offset-[#FAFAF8] dark:ring-offset-[#1A1A2E]" : "opacity-70 hover:opacity-100"
+              i === currentIndex
+                ? "ring-3 ring-[#FF6B6B] ring-offset-2 ring-offset-[#FAFAF8] dark:ring-offset-[#1A1A2E]"
+                : "opacity-70 hover:opacity-100"
             }`}
           >
             <Image
@@ -108,7 +112,10 @@ const ImageGallery = ({ images, name }) => {
           >
             <HiChevronLeft className="text-2xl sm:text-3xl" />
           </button>
-          <div className="relative w-full max-w-4xl aspect-[16/10] mx-4 sm:mx-8" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="relative w-full max-w-4xl aspect-[16/10] mx-4 sm:mx-8"
+            onClick={(e) => e.stopPropagation()}
+          >
             <Image
               src={images[currentIndex]}
               alt={`${name} - Photo ${currentIndex + 1}`}

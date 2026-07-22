@@ -6,7 +6,7 @@ import { compareSync } from "bcryptjs";
 
 export default async function handle(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const { email, password } = req.body;
 
@@ -22,10 +22,9 @@ export default async function handle(
   }
 
   // Support both hashed (bcrypt) and legacy plain-text passwords
-  const isValidPassword =
-    user.password.startsWith("$2") // bcrypt hash prefix
-      ? compareSync(password, user.password)
-      : user.password === password;
+  const isValidPassword = user.password.startsWith("$2") // bcrypt hash prefix
+    ? compareSync(password, user.password)
+    : user.password === password;
 
   if (!isValidPassword) {
     res.status(401).json({ message: "Invalid credentials" });
