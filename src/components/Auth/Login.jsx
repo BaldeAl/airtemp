@@ -5,6 +5,7 @@ import { RiErrorWarningFill } from "react-icons/ri";
 import InputField from "../form/InputField";
 import SubmitButton from "../form/ButtonSubmit";
 import { useTranslation } from "../../lib/i18n/LanguageContext";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -16,22 +17,26 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch(`/api/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const response = await fetch(`/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await response.json();
-    if (response.ok) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("UserName", data.user.name);
-      localStorage.setItem("role", data.user.role);
-      router.push("/");
-    } else {
-      setMessage(t("auth.loginFailed"));
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("UserName", data.user.name);
+        localStorage.setItem("role", data.user.role);
+        router.push("/");
+      } else {
+        setMessage(t("auth.loginFailed"));
+      }
+    } catch {
+      toast.error(t("auth.networkError"));
     }
   };
 

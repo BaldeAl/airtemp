@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Layout from "../../components/Layout";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import Loading from "../../components/loading/Loading";
 import Link from "next/link";
 import Image from "next/image";
@@ -42,9 +41,7 @@ function getHoursUntilCheckIn(checkIn) {
 }
 
 function canCancel(booking) {
-  // Pending bookings can always be cancelled
   if (booking.status === "pending") return true;
-  // Confirmed bookings can only be cancelled 72h+ before check-in
   if (booking.status === "confirmed") {
     return getHoursUntilCheckIn(booking.checkIn) >= 72;
   }
@@ -57,7 +54,6 @@ export default function BookingsPage() {
   const [cancellingId, setCancellingId] = useState(null);
   const [showCancelModal, setShowCancelModal] = useState(null);
   const [cancelError, setCancelError] = useState("");
-  const router = useRouter();
   const { t, dateLocale } = useTranslation();
 
   const statusConfig = {
@@ -174,7 +170,6 @@ export default function BookingsPage() {
     );
   }
 
-  // Separate bookings into categories
   const now = new Date();
   const upcoming = bookings.filter(
     (b) =>
@@ -194,7 +189,6 @@ export default function BookingsPage() {
       </Head>
       <Layout>
         <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
-          {/* Header */}
           <div className="mb-8 sm:mb-10 animate-fade-in-up">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-full bg-[#4ECDC4]/10 flex items-center justify-center">
@@ -215,7 +209,6 @@ export default function BookingsPage() {
             </p>
           </div>
 
-          {/* Empty State */}
           {bookings.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 animate-fade-in">
               <div className="w-24 h-24 mb-6 rounded-full bg-[#4ECDC4]/10 flex items-center justify-center">
@@ -233,7 +226,6 @@ export default function BookingsPage() {
             </div>
           ) : (
             <div className="space-y-10">
-              {/* Upcoming Bookings (confirmed + pending) */}
               {upcoming.length > 0 && (
                 <section>
                   <h2 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-4 flex items-center gap-2 animate-fade-in-up">
@@ -260,7 +252,6 @@ export default function BookingsPage() {
                 </section>
               )}
 
-              {/* Past Bookings */}
               {past.length > 0 && (
                 <section>
                   <h2 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-4 flex items-center gap-2 animate-fade-in-up">
@@ -283,7 +274,6 @@ export default function BookingsPage() {
                 </section>
               )}
 
-              {/* Cancelled Bookings */}
               {cancelled.length > 0 && (
                 <section>
                   <h2 className="text-lg font-extrabold text-[#2D3436] dark:text-white mb-4 flex items-center gap-2 animate-fade-in-up">
@@ -309,7 +299,6 @@ export default function BookingsPage() {
           )}
         </div>
 
-        {/* Cancel Confirmation Modal */}
         {showCancelModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm animate-fade-in px-4">
             <div className="card-cartoon p-6 sm:p-8 max-w-md w-full animate-fade-in-up">
@@ -376,7 +365,6 @@ function BookingCard({
   const isActive =
     !isPast && (booking.status === "confirmed" || booking.status === "pending");
 
-  // Show 72h warning for confirmed bookings close to check-in
   const hoursLeft = getHoursUntilCheckIn(booking.checkIn);
   const showNoCancel =
     booking.status === "confirmed" &&
@@ -393,7 +381,6 @@ function BookingCard({
       }}
     >
       <div className="flex flex-col sm:flex-row">
-        {/* Image */}
         <Link
           href={`/place/${place?.place_id}`}
           className="relative w-full sm:w-48 md:w-56 aspect-[16/10] sm:aspect-[4/3] flex-shrink-0 overflow-hidden rounded-t-[20px] sm:rounded-t-none sm:rounded-l-[20px]"
@@ -410,7 +397,6 @@ function BookingCard({
           )}
         </Link>
 
-        {/* Details */}
         <div
           className={`flex-1 p-4 sm:p-5 flex flex-col justify-between min-w-0 ${isPast ? "opacity-60" : ""}`}
         >
@@ -462,7 +448,6 @@ function BookingCard({
               </span>
             </div>
 
-            {/* 72h warning */}
             {showNoCancel && (
               <div className="flex items-center gap-1.5 mt-3 px-3 py-2 rounded-xl bg-[#FFE66D]/15 text-[#C9A227] text-xs font-bold">
                 <HiExclamation className="text-sm flex-shrink-0" />

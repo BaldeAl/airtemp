@@ -46,9 +46,10 @@
     "accountCreatedHost": "Compte créé avec succès ! Votre profil de gérant est en attente de validation par un administrateur.",
     "emailInUse": "Cet email est déjà utilisé",
     "unsupportedFormat": "Format non supporté. Utilisez JPG, PNG, WebP ou PDF.",
-    "fileTooLarge": "Le fichier est trop volumineux. Taille max : 5 Mo.",
+    "fileTooLarge": "Le fichier est trop silencieux. Taille max : 5 Mo.",
     "welcomeBack": "Bon retour",
     "signInToAccount": "Connectez-vous à votre compte",
+    "login": "Connexion",
     "loginBtn": "Connexion",
     "loginFailed": "Erreur de connexion. Veuillez réessayer.",
     "noAccountYet": "Pas encore de compte ? S'inscrire",
@@ -91,6 +92,7 @@
   },
   "bookings": {
     "title": "Mes Réservations",
+    "myBookings": "Mes Réservations",
     "signInToView": "Connectez-vous pour voir vos réservations",
     "signInDescription": "Consultez et gérez vos séjours à venir en vous connectant à votre compte.",
     "total": "au total",
@@ -104,6 +106,8 @@
     "pending": "En attente",
     "cancelBooking": "Annuler la réservation ?",
     "cancelConfirm": "Êtes-vous sûr de vouloir annuler cette réservation ? Cette action est irréversible.",
+    "cancelConfirmation": "Êtes-vous sûr de vouloir annuler cette réservation ? Cette action est irréversible.",
+    "cancelFailed": "Échec de l'annulation de la réservation.",
     "keepBooking": "Garder la réservation",
     "yesCancel": "Oui, annuler",
     "cancelling": "Annulation...",
@@ -115,14 +119,23 @@
     "night": "nuit",
     "nights": "nuits",
     "booking": "réservation",
-    "bookingsPlural": "réservations"
+    "bookingWord": "réservation",
+    "bookingsWord": "réservations",
+    "bookingsPlural": "réservations",
+    "status": {
+      "confirmed": "Confirmée",
+      "pending": "En attente",
+      "cancelled": "Annulée"
+    }
   },
   "favorites": {
     "title": "Mes Favoris",
+    "myFavorites": "Mes Favoris",
     "signInToView": "Connectez-vous pour voir vos favoris",
     "signInDescription": "Suivez vos logements favoris en vous connectant à votre compte.",
     "noFavorites": "Aucun favori",
     "noFavoritesDescription": "Explorez et appuyez sur le cœur des logements que vous aimez pour les sauvegarder ici.",
+    "noFavoritesDesc": "Explorez et appuyez sur le cœur des logements que vous aimez pour les sauvegarder ici.",
     "explorePlaces": "Explorer les logements",
     "savedPlace": "logement sauvegardé",
     "savedPlaces": "logements sauvegardés"
@@ -140,7 +153,8 @@
     "memberSince": "Membre depuis",
     "listing": "logement",
     "listings": "logements",
-    "amenities": "Équipements"
+    "amenities": "Équipements",
+    "unknownPlace": "Logement inconnu"
   },
   "place_card": {
     "perNight": "/ nuit",
@@ -156,6 +170,8 @@
   },
   "host_card": {
     "superhost": "Superhôte",
+    "host": "Gérant",
+    "verifiedHost": "Gérant",
     "memberSince": "Membre depuis",
     "listing": "logement",
     "listings": "logements"
@@ -179,7 +195,14 @@
     "places": "logements",
     "noPlacesFound": "Aucun logement trouvé",
     "noPlacesHint": "Essayez de modifier votre recherche ou vos filtres pour trouver ce que vous cherchez.",
-    "resetFilters": "Réinitialiser les filtres"
+    "resetFilters": "Réinitialiser les filtres",
+    "page": "Page",
+    "of": "sur",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "showing": "Affichage de",
+    "to": "à",
+    "results": "résultats"
   },
   "gallery": {
     "showAllPhotos": "Voir toutes les photos"
@@ -188,6 +211,13 @@
     "somethingWentWrong": "Quelque chose s'est mal passé",
     "serverError": "Une erreur {code} s'est produite sur le serveur",
     "clientError": "Une erreur s'est produite côté client"
+  },
+  "toast": {
+    "serverError": "Le serveur ne répond pas. Veuillez réessayer plus tard.",
+    "serverUnavailable": "Service temporairement indisponible.",
+    "loadFailed": "Impossible de charger les données. Veuillez réessayer.",
+    "bookingFailed": "La réservation a échoué. Veuillez réessayer.",
+    "placeFetchError": "Impossible de charger ce logement. Veuillez réessayer."
   },
   "booking_form": {
     "perNight": "/ nuit",
@@ -290,7 +320,36 @@
     "identityDocument": "Pièce d'identité",
     "retainedDocument": "(Conservé dans la limite de durée légale)",
     "clickView": "Cliquer pour voir",
-    "registered": "Inscrit le"
+    "registered": "Inscrit le",
+    "confirmTitle": "Confirmer l'action",
+    "confirmCancel": "Annuler",
+    "confirmProceed": "Confirmer",
+    "tabHosts": "Gérants",
+    "tabUsers": "Utilisateurs",
+    "tabPlaces": "Logements",
+    "tabBookings": "Réservations",
+    "statsUsers": "Total utilisateurs",
+    "statsPlaces": "Total logements",
+    "statsBookings": "Total réservations",
+    "statsRevenue": "Revenu total",
+    "allUsers": "Tous les utilisateurs",
+    "noUsers": "Aucun utilisateur",
+    "noUsersDesc": "Aucun utilisateur inscrit pour le moment.",
+    "userRole": "Rôle",
+    "changeRole": "Changer le rôle",
+    "allPlaces": "Tous les logements",
+    "noPlacesAdmin": "Aucun logement",
+    "noPlacesAdminDesc": "Aucun logement n'a été publié pour le moment.",
+    "hostedBy": "Hébergé par",
+    "deletePlace": "Supprimer",
+    "deletePlaceConfirm": "Êtes-vous sûr de vouloir supprimer ce logement ? Cette action est irréversible.",
+    "placeDeleted": "Logement supprimé avec succès.",
+    "placeDeleteFailed": "Échec de la suppression du logement.",
+    "allBookings": "Toutes les réservations",
+    "noBookingsAdmin": "Aucune réservation",
+    "noBookingsAdminDesc": "Aucune réservation n'a été effectuée pour le moment.",
+    "bookedBy": "Réservé par",
+    "viewPlace": "Voir le logement"
   },
   "hostPlaces": {
     "title": "Mes Logements",
@@ -328,10 +387,16 @@
     "startHostingDesc": "Commencez à héberger en ajoutant votre premier logement. Partagez votre propriété avec des voyageurs du monde entier !",
     "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce logement ? Cette action est irréversible.",
     "deleteSuccess": "Logement supprimé avec succès",
-    "deleteFailed": "Échec de la suppression du logement."
+    "deleteFailed": "Échec de la suppression du logement.",
+    "deleteConfirmTitle": "Supprimer le logement ?",
+    "deleteConfirmDesc": "Êtes-vous sûr de vouloir supprimer ce logement ? Toutes les réservations et avis associés seront également supprimés. Cette action est irréversible.",
+    "deleteConfirmCancel": "Garder le logement",
+    "deleteConfirmProceed": "Oui, supprimer"
   },
-  "hostBookings": {
+  "host_bookings": {
     "title": "Réservations reçues",
+    "guestBookings": "Réservations reçues",
+    "receivedBookings": "Réservations reçues sur vos propriétés",
     "subtitle": "Réservations reçues sur vos propriétés",
     "pending": "En attente",
     "upcoming": "À venir",
@@ -341,7 +406,10 @@
     "totalRevenue": "Revenus totaux",
     "accountUnderReview": "Compte en cours de vérification",
     "accountUnderReviewDesc": "Votre demande de gérant est en cours de vérification par un administrateur. Une fois validée, vous recevrez des réservations ici.",
-    "noBookings": "Aucune réservation {tab}",
+    "reviewDesc": "Votre demande de gérant est en cours de vérification par un administrateur. Une fois validée, vous recevrez des réservations ici.",
+    "noBookingsPrefix": "Aucune réservation",
+    "noBookingsSuffix": "",
+    "noBookingsToShow": "Aucune réservation",
     "noPendingDesc": "Aucune réservation en attente de votre approbation.",
     "noUpcomingDesc": "Lorsque des voyageurs réservent vos logements, les réservations à venir apparaîtront ici.",
     "noGenericDesc": "Aucune réservation {tab} à afficher.",
@@ -353,6 +421,7 @@
     "confirmed": "Confirmée",
     "bookingConfirmed": "Réservation confirmée !",
     "bookingDeclined": "Réservation refusée.",
+    "actionFailed": "L'action a échoué. Veuillez réessayer.",
     "guest": "Voyageur",
     "noEmail": "Pas d'email"
   },

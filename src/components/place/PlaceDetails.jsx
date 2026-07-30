@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import Head from "next/head";
 import Loading from "../loading/Loading";
 import ImageGallery from "./ImageGallery";
@@ -11,23 +10,52 @@ import BookingForm from "./BookingForm";
 import HostCard from "./HostCard";
 import StarRating from "./StarRating";
 import FavoriteButton from "./FavoriteButton";
-import { HiLocationMarker, HiArrowLeft, HiShare, HiChat } from "react-icons/hi";
+import { HiLocationMarker, HiArrowLeft, HiShare } from "react-icons/hi";
 import Link from "next/link";
 import { useTranslation } from "../../lib/i18n/LanguageContext";
+import { toast } from "react-toastify";
 
 const PlaceDetails = () => {
   const router = useRouter();
   const { id } = router.query;
   const [place, setPlace] = useState(null);
+  const [fetchError, setFetchError] = useState(false);
   const { t } = useTranslation();
 
   useEffect(() => {
     if (id) {
       fetch(`/api/places/${id}`)
-        .then((res) => res.json())
-        .then((data) => setPlace(data));
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to fetch");
+          return res.json();
+        })
+        .then((data) => setPlace(data))
+        .catch(() => {
+          setFetchError(true);
+          toast.error(t("toast.placeFetchError"));
+        });
     }
-  }, [id]);
+  }, [id, t]);
+
+  if (fetchError) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 animate-fade-in">
+        <div className="text-6xl mb-4">😕</div>
+        <h2 className="text-xl font-extrabold text-[#2D3436] dark:text-white mb-2">
+          {t("errors.somethingWentWrong")}
+        </h2>
+        <p className="text-[#636E72] dark:text-[#B2BEC3] text-sm mb-6 text-center max-w-md">
+          {t("toast.placeFetchError")}
+        </p>
+        <button
+          onClick={() => router.back()}
+          className="btn-pill px-8 py-3"
+        >
+          {t("place.back")}
+        </button>
+      </div>
+    );
+  }
 
   if (!place) {
     return <Loading />;

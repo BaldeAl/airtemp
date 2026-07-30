@@ -9,8 +9,6 @@ import {
   HiChat,
   HiArrowLeft,
   HiPaperAirplane,
-  HiUser,
-  HiDotsVertical,
 } from "react-icons/hi";
 
 function timeAgo(date, locale) {
@@ -18,7 +16,6 @@ function timeAgo(date, locale) {
   const diff = now.getTime() - new Date(date).getTime();
   const mins = Math.floor(diff / 60000);
 
-  // Basic localization mapping for simple strings (you might want to put this in language files later if it gets complex)
   const isFr = locale === "fr-FR";
 
   if (mins < 1) return isFr ? "À l'instant" : "Just now";
@@ -36,7 +33,7 @@ function timeAgo(date, locale) {
 
 export default function MessagesPage() {
   const [conversations, setConversations] = useState(null);
-  const [activeChat, setActiveChat] = useState(null); // { userId, messages, otherUser }
+  const [activeChat, setActiveChat] = useState(null);
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -45,7 +42,6 @@ export default function MessagesPage() {
   const { contact, placeId } = router.query;
   const { t, dateLocale } = useTranslation();
 
-  // Fetch conversations list
   const fetchConversations = useCallback(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -69,15 +65,12 @@ export default function MessagesPage() {
     fetchConversations();
   }, [fetchConversations]);
 
-  // If navigated with ?contact=userId, open that conversation
   useEffect(() => {
     if (contact) {
       openChat(Number(contact));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contact]);
 
-  // Scroll to bottom of messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [activeChat?.messages]);
@@ -97,7 +90,6 @@ export default function MessagesPage() {
         messages: data.messages || [],
         otherUser: data.otherUser,
       });
-      // Refresh conversations to update unread counts
       fetchConversations();
     } catch (err) {
       console.error(err);
@@ -208,7 +200,6 @@ export default function MessagesPage() {
               className="flex h-full"
               style={{ minHeight: "calc(100vh - 220px)" }}
             >
-              {/* Sidebar - Conversations List */}
               <div
                 className={`${
                   activeChat ? "hidden md:flex" : "flex"
@@ -288,7 +279,6 @@ export default function MessagesPage() {
                 </div>
               </div>
 
-              {/* Chat Area */}
               <div
                 className={`${
                   activeChat ? "flex" : "hidden md:flex"
@@ -296,7 +286,6 @@ export default function MessagesPage() {
               >
                 {activeChat ? (
                   <>
-                    {/* Chat Header */}
                     <div className="flex items-center gap-3 p-4 border-b border-[#E8E8E4] dark:border-[#2D2D4A]">
                       <button
                         onClick={() => setActiveChat(null)}
@@ -332,7 +321,6 @@ export default function MessagesPage() {
                       </div>
                     </div>
 
-                    {/* Messages */}
                     <div className="flex-1 overflow-y-auto p-4 space-y-3">
                       {activeChat.messages.length === 0 && (
                         <div className="text-center py-8 text-sm text-[#B2BEC3]">
@@ -368,7 +356,6 @@ export default function MessagesPage() {
                       <div ref={messagesEndRef} />
                     </div>
 
-                    {/* Input */}
                     <form
                       onSubmit={sendMessage}
                       className="flex items-center gap-2 p-4 border-t border-[#E8E8E4] dark:border-[#2D2D4A]"

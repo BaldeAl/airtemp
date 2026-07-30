@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "../../../../lib/prisma";
+import prisma from "../../../lib/prisma";
 import { verify } from "jsonwebtoken";
 
 export default async function handle(
@@ -18,7 +18,6 @@ export default async function handle(
   try {
     const decoded = verify(token, process.env.JWT_SECRET as string) as {
       user_id: number;
-      role?: string;
     };
 
     const callingUser = await prisma.user.findUnique({
@@ -29,38 +28,28 @@ export default async function handle(
       return res.status(403).json({ message: "Forbidden: Admins only" });
     }
 
-    const hosts = await prisma.user.findMany({
-      where: {
-        OR: [
-          {
-            role: {
-              in: ["HOST_PENDING", "HOST", "HOST_REVOKED"],
-            },
-          },
-          {
-            role: "USER",
-            identityDocument: { not: null },
-          },
-        ],
-      },
+    const bookings = await prisma.booking.findMany({
       orderBy: { createdAt: "desc" },
-      select: {
-        id: true,
-        user_id: true,
-        name: true,
-        email: true,
-        address: true,
-        phone: true,
-        phoneCountryCode: true,
-        identityDocument: true,
-        role: true,
-        createdAt: true,
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
+        place: {
+          select: {
+            place_id: true,
+            name: true,
+            image: true,
+          },
+        },
       },
     });
 
-    return res.status(200).json(hosts);
+    return res.status(200).json(bookings);
   } catch (error) {
-    console.error("Error fetching hosts for admin:", error);
+    console.error("Error in admin bookings API:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 }

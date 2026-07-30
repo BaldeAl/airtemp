@@ -49,6 +49,7 @@
     "fileTooLarge": "File is too large. Maximum size: 5 MB.",
     "welcomeBack": "Welcome back",
     "signInToAccount": "Sign in to your account",
+    "login": "Login",
     "loginBtn": "Login",
     "loginFailed": "Login failed. Please try again.",
     "noAccountYet": "Don't have an account yet? Register",
@@ -91,6 +92,7 @@
   },
   "bookings": {
     "title": "My Bookings",
+    "myBookings": "My Bookings",
     "signInToView": "Sign in to view bookings",
     "signInDescription": "View and manage your upcoming stays by signing in to your account.",
     "total": "total",
@@ -104,6 +106,8 @@
     "pending": "Pending",
     "cancelBooking": "Cancel Booking?",
     "cancelConfirm": "Are you sure you want to cancel this booking? This action cannot be undone.",
+    "cancelConfirmation": "Are you sure you want to cancel this booking? This action cannot be undone.",
+    "cancelFailed": "Failed to cancel booking.",
     "keepBooking": "Keep Booking",
     "yesCancel": "Yes, Cancel",
     "cancelling": "Cancelling...",
@@ -115,14 +119,23 @@
     "night": "night",
     "nights": "nights",
     "booking": "booking",
-    "bookingsPlural": "bookings"
+    "bookingWord": "booking",
+    "bookingsWord": "bookings",
+    "bookingsPlural": "bookings",
+    "status": {
+      "confirmed": "Confirmed",
+      "pending": "Pending",
+      "cancelled": "Cancelled"
+    }
   },
   "favorites": {
     "title": "My Favorites",
+    "myFavorites": "My Favorites",
     "signInToView": "Sign in to view favorites",
     "signInDescription": "Keep track of your favorite places by signing in to your account.",
     "noFavorites": "No favorites yet",
     "noFavoritesDescription": "Start exploring and tap the heart icon on places you love to save them here.",
+    "noFavoritesDesc": "Start exploring and tap the heart icon on places you love to save them here.",
     "explorePlaces": "Explore Places",
     "savedPlace": "saved place",
     "savedPlaces": "saved places"
@@ -140,7 +153,8 @@
     "memberSince": "Member since",
     "listing": "listing",
     "listings": "listings",
-    "amenities": "Amenities"
+    "amenities": "Amenities",
+    "unknownPlace": "Unknown Place"
   },
   "place_card": {
     "perNight": "/ night",
@@ -156,6 +170,8 @@
   },
   "host_card": {
     "superhost": "Superhost",
+    "host": "Host",
+    "verifiedHost": "Verified Host",
     "memberSince": "Member since",
     "listing": "listing",
     "listings": "listings"
@@ -179,7 +195,14 @@
     "places": "places",
     "noPlacesFound": "No places found",
     "noPlacesHint": "Try adjusting your search or filters to find what you're looking for.",
-    "resetFilters": "Reset filters"
+    "resetFilters": "Reset filters",
+    "page": "Page",
+    "of": "of",
+    "previous": "Previous",
+    "next": "Next",
+    "showing": "Showing",
+    "to": "to",
+    "results": "results"
   },
   "gallery": {
     "showAllPhotos": "Show all photos"
@@ -188,6 +211,13 @@
     "somethingWentWrong": "Something went wrong",
     "serverError": "An error {code} occurred on server",
     "clientError": "An error occurred on client"
+  },
+  "toast": {
+    "serverError": "The server is not responding. Please try again later.",
+    "serverUnavailable": "Service temporarily unavailable.",
+    "loadFailed": "Failed to load data. Please try again.",
+    "bookingFailed": "Booking failed. Please try again.",
+    "placeFetchError": "Unable to load this place. Please try again."
   },
   "booking_form": {
     "perNight": "/ night",
@@ -290,7 +320,36 @@
     "identityDocument": "Identity Document",
     "retainedDocument": "(Retained within legal retention period)",
     "clickView": "Click to view",
-    "registered": "Registered"
+    "registered": "Registered",
+    "confirmTitle": "Confirm Action",
+    "confirmCancel": "Cancel",
+    "confirmProceed": "Proceed",
+    "tabHosts": "Hosts",
+    "tabUsers": "Users",
+    "tabPlaces": "Places",
+    "tabBookings": "Bookings",
+    "statsUsers": "Total Users",
+    "statsPlaces": "Total Places",
+    "statsBookings": "Total Bookings",
+    "statsRevenue": "Total Revenue",
+    "allUsers": "All Users",
+    "noUsers": "No Users",
+    "noUsersDesc": "No users registered yet.",
+    "userRole": "Role",
+    "changeRole": "Change Role",
+    "allPlaces": "All Places",
+    "noPlacesAdmin": "No Places",
+    "noPlacesAdminDesc": "No places have been listed yet.",
+    "hostedBy": "Hosted by",
+    "deletePlace": "Delete",
+    "deletePlaceConfirm": "Are you sure you want to delete this place? This action cannot be undone.",
+    "placeDeleted": "Place deleted successfully.",
+    "placeDeleteFailed": "Failed to delete place.",
+    "allBookings": "All Bookings",
+    "noBookingsAdmin": "No Bookings",
+    "noBookingsAdminDesc": "No bookings have been made yet.",
+    "bookedBy": "Booked by",
+    "viewPlace": "View Place"
   },
   "hostPlaces": {
     "title": "My Places",
@@ -328,10 +387,16 @@
     "startHostingDesc": "Start hosting by adding your first place. Share your property with travelers around the world!",
     "confirmDelete": "Are you sure you want to delete this place? This action cannot be undone.",
     "deleteSuccess": "Place deleted successfully",
-    "deleteFailed": "Failed to delete place."
+    "deleteFailed": "Failed to delete place.",
+    "deleteConfirmTitle": "Delete Place?",
+    "deleteConfirmDesc": "Are you sure you want to delete this place? All associated bookings and reviews will also be removed. This action cannot be undone.",
+    "deleteConfirmCancel": "Keep Place",
+    "deleteConfirmProceed": "Yes, Delete"
   },
-  "hostBookings": {
+  "host_bookings": {
     "title": "Guest Bookings",
+    "guestBookings": "Guest Bookings",
+    "receivedBookings": "Bookings received on your properties",
     "subtitle": "Bookings received on your properties",
     "pending": "Pending",
     "upcoming": "Upcoming",
@@ -341,7 +406,10 @@
     "totalRevenue": "Total Revenue",
     "accountUnderReview": "Account Under Review",
     "accountUnderReviewDesc": "Your host application is currently being reviewed by an administrator. Once validated, you will receive bookings here.",
-    "noBookings": "No {tab} bookings",
+    "reviewDesc": "Your host application is currently being reviewed by an administrator. Once validated, you will receive bookings here.",
+    "noBookingsPrefix": "No",
+    "noBookingsSuffix": "bookings",
+    "noBookingsToShow": "No",
     "noPendingDesc": "No reservations waiting for your approval.",
     "noUpcomingDesc": "When guests book your places, upcoming bookings will appear here.",
     "noGenericDesc": "No {tab} bookings to show.",
@@ -353,6 +421,7 @@
     "confirmed": "Confirmed",
     "bookingConfirmed": "Booking confirmed!",
     "bookingDeclined": "Booking declined.",
+    "actionFailed": "Action failed. Please try again.",
     "guest": "Guest",
     "noEmail": "No email"
   },

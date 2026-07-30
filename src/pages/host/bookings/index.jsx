@@ -108,8 +108,6 @@ export default function HostBookingsPage() {
       });
 
       if (res.ok) {
-        const result = await res.json();
-        // Update local state
         setData((prev) => ({
           ...prev,
           bookings: prev.bookings.map((b) =>
@@ -205,7 +203,6 @@ export default function HostBookingsPage() {
       </Head>
       <Layout>
         <div className="max-w-5xl mx-auto px-4 py-8 sm:py-12">
-          {/* Header */}
           <div className="mb-8 animate-fade-in-up">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-full bg-[#0984E3]/10 flex items-center justify-center">
@@ -220,7 +217,6 @@ export default function HostBookingsPage() {
             </p>
           </div>
 
-          {/* Stats Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8 animate-fade-in-up stagger-1">
             <div className="card-cartoon p-4 sm:p-5 text-center">
               <div className="w-10 h-10 mx-auto mb-2 rounded-full bg-[#FDCB6E]/10 flex items-center justify-center">
@@ -268,7 +264,6 @@ export default function HostBookingsPage() {
             </div>
           </div>
 
-          {/* Tabs */}
           <div className="flex items-center gap-2 mb-6 animate-fade-in-up stagger-2 flex-wrap">
             {tabs.map((tab) => (
               <button
@@ -294,7 +289,6 @@ export default function HostBookingsPage() {
             ))}
           </div>
 
-          {/* Booking List */}
           {activeBookings.length === 0 ? (
             role === "HOST_PENDING" ? (
               <div className="card-cartoon p-12 flex flex-col items-center justify-center text-center animate-fade-in border-2 border-[#FFE66D]/50 bg-[#FFE66D]/5">
@@ -374,7 +368,6 @@ function HostBookingCard({
       }}
     >
       <div className="p-5">
-        {/* Header: Place + Status */}
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="flex items-center gap-3 min-w-0">
             <div className="relative w-12 h-12 rounded-2xl overflow-hidden flex-shrink-0">
@@ -410,7 +403,6 @@ function HostBookingCard({
           </span>
         </div>
 
-        {/* Guest Info */}
         <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#FAFAF8] dark:bg-[#1A1A2E] mb-4">
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#A29BFE] to-[#6C5CE7] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
             {guest?.name?.charAt(0)?.toUpperCase() || "G"}
@@ -427,7 +419,6 @@ function HostBookingCard({
           </div>
         </div>
 
-        {/* Booking Details */}
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[#636E72] dark:text-[#B2BEC3]">
           <div className="flex items-center gap-1.5">
             <HiCalendar className="text-[#4ECDC4]" />
@@ -452,7 +443,6 @@ function HostBookingCard({
           </span>
         </div>
 
-        {/* Price + Actions */}
         <div className="flex items-center justify-between mt-4 pt-3 border-t border-[#E8E8E4] dark:border-[#2D2D4A]">
           <span className="text-lg font-extrabold text-[#00B894]">
             {booking.totalPrice}€

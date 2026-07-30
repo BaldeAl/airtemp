@@ -50,8 +50,7 @@ export default async function handle(
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Revoke: HOST → USER  |  Grant: USER → HOST
-    const newRole = action === "revoke" ? "USER" : "HOST";
+    const newRole = action === "revoke" ? "HOST_REVOKED" : "HOST";
 
     const updatedUser = await prisma.user.update({
       where: { user_id: targetUserId },

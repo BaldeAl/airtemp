@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "../../lib/i18n/LanguageContext";
+import { toast } from "react-toastify";
 
 const BookingForm = ({ place }) => {
   const router = useRouter();
@@ -9,7 +10,7 @@ const BookingForm = ({ place }) => {
   const [guests, setGuests] = useState(1);
   const [isBooked, setIsBooked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [availabilityStatus, setAvailabilityStatus] = useState(null); // null | 'checking' | 'available' | 'unavailable'
+  const [availabilityStatus, setAvailabilityStatus] = useState(null);
   const [availabilityMessage, setAvailabilityMessage] = useState("");
   const { t } = useTranslation();
 
@@ -27,7 +28,6 @@ const BookingForm = ({ place }) => {
   const serviceFee = Math.round(place.priceByNight * nights * 0.12);
   const totalPrice = place.priceByNight * nights + serviceFee;
 
-  // Check availability when dates change
   const checkAvailability = useCallback(async () => {
     if (!checkIn || !checkOut) {
       setAvailabilityStatus(null);
@@ -93,9 +93,11 @@ const BookingForm = ({ place }) => {
 
       if (res.ok) {
         setIsBooked(true);
+      } else {
+        toast.error(t("toast.bookingFailed"));
       }
-    } catch (err) {
-      console.error("Booking failed");
+    } catch {
+      toast.error(t("toast.serverError"));
     } finally {
       setIsLoading(false);
     }
@@ -103,7 +105,7 @@ const BookingForm = ({ place }) => {
 
   if (isBooked) {
     return (
-      <div className="card-cartoon p-6 sticky top-28">
+      <div className="card-cartoon p-6 sticky top-28 z-30 bg-white dark:bg-[#232340]">
         <div className="text-center py-6">
           <div className="text-5xl mb-4">⏳</div>
           <h3 className="text-xl font-extrabold text-[#2D3436] dark:text-white mb-2">
@@ -135,7 +137,7 @@ const BookingForm = ({ place }) => {
   }
 
   return (
-    <div className="card-cartoon p-6 sticky top-28">
+    <div className="card-cartoon p-6 sticky top-28 z-30 bg-white dark:bg-[#232340]">
       <div className="flex items-baseline gap-2 mb-6">
         <span className="text-2xl font-extrabold text-[#2D3436] dark:text-white">
           {place.priceByNight}€
@@ -175,7 +177,6 @@ const BookingForm = ({ place }) => {
           </div>
         </div>
 
-        {/* Availability indicator */}
         {availabilityStatus && (
           <div
             className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold animate-fade-in ${

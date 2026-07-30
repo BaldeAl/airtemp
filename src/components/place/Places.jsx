@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Place from "./Place";
 import Loading from "../loading/Loading";
 import Categories from "../home/Categories";
 import FilterPanel from "../filters/FilterPanel";
 import { useTranslation } from "../../lib/i18n/LanguageContext";
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
+
+const ITEMS_PER_PAGE = 12;
 
 const FALLBACK_PLACES = [
   {
@@ -121,6 +124,7 @@ const FALLBACK_PLACES = [
 const Places = ({ searchValue = "" }) => {
   const [places, setPlaces] = useState(null);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
     minPrice: 0,
     maxPrice: 1000,
@@ -128,6 +132,7 @@ const Places = ({ searchValue = "" }) => {
     minGuests: 0,
   });
   const { t } = useTranslation();
+  const gridRef = useRef(null);
 
   useEffect(() => {
     fetch(`/api/places/`)
@@ -148,34 +153,82 @@ const Places = ({ searchValue = "" }) => {
       });
   }, []);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchValue, activeCategory, filters]);
+
+  const filteredPlaces = useMemo(() => {
+    if (!places) return [];
+    return places.filter((place) => {
+      const matchesSearch =
+        !searchValue ||
+        place.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+        place.city.name.toLowerCase().includes(searchValue.toLowerCase());
+
+      const matchesCategory =
+        activeCategory === "All" || place.category === activeCategory;
+
+      const matchesPrice =
+        place.priceByNight >= filters.minPrice &&
+        place.priceByNight <= filters.maxPrice;
+
+      const matchesRooms = place.numberOfRooms >= filters.minRooms;
+      const matchesGuests = place.maxGuests >= filters.minGuests;
+
+      return (
+        matchesSearch &&
+        matchesCategory &&
+        matchesPrice &&
+        matchesRooms &&
+        matchesGuests
+      );
+    });
+  }, [places, searchValue, activeCategory, filters]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredPlaces.length / ITEMS_PER_PAGE));
+  const safePage = Math.min(currentPage, totalPages);
+  const startIndex = (safePage - 1) * ITEMS_PER_PAGE;
+  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, filteredPlaces.length);
+  const paginatedPlaces = filteredPlaces.slice(startIndex, endIndex);
+
+  const goToPage = (page) => {
+    const target = Math.max(1, Math.min(page, totalPages));
+    setCurrentPage(target);
+    gridRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const getPageNumbers = () => {
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    const pages = [];
+    pages.push(1);
+
+    if (safePage > 3) {
+      pages.push("...");
+    }
+
+    const start = Math.max(2, safePage - 1);
+    const end = Math.min(totalPages - 1, safePage + 1);
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    if (safePage < totalPages - 2) {
+      pages.push("...");
+    }
+
+    if (totalPages > 1) {
+      pages.push(totalPages);
+    }
+
+    return pages;
+  };
+
   if (!places) {
     return <Loading />;
   }
-
-  const filteredPlaces = places.filter((place) => {
-    const matchesSearch =
-      !searchValue ||
-      place.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-      place.city.name.toLowerCase().includes(searchValue.toLowerCase());
-
-    const matchesCategory =
-      activeCategory === "All" || place.category === activeCategory;
-
-    const matchesPrice =
-      place.priceByNight >= filters.minPrice &&
-      place.priceByNight <= filters.maxPrice;
-
-    const matchesRooms = place.numberOfRooms >= filters.minRooms;
-    const matchesGuests = place.maxGuests >= filters.minGuests;
-
-    return (
-      matchesSearch &&
-      matchesCategory &&
-      matchesPrice &&
-      matchesRooms &&
-      matchesGuests
-    );
-  });
 
   return (
     <div className="max-w-6xl mx-auto px-4 pb-12">
@@ -223,11 +276,92 @@ const Places = ({ searchValue = "" }) => {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 mt-6">
-          {filteredPlaces.map((place, i) => (
-            <Place key={place.id} place={place} index={i} />
-          ))}
-        </div>
+        <>
+          <div
+            ref={gridRef}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 mt-6"
+          >
+            {paginatedPlaces.map((place, i) => (
+              <Place key={place.place_id || place.id} place={place} index={i} />
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="mt-10 mb-2 animate-fade-in">
+              <p className="text-center text-sm text-[#636E72] dark:text-[#B2BEC3] mb-4 font-medium">
+                {t("places.showing")}{" "}
+                <span className="font-extrabold text-[#2D3436] dark:text-white">
+                  {startIndex + 1}
+                </span>{" "}
+                {t("places.to")}{" "}
+                <span className="font-extrabold text-[#2D3436] dark:text-white">
+                  {endIndex}
+                </span>{" "}
+                {t("places.of")}{" "}
+                <span className="font-extrabold text-[#2D3436] dark:text-white">
+                  {filteredPlaces.length}
+                </span>{" "}
+                {t("places.results")}
+              </p>
+
+              <div className="flex items-center justify-center gap-2 flex-wrap">
+                <button
+                  onClick={() => goToPage(safePage - 1)}
+                  disabled={safePage <= 1}
+                  className="flex items-center gap-1 px-4 py-2.5 rounded-full text-sm font-bold transition-all
+                    disabled:opacity-30 disabled:cursor-not-allowed
+                    text-[#636E72] dark:text-[#B2BEC3]
+                    hover:bg-[#4ECDC4]/10 hover:text-[#4ECDC4]
+                    border border-[#E8E8E4] dark:border-[#3D3D5C]"
+                  aria-label={t("places.previous")}
+                >
+                  <HiChevronLeft className="text-lg" />
+                  <span className="hidden sm:inline">{t("places.previous")}</span>
+                </button>
+
+                {getPageNumbers().map((page, i) =>
+                  page === "..." ? (
+                    <span
+                      key={`ellipsis-${i}`}
+                      className="w-10 h-10 flex items-center justify-center text-sm text-[#B2BEC3] select-none"
+                    >
+                      ···
+                    </span>
+                  ) : (
+                    <button
+                      key={page}
+                      onClick={() => goToPage(page)}
+                      className={`w-10 h-10 rounded-full text-sm font-bold transition-all
+                        ${
+                          page === safePage
+                            ? "bg-gradient-to-r from-[#4ECDC4] to-[#44B9B0] text-white shadow-lg shadow-[#4ECDC4]/25 scale-110"
+                            : "text-[#636E72] dark:text-[#B2BEC3] hover:bg-[#4ECDC4]/10 hover:text-[#4ECDC4] border border-[#E8E8E4] dark:border-[#3D3D5C]"
+                        }`}
+                      aria-label={`${t("places.page")} ${page}`}
+                      aria-current={page === safePage ? "page" : undefined}
+                    >
+                      {page}
+                    </button>
+                  ),
+                )}
+
+                <button
+                  onClick={() => goToPage(safePage + 1)}
+                  disabled={safePage >= totalPages}
+                  className="flex items-center gap-1 px-4 py-2.5 rounded-full text-sm font-bold transition-all
+                    disabled:opacity-30 disabled:cursor-not-allowed
+                    text-[#636E72] dark:text-[#B2BEC3]
+                    hover:bg-[#4ECDC4]/10 hover:text-[#4ECDC4]
+                    border border-[#E8E8E4] dark:border-[#3D3D5C]"
+                  aria-label={t("places.next")}
+                >
+                  <span className="hidden sm:inline">{t("places.next")}</span>
+                  <HiChevronRight className="text-lg" />
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

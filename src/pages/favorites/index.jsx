@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Layout from "../../components/Layout";
 import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/router";
 import Place from "../../components/place/Place";
 import Loading from "../../components/loading/Loading";
 import { useTranslation } from "../../lib/i18n/LanguageContext";
@@ -11,7 +10,6 @@ import Link from "next/link";
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const router = useRouter();
   const { t } = useTranslation();
 
   const fetchFavorites = useCallback(() => {
@@ -34,7 +32,6 @@ export default function FavoritesPage() {
       .then((data) => {
         const places = data.map((fav) => fav.place).filter(Boolean);
         setFavorites(places);
-        // Sync localStorage with server state, ensuring consistent number types
         const placeIds = places.map((p) => Number(p.place_id));
         localStorage.setItem("favorites", JSON.stringify(placeIds));
       })
@@ -48,10 +45,8 @@ export default function FavoritesPage() {
     fetchFavorites();
   }, [fetchFavorites]);
 
-  // Handle favorite removal: remove the place from the list with animation
   const handleFavoriteToggle = useCallback((placeId, isFavorite) => {
     if (!isFavorite) {
-      // Small delay for the heart animation to play before removing card
       setTimeout(() => {
         setFavorites((prev) =>
           prev ? prev.filter((p) => p.place_id !== placeId) : [],
@@ -111,7 +106,6 @@ export default function FavoritesPage() {
       </Head>
       <Layout>
         <div className="max-w-6xl mx-auto px-4 py-8 sm:py-12">
-          {/* Header */}
           <div className="mb-8 sm:mb-10 animate-fade-in-up">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 rounded-full bg-[#FF6B6B]/10 flex items-center justify-center">
@@ -131,7 +125,6 @@ export default function FavoritesPage() {
             </p>
           </div>
 
-          {/* Content */}
           {favorites.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 animate-fade-in">
               <div className="w-24 h-24 mb-6 rounded-full bg-[#FF6B6B]/10 flex items-center justify-center">
